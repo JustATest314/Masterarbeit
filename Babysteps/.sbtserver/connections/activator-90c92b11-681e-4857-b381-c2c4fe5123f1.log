@@ -1,0 +1,42 @@
+New log file opened at Thu Apr 02 14:44:19 CEST 2015 by 7852@NB-CVCVBS1
+Sending msg to client activator-90c92b11-681e-4857-b381-c2c4fe5123f1: DetachedLogEvent(LogMessage(debug,sbt server socket logs are in: C:\Masterarbeit\GIT\Masterarbeit\Babysteps\.sbtserver\connections\master.log))
+Sending msg to client activator-90c92b11-681e-4857-b381-c2c4fe5123f1: DetachedLogEvent(LogMessage(debug,sbt client logs are in: C:\Masterarbeit\GIT\Masterarbeit\Babysteps\.sbtserver\connections\activator-90c92b11-681e-4857-b381-c2c4fe5123f1.log))
+Sending msg to client activator-90c92b11-681e-4857-b381-c2c4fe5123f1: DetachedLogEvent(LogMessage(debug,sbt general server logs are in: C:\Masterarbeit\GIT\Masterarbeit\Babysteps\.sbtserver\master.log))
+Dropping message DetachedLogEvent(LogMessage(debug,sbt general server logs are in: C:\Masterarbeit\GIT\Masterarbeit\Babysteps\.sbtserver\master.log)) because client activator-90c92b11-681e-4857-b381-c2c4fe5123f1 of an exception serializing and sending: java.net.SocketException: Software caused connection abort: socket write error
+stack trace sending message was 
+java.net.SocketException: Software caused connection abort: socket write error
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(Unknown Source)
+	at java.net.SocketOutputStream.write(Unknown Source)
+	at java.io.BufferedOutputStream.flushBuffer(Unknown Source)
+	at java.io.BufferedOutputStream.flush(Unknown Source)
+	at java.io.DataOutputStream.flush(Unknown Source)
+	at sbt.impl.ipc.Peer.send(IPC.scala:79)
+	at sbt.impl.ipc.Peer.send(IPC.scala:83)
+	at sbt.impl.ipc.Peer.sendString(IPC.scala:106)
+	at sbt.impl.ipc.Peer.sendJson(IPC.scala:119)
+	at sbt.server.SbtClientHandler$$anonfun$send$1.apply$mcV$sp(SbtClientHandler.scala:128)
+	at sbt.server.SbtClientHandler.wrappedSend(SbtClientHandler.scala:113)
+	at sbt.server.SbtClientHandler.send(SbtClientHandler.scala:128)
+	at sbt.server.SbtServerSocketHandler$$anon$1.run(SbtServerSocketHandler.scala:94)
+Dropping message DetachedLogEvent(LogMessage(debug,sbt client logs are in: C:\Masterarbeit\GIT\Masterarbeit\Babysteps\.sbtserver\connections\activator-90c92b11-681e-4857-b381-c2c4fe5123f1.log)) because client activator-90c92b11-681e-4857-b381-c2c4fe5123f1 of an exception serializing and sending: java.net.SocketException: Software caused connection abort: socket write error
+stack trace sending message was 
+java.net.SocketException: Software caused connection abort: socket write error
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(Unknown Source)
+	at java.net.SocketOutputStream.write(Unknown Source)
+	at java.io.BufferedOutputStream.flushBuffer(Unknown Source)
+	at java.io.BufferedOutputStream.flush(Unknown Source)
+	at java.io.DataOutputStream.flush(Unknown Source)
+	at sbt.impl.ipc.Peer.send(IPC.scala:79)
+	at sbt.impl.ipc.Peer.send(IPC.scala:83)
+	at sbt.impl.ipc.Peer.sendString(IPC.scala:106)
+	at sbt.impl.ipc.Peer.sendJson(IPC.scala:119)
+	at sbt.server.SbtClientHandler$$anonfun$send$1.apply$mcV$sp(SbtClientHandler.scala:128)
+	at sbt.server.SbtClientHandler.wrappedSend(SbtClientHandler.scala:113)
+	at sbt.server.SbtClientHandler.send(SbtClientHandler.scala:128)
+	at sbt.server.SbtClientHandler$clientThread$.run(SbtClientHandler.scala:42)
+Reading next message from client.
+Client activator-90c92b11-681e-4857-b381-c2c4fe5123f1 closed, java.net.SocketException: socket is closed, shutting down
+Client activator-90c92b11-681e-4857-b381-c2c4fe5123f1 thread exiting.
+Dropping message (0,ReceivedResponse()) to dead client activator-90c92b11-681e-4857-b381-c2c4fe5123f1

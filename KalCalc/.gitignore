@@ -11,3 +11,4 @@ project/target
 project/plugins/target
 target
 .target 
+/bin/

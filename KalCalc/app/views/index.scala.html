@@ -1,0 +1,20 @@
+@(userForm : Form[User])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+
+@main("KalCalc - index") {
+
+    <h1>Willkommen zu KalCalc</h1>
+	Bitte geben Sie hier Ihre Daten ein. <br>
+	<br>
+	
+	@helper.form(action = routes.Application.submit(), 'id -> "userForm"){
+		@helper.inputText(userForm("Gewicht"))
+		@helper.inputText(userForm("Groesse"))
+		@helper.inputText(userForm("Alter"))
+		<br>
+		<input type="submit" class="btn primary" value="Send">
+	}
+}

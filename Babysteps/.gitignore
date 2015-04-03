@@ -2,3 +2,6 @@ logs
 target
 /RUNNING_PID
 tmp
+.settings
+.cache
+.classpath

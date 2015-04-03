@@ -1,0 +1,20 @@
+@(created: User)
+
+@main("Example"){
+
+	<table border="1">
+  <tr>
+    <th>Gewicht</th>
+    <th>Groesse</th>
+    <th>Alter</th>
+    <th>Grundumsatz</th>
+  </tr>
+  <tr>
+    <td>@created.gewicht</td>
+    <td>@created.groesse</td>
+    <td>@created.alter</td>
+    <td>@created.grundUmsatz</td>
+  </tr>
+</table>
+
+}

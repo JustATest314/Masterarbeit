@@ -1,5 +1,18 @@
+@(userForm : Form[User])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+
 @main("Welcome to Play") {
 
     <h1>Überschrift</h1>
 	Dies ist ein Test. Gleich baue ich eine weitere Unterseite.
+	
+	@helper.form(action = routes.Application.submit(), 'id -> "userForm"){
+		@helper.inputText(userForm("Gewicht"))
+		@helper.inputText(userForm("Groesse"))
+		@helper.inputText(userForm("Alter"))
+		<input type="submit" class="btn primary" value="Send">
+	}
 }

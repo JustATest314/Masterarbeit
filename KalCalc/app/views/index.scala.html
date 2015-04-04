@@ -11,10 +11,17 @@
 	<br>
 	
 	@helper.form(action = routes.Application.submit(), 'id -> "userForm"){
-		@helper.inputText(userForm("Gewicht"))
-		@helper.inputText(userForm("Groesse"))
-		@helper.inputText(userForm("Alter"))
-		<br>
+		<fieldset>
+			@helper.inputRadioGroup(
+          	userForm("Geschlecht"),
+          	options = options("Mann"->"Mann","Frau"->"Frau"))
+        </fieldset>
+        
+        <fieldset>
+			@helper.inputText(userForm("Gewicht"))
+			@helper.inputText(userForm("Groesse"))
+			@helper.inputText(userForm("Alter"))
+		</fieldset>
 		<input type="submit" class="btn primary" value="Send">
 	}
 }

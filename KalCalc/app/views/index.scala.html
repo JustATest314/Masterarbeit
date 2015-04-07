@@ -14,7 +14,10 @@
 		<fieldset>
 			@helper.inputRadioGroup(
           	userForm("Geschlecht"),
-          	options = options("Mann"->"Mann","Frau"->"Frau"))
+          	options = options("Mann"->"Mann","Frau"->"Frau"),
+          	'_label -> "Gender",
+         	'_error -> userForm("Geschlecht").error.map(_.withMessage("select gender"))
+          	)
         </fieldset>
         
         <fieldset>
@@ -22,6 +25,11 @@
 			@helper.inputText(userForm("Groesse"))
 			@helper.inputText(userForm("Alter"))
 		</fieldset>
-		<input type="submit" class="btn primary" value="Send">
+		
+		<button type="submit" class="btn primary" value="Send">
+			<img src="http://pics.wurzelimperium.de/pics/lager/regalkauf.png"  id="dagger" />
+			<br>
+			Sendenden
+		</button>
 	}
 }

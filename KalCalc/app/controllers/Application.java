@@ -9,10 +9,14 @@ import play.Logger;
 
 public class Application extends Controller {
 
-	final static Form<User> userForm = Form.form(User.class);
+	static Form<User> userForm = Form.form(User.class);
 
 	public static Result index() {
-		return ok(views.html.index.render(userForm));
+		
+		User user = new User();
+		Form<User> preFilledForm = userForm.fill(user);
+		
+		return ok(views.html.index.render(preFilledForm));
 	}
 
 	public static Result submit() {
@@ -23,12 +27,11 @@ public class Application extends Controller {
 		// Formel fuer Frauen
 		// 655,1 + (9,6 * Körpergewicht [kg]) + (1,8 * Körpergröße [cm]) – (4,7
 		// * Alter [Jahre])
+				
 		Form<User> filledForm = userForm.bindFromRequest();
+		
 		User created = filledForm.get();
-
-		// For debug
-		 Logger.info(created.toString());
-
+		
 		if (created.geschlecht.equals("Mann")) {
 			created.grundUmsatz = (float) (66.47 + (13.7 * created.gewicht)
 					+ (5 * created.groesse) - (6.8 * created.alter));
@@ -38,6 +41,10 @@ public class Application extends Controller {
 			created.grundUmsatz = (float) (655.1 + (9.6 * created.gewicht)
 					+ (1.8 * created.groesse) - (4.7 * created.alter));
 		}
+
+		// For debug
+		Logger.info(created.toString());
+		
 		return ok(views.html.submit.render(created));
 		// For debug only
 		// return status(488, "Strange response type");

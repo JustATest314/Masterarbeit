@@ -36,7 +36,7 @@ public class Application extends Controller {
 //		66,47 + (13,7 * Körpergewicht [kg]) + (5 * Körpergröße [cm]) – (6,8 * Alter [Jahre])
 		Form<User> filledForm = userForm.bindFromRequest();
 		User created = filledForm.get();
-		created.grundUmsatz = (float) (66.47 + (13.7 * created.gewicht) + (5 * created.groesse) - (6.8 * created.alter));
+//		created.grundUmsatz = (float) (66.47 + (13.7 * created.gewicht) + (5 * created.groesse) - (6.8 * created.alter));
 		return ok(views.html.submit.render(created));
 	}
 

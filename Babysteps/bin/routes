@@ -4,10 +4,6 @@
 
 # Home page
 GET     /                           controllers.Application.index()
-GET		/unterseite1/				controllers.Application.anzeigen()
-POST	/unterseite1/				controllers.Application.nextPage()
-GET		/unterseite2/				controllers.Application.anzeigen2()
-
 POST 	/auswertung/				controllers.Application.submit()
 
 # Map static resources from the /public folder to the /assets URL path

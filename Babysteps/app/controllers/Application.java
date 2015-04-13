@@ -31,6 +31,7 @@ public class Application extends Controller {
 		Form<User> filledForm = userForm.bindFromRequest();
 		
 		User created = filledForm.get();
+
 		
 		if (created.geschlecht.equals("Mann")) {
 			created.grundUmsatz = (float) (66.47 + (13.7 * created.gewicht)
@@ -45,6 +46,9 @@ public class Application extends Controller {
 		// For debug
 		Logger.info(created.toString());
 		
+
+//		created.grundUmsatz = (float) (66.47 + (13.7 * created.gewicht) + (5 * created.groesse) - (6.8 * created.alter));
+
 		return ok(views.html.submit.render(created));
 		// For debug only
 		// return status(488, "Strange response type");

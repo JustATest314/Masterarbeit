@@ -19,7 +19,11 @@ project/target
 project/plugins/target
 target
 .target
+<<<<<<< HEAD
  
 # Play
 logs
 RUNNING_PID
+=======
+/bin/
+>>>>>>> branch 'master' of https://github.com/JustATest314/Masterarbeit

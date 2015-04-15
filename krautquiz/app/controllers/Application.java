@@ -16,4 +16,8 @@ public class Application extends Controller {
     	return TODO;
     }
     
+    public static Result zeigeEinstellungen(){
+    	return ok(views.html.einstellungen.render());
+    }
+    
 }

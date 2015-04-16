@@ -11,7 +11,6 @@ public class Application extends Controller {
         return ok(index.render("Your new application is ready."));
     }
 
-    // TODO Quiz erzeugen lassen
     public static Result quizStarten(){
     	return ok(views.html.quiz.render());
     }

@@ -6,6 +6,7 @@
 GET     /                           controllers.Application.index()
 GET		/Forum						controllers.Forum.frageStellen()
 GET		/Einstellungen				controllers.Application.zeigeEinstellungen()
+GET		/Quiz						controllers.Application.quizStarten()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

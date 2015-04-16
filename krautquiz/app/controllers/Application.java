@@ -12,8 +12,8 @@ public class Application extends Controller {
     }
 
     // TODO Quiz erzeugen lassen
-    public static Result quizGenerieren(){
-    	return TODO;
+    public static Result quizStarten(){
+    	return ok(views.html.quiz.render());
     }
     
     public static Result zeigeEinstellungen(){

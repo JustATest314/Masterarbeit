@@ -36,4 +36,5 @@ public class Forum extends Controller {
 	public static Result loeschen(){
 		return TODO;
 	}
+	
 }

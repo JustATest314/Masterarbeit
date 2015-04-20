@@ -37,6 +37,20 @@
     <li ><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
   </ul>
 </nav>
+
+    <script>
+$('#icon').click(function() {
+    var $this = $(this);
+    $this.css("color", "red");
+    var num = $('#num');
+    var currentNumber = num.text().length ? parseInt(num.text()) : 0;
+    num.text(currentNumber + 1);
+});
+</script>
+
+    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true" id="icon"></span><span id="num"></span>
+    
+    <br>
     
     <a href="@routes.Forum.frageStellen()"><button class="btn btn-default" type="submit">Fragen / Beantworten</button>
   </div>

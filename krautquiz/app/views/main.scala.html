@@ -11,22 +11,18 @@
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js">    </script>
     
-    <!--   <script type="text/javascript">
-		function changeImg(img, newimg) {
-			img.src = newimg;
-		}
-	</script> -->
-	
-	<script language="javascript">
+	<script language="javascript"> 
     function changeImage() {
 
-        if (document.getElementById("imgClickAndChange").src == "http://www.userinterfaceicons.com/80x80/minimize.png") 
+       <!-- if (document.getElementById("imgClickAndChange").src == "http://www.userinterfaceicons.com/80x80/minimize.png") -->
+       if (document.getElementById("imgClickAndChange").src == "http://www.userinterfaceicons.com/80x80/minimize.png")
+       
         {
-            document.getElementById("imgClickAndChange").src = "http://www.userinterfaceicons.com/80x80/maximize.png";
+            document.getElementById("imgClickAndChange").src = "images/glyphicons-arrow-up.png";
         }
         else 
         {
-            document.getElementById("imgClickAndChange").src = "http://www.userinterfaceicons.com/80x80/minimize.png";
+            document.getElementById("imgClickAndChange").src = "images/glyphicons-arrow-up.png";
         }
     }
 </script>
@@ -61,8 +57,10 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-    
+<span id="icon" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span><span id="num"></span>
         @content
+        
+        
     </div>
     </body>
 </html>

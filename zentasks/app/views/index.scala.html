@@ -12,7 +12,15 @@
 		document.write("k hat den Wert: ", k, "<br>");
 		document.write("l hat den Wert: ", l, "<br>");
 		document.write("Max: ", Number.MAX_VALUE, "<br>");
-		document.write("Min: ", Number.MIN_VALUE);
+		document.write("Min: ", Number.MIN_VALUE, "<br>");
     </script>
-
+    
+    <br>
+    
+    <script>
+		for(eig in navigator)
+			document.write("<b>" + eig + ":</b> " + navigator[eig] + "<br>");
+		document.write("<b>javaEnabled() :</b> " + navigator.javaEnabled() + "<br>");
+		
+	</script>
 }

@@ -1,10 +1,37 @@
+@(questions: List[String], answers: List[String]) 
+
+
 @main("Quiz"){
-	<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Quiz</h3>
-  </div>
-  <div class="panel-body">
-   TODO: Implementieren!   
-  </div>
-</div>	
+<div class="panel panel-default">
+
+
+	<div class="panel-heading">
+		<h3 class="panel-title">Quiz</h3>
+	</div>
+	<div class="panel-body">
+		<div style="text-align: center;">@questions(0)</div>
+	</div>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">Antworten</h3>
+	</div>
+	<div class="panel-body">
+		<div style="text-align: center;">
+		
+			@* Sollte ich hier lieber Radiobuttons verwenden, fuer nur eine
+			korrekte Antwort? *@
+
+			@for(index <- 0 until answers.size){
+				<div class="checkbox">
+				<label><input type="checkbox" value="">@answers(index)</label>
+			</div>
+			} 
+			
+			<a href="@routes.Forum.frageStellen()"><button
+					class="btn btn-default" type="submit">Nächste Frage</button>
+		</div>
+	</div>
+</div>
 }

@@ -14,6 +14,8 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js">    </script>
     
     <!-- Skripte -->
+    
+    <!-- TODO: Entfernen, Testskript zum Togglen von Bildern -->
 	<script language="javascript"> 
     function changeImage() {
 
@@ -21,11 +23,11 @@
        if (document.getElementById("imgClickAndChange").src == "http://www.userinterfaceicons.com/80x80/minimize.png")
        
         {
-            document.getElementById("imgClickAndChange").src = "images/glyphicons-arrow-up.png";
+            document.getElementById("imgClickAndChange").src = "http://www.userinterfaceicons.com/80x80/maximize.png";
         }
         else 
         {
-            document.getElementById("imgClickAndChange").src = "images/glyphicons-arrow-up.png";
+            document.getElementById("imgClickAndChange").src = "http://www.userinterfaceicons.com/80x80/minimize.png";
         }
     }
 </script>
@@ -50,6 +52,7 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
+      
       	<!-- Enthält Routen zu den jeweiligen Seiten, damit das Navigationspanel oben funktioniert. Wird ein Element angewählt, so wird es active gesetzt -->
         <li class="@("active".when(request.path == controllers.routes.Application.index().toString()))" > <a href="@routes.Application.index()"><span class="glyphicon glyphicon-home"></span> Home <span class="sr-only">(current)</span></a></li>
         <li class="@("active".when(request.path == controllers.routes.Application.quizStarten().toString()))"><a href="@routes.Application.quizStarten()"><span class="glyphicon glyphicon-pencil"></span> Mein Quiz <span class="sr-only">(current)</span></a></li>

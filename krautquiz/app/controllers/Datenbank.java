@@ -9,17 +9,17 @@ public class Datenbank extends Controller{
 		return TODO;
 	}
 	
-	// TODO Frage in DB speichern
+	// TODOL Frage in DB speichern
 	public static Result frageSpeichern(){
 		return TODO;
 	}
 
-	// TODO Antwort in DB speichern
+	// TODOL Antwort in DB speichern
 	public static Result antwortSpeichern(){
 		return TODO;
 	}
 	
-	// TODO Rating in DB speichern
+	// TODOL Rating in DB speichern
 	public static Result ratingSpeichern(){
 		return TODO;
 	}

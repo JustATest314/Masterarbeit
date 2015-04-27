@@ -3,6 +3,9 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
 import play.*;
 import play.mvc.*;
 import views.html.*;
@@ -14,10 +17,21 @@ public class Application extends Controller {
 
 	// Hilfsmethode, um Daten während der Entwicklung zu mocken
 
-	// TODO Müsste umgestellt werden auf Array? Irgendwas, wo man Fragen, Scores
+	// TODOH Müsste umgestellt werden auf Array? Irgendwas, wo man Fragen, Scores
 	// und dazu gehörende Antworten mit Scores reintun kann
 	public static void QAinitialisieren() {
+		
+		Multimap<String,String> myMultimap = ArrayListMultimap.create();
 
+		myMultimap.put("Frage 1", "id = sd");
+		myMultimap.put("Frage 1", "qtext = dsf");
+		myMultimap.put("Frage 1", "vote = 100");
+		myMultimap.put("Frage 2", "id = ds");
+		
+		for(String key : myMultimap.keys()) {
+			Logger.info(key + myMultimap.values());
+		}
+		
 		// Listen löschen, da die Elemente angehängt werden, gäbe sonst doppelte
 		// Einträge
 		listOfQuestions.clear();

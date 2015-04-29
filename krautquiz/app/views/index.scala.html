@@ -38,7 +38,10 @@ Hier gibt es eine Übersicht über die Folien sowie dazugehörige Fragen und Ant
   <div class="panel-body">
     <ul class="list-group">
     
-    @* TODO: Fragen / Antworten zu Pärchen verknüpfen *@
+    <!--  TODO: Fragen / Antworten zu Pärchen verknüpfen --> 
+    
+    @questions.toString();
+    @answers.toString();
     @for(index <- 0 until questions.size){
 	    <!-- Frage 1 -->
 		<li class="list-group-item" >

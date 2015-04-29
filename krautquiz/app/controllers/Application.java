@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
 import play.*;
@@ -13,8 +14,8 @@ import views.html.*;
 
 public class Application extends Controller {
 
-	static List<String> listOfQuestions = new ArrayList<String>();
-	static List<String> listOfAnswers = new ArrayList<String>();
+//	static List<String> listOfQuestions = new ArrayList<String>();
+//	static List<String> listOfAnswers = new ArrayList<String>();
 	
 	static List<String> questionList = new ArrayList<String>();
 	static List<String> answerList = new ArrayList<String>();
@@ -28,12 +29,12 @@ public class Application extends Controller {
 	// TODOH Should look like this:
 	// questionMap.put(ID, List<String>) with List<String> = qText, votes, uid
 	// but how can I get the values then? I.e. how to get the qText and put it into a list, so the index-page can show them?
-	// This way I have to use the questiontext 3 times, even if I switch to using the ID field, it would remain 3 times. Any better way?
 	public static void QAinitialisieren() {
 		
 		Multimap<String, String> questionMap = ArrayListMultimap.create();
 		Multimap<String, String> answerMap = ArrayListMultimap.create();
 		
+		// FIXME add field "type" (question | answer) and make the ID-field the first one 
 		// Question in the format: Questiontext / ID / votes / UID
 		// Question 1
 		questionMap.put("What happens if I use a break here?", "e77dccbc-fd8d-4641-b9ca-17528e5d56b2");
@@ -77,25 +78,48 @@ public class Application extends Controller {
 		answerMap.put("Sure!", "2");
 		answerMap.put("Sure!", "Maria");
 		
-		// FIXME Listen enthalten jetzt alle Einträge mehrfach!
-		questionList.addAll(questionMap.keys());
-		answerList.addAll(answerMap.keys());
+		ListMultimap<String,String> myMultimap = ArrayListMultimap.create();
+		 
+		myMultimap.put("Fruits", "Bannana");
+		myMultimap.put("Fruits", "Apple");
+		myMultimap.put("Fruits", "Pear");
+		myMultimap.put("Vegetables", "Carrot");
+		
+		List<String> myValues = myMultimap.get("Fruits");
+//		System.out.println("MyValues: " + myValues.toString());
+		
+//		Logger.info("KeySet: " + myMultimap.keySet().toString());
+//		Logger.info("Keys: " + myMultimap.keys().toString());
+		
+//		System.out.println("answermap.keySet(): ");
+//		Logger.info(answerMap.keySet().toString());
+		
+//		System.out.println("for over answerMap.values(): ");
+//		for(String key : answerMap.keys()) {
+//			Logger.info(key + answerMap.values() + "\n");
+//		}
+		
+		// both lists contain only the keySets (questions / answers at the moment)
+		questionList.addAll(questionMap.keySet());
+		answerList.addAll(answerMap.keySet());
+		
+
 		
 		// Logger.info(questionMap.keys().toString());
 		
-		// Clear lists, as the elements get appended. Else there would be duplicates
-		listOfQuestions.clear();
-		listOfAnswers.clear();
-
-		// Questions
-		listOfQuestions.add("Was passiert, wenn man ein 'break' verwendet?");
-		listOfQuestions.add("Wieviele Fälle darf ein switch-case haben?");
-		listOfQuestions.add("Geht das auch mit liste.clear()?");
-
-		// Answers
-		listOfAnswers.add("Die Schleife springt einfach durch");
-		listOfAnswers.add("Das Programm hängt sich auf");
-		listOfAnswers.add("Ich weiss es selbst nicht...");
+//		// Clear lists, as the elements get appended. Else there would be duplicates
+//		listOfQuestions.clear();
+//		listOfAnswers.clear();
+//
+//		// Questions
+//		listOfQuestions.add("Was passiert, wenn man ein 'break' verwendet?");
+//		listOfQuestions.add("Wieviele Fälle darf ein switch-case haben?");
+//		listOfQuestions.add("Geht das auch mit liste.clear()?");
+//
+//		// Answers
+//		listOfAnswers.add("Die Schleife springt einfach durch");
+//		listOfAnswers.add("Das Programm hängt sich auf");
+//		listOfAnswers.add("Ich weiss es selbst nicht...");
 		
 //		System.out.println("--- questionMap ---");
 //		Logger.info(questionMap.toString());
@@ -155,7 +179,8 @@ public class Application extends Controller {
 
 	public static Result quizStarten() {
 		QAinitialisieren();
-		return ok(views.html.quiz.render(listOfQuestions, listOfAnswers));
+		return ok(views.html.quiz.render(questionList, answerList));
+//		return ok(views.html.quiz.render(listOfQuestions, listOfAnswers));
 	}
 
 	public static Result zeigeEinstellungen() {

@@ -11,7 +11,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
 public class Application extends Controller {
@@ -21,6 +20,8 @@ public class Application extends Controller {
 	
 	static List<String> questionList = new ArrayList<String>();
 	static List<String> answerList = new ArrayList<String>();
+	
+	static Map<Question, List<Answer>> myMap = new HashMap<Question, List<Answer>>();
 	
 	  private static void log(Object aObject){
 		    System.out.println( String.valueOf(aObject) );
@@ -177,6 +178,11 @@ public class Application extends Controller {
 		Answer answer21 = new Answer("xcv", "fgh", "Frequency filtered sunlight!", 45, "Oliver");
 		Answer answer22 = new Answer("tzu", "fgh", "Light reflects from the blue sea water!", 3, "Tom");
 		
+		Question question3 = new Question("ertw", "How tall is tall?", 34, "Tim");
+		Answer answer31 = new Answer("werw", "ertw", "Depends on your definition!", 12, "Oliver");
+		Answer answer32 = new Answer("tzsdfu", "ertw", "Very!", 1, "Marcus");
+		Answer answer33 = new Answer("wcfewf", "ertw", "Not much!", 1, "Frank");
+		
 		List<Answer> answerList1 = new ArrayList<Answer>();
 		answerList1.add(answer11);
 		answerList1.add(answer12);
@@ -184,6 +190,11 @@ public class Application extends Controller {
 		List<Answer> answerList2 = new ArrayList<Answer>();
 		answerList2.add(answer21);
 		answerList2.add(answer22);
+		
+		List<Answer> answerList3 = new ArrayList<Answer>();
+		answerList3.add(answer31);
+		answerList3.add(answer32);
+		answerList3.add(answer33);
 		
 //		Map<Question, List<Answer>> questionHashMap = new HashMap<Question, List<Answer>>();
 //		questionHashMap.put(frage1, antwortenListe1);
@@ -197,9 +208,11 @@ public class Application extends Controller {
 //		}
 		
 		// TODOH Put those into the parameter for index.scala.html
-		Multimap<Question, List<Answer>> myMultimap = ArrayListMultimap.create();
-		myMultimap.put(question1, answerList1);
-		myMultimap.put(question2, answerList2);
+
+		myMap.clear();
+		myMap.put(question1, answerList1);
+		myMap.put(question2, answerList2);
+		myMap.put(question3, answerList3);
 		
 //		for(Question key : myMultimap.keys()) {
 //			System.out.println(key + myMultimap.get(key).toString());
@@ -211,7 +224,7 @@ public class Application extends Controller {
 
 	public static Result index() {
 		QAinitialisieren();
-		return ok(views.html.index.render(questionList, answerList));
+		return ok(views.html.index.render(myMap));
 //		return ok(index.render(listOfQuestions, listOfAnswers));
 	}
 

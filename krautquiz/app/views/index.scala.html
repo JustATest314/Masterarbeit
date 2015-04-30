@@ -1,5 +1,9 @@
-@(questions: List[String], answers: List[String])
+@import model.Question
+@import model.Answer
 
+@(myMap: Map[Question, List[Answer]])
+
+@* (questions: List[String], answers: List[String]) *@
 @main("krautquiz") {
 
 <div class="panel panel-default">
@@ -34,8 +38,17 @@
   <div class="panel-body">
     <ul class="list-group">
     
-    <!--  TODO: Fragen / Antworten zu Pärchen verknüpfen --> 
+	@for((key, value) <- myMap){
+	  @key.questionText <br>
+	  
+	  @value.map { e =>
+	    	@e.answerText <br>
+	    }
+	    <br>
+	}
     
+    <!--  TODO: Fragen / Antworten zu Pärchen verknüpfen --> 
+    @*
     @for(index <- 0 until questions.size){
 	    <!-- Frage 1 -->
 		<li class="list-group-item" >
@@ -90,7 +103,7 @@
 		</button>	
 				}
 		</ul>
-	}
+	} *@
 	</ul>
     
 <nav>

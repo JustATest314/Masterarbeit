@@ -1,16 +1,18 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+
+import model.Answer;
+import model.Question;
+import play.mvc.Controller;
+import play.mvc.Result;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
-
-import play.*;
-import play.mvc.*;
-import views.html.*;
 
 public class Application extends Controller {
 
@@ -78,14 +80,14 @@ public class Application extends Controller {
 		answerMap.put("Sure!", "2");
 		answerMap.put("Sure!", "Maria");
 		
-		ListMultimap<String,String> myMultimap = ArrayListMultimap.create();
-		 
-		myMultimap.put("Fruits", "Bannana");
-		myMultimap.put("Fruits", "Apple");
-		myMultimap.put("Fruits", "Pear");
-		myMultimap.put("Vegetables", "Carrot");
-		
-		List<String> myValues = myMultimap.get("Fruits");
+//		ListMultimap<String,String> myMultimap = ArrayListMultimap.create();
+//		 
+//		myMultimap.put("Fruits", "Bannana");
+//		myMultimap.put("Fruits", "Apple");
+//		myMultimap.put("Fruits", "Pear");
+//		myMultimap.put("Vegetables", "Carrot");
+//		
+//		List<String> myValues = myMultimap.get("Fruits");
 //		System.out.println("MyValues: " + myValues.toString());
 		
 //		Logger.info("KeySet: " + myMultimap.keySet().toString());
@@ -167,13 +169,49 @@ public class Application extends Controller {
 //	    log("UUID One: " + idOne);
 //	    log("UUID Two: " + idTwo);
 		
-		
+		Question question1 = new Question("xyz", "Do Androids dream?", 127, "Marcus");
+		Answer answer11 = new Answer("zab", "xyz", "Only of electric sheep!", 70, "Tibor");
+		Answer answer12 = new Answer("qwert", "xyz", "No, they dont!", 10, "Sarah");
 
+		Question question2 = new Question("fgh", "Why is the sky blue?", 76, "Frank");
+		Answer answer21 = new Answer("xcv", "fgh", "Frequency filtered sunlight!", 45, "Oliver");
+		Answer answer22 = new Answer("tzu", "fgh", "Light reflects from the blue sea water!", 3, "Tom");
+		
+		List<Answer> answerList1 = new ArrayList<Answer>();
+		answerList1.add(answer11);
+		answerList1.add(answer12);
+		
+		List<Answer> answerList2 = new ArrayList<Answer>();
+		answerList2.add(answer21);
+		answerList2.add(answer22);
+		
+//		Map<Question, List<Answer>> questionHashMap = new HashMap<Question, List<Answer>>();
+//		questionHashMap.put(frage1, antwortenListe1);
+//		questionHashMap.put(frage2, antwortenListe2);
+		
+//		for ( Question elem : questionHashMap.keySet() ){
+//			  System.out.println("Q-HashMap: " + elem.toString() );
+//			  for (List<Answer> elem2 : questionHashMap.values()){
+//
+//			  }
+//		}
+		
+		// TODOH Put those into the parameter for index.scala.html
+		Multimap<Question, List<Answer>> myMultimap = ArrayListMultimap.create();
+		myMultimap.put(question1, answerList1);
+		myMultimap.put(question2, answerList2);
+		
+//		for(Question key : myMultimap.keys()) {
+//			System.out.println(key + myMultimap.get(key).toString());
+//		}
+//		
+//		System.out.println("===================");
+//		System.out.println(myMultimap.toString());
 	}
 
 	public static Result index() {
 		QAinitialisieren();
-		return ok(index.render(questionList, answerList));
+		return ok(views.html.index.render(questionList, answerList));
 //		return ok(index.render(listOfQuestions, listOfAnswers));
 	}
 

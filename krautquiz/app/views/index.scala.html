@@ -1,7 +1,3 @@
-@* Startseite
-Hier gibt es eine Übersicht über die Folien sowie dazugehörige Fragen und Antworten
-*@
-
 @(questions: List[String], answers: List[String])
 
 @main("krautquiz") {
@@ -40,8 +36,6 @@ Hier gibt es eine Übersicht über die Folien sowie dazugehörige Fragen und Ant
     
     <!--  TODO: Fragen / Antworten zu Pärchen verknüpfen --> 
     
-    @questions.toString();
-    @answers.toString();
     @for(index <- 0 until questions.size){
 	    <!-- Frage 1 -->
 		<li class="list-group-item" >

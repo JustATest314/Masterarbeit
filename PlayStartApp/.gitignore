@@ -9,6 +9,7 @@ dump
 .cache
 .scala_dependencies
 bin
+.classpath
  
 # SBT
 dist

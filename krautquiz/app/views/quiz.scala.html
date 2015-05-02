@@ -1,4 +1,7 @@
-@(questions: List[String], answers: List[String]) 
+@import model.Question
+@import model.Answer
+
+@(myMap: Map[Question, List[Answer]])
 
 
 @main("Quiz"){
@@ -9,7 +12,8 @@
 		<h3 class="panel-title">Quiz</h3>
 	</div>
 	<div class="panel-body">
-		<div style="text-align: center;">@questions(0)</div>
+		<!-- TODO Need to use LinkedHashMap in order to contain a sorted question answer pair, want to grab the first question only and its matching answers -->
+		<div style="text-align: center;">TESTFRAGE</div>
 	</div>
 </div>
 
@@ -19,18 +23,20 @@
 	</div>
 	<div class="panel-body">
 		<div style="text-align: center;">
-		
-			@* Sollte ich hier lieber Radiobuttons verwenden, fuer nur eine
-			korrekte Antwort? *@
-
-			@for(index <- 0 until answers.size){
-				<div class="checkbox">
-				<label><input type="checkbox" value="">@answers(index)</label>
-			</div>
-			} 
-			
-			<a href="@routes.Forum.frageStellen()"><button
-					class="btn btn-default" type="submit">Nächste Frage</button>
+				@* Sollte ich hier lieber Radiobuttons verwenden, fuer nur eine
+				korrekte Antwort? *@
+	
+	<!-- FIXME Shows ALL answers so far... -->
+			@for((question, value) <- myMap){
+				@for(answer <- value){
+					<div class="checkbox">
+					<label><input type="checkbox" value="">@answer.answerText</label>
+				</div>
+				} 
+			}
+				
+				<a href="@routes.Forum.askQuestion()"><button
+						class="btn btn-default" type="submit">Nächste Frage</button>
 		</div>
 	</div>
 </div>

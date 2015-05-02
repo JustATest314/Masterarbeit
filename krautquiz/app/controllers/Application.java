@@ -8,6 +8,7 @@ import java.util.Map;
 import model.Answer;
 import model.Question;
 import play.*;
+import play.api.mvc.Request;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -19,68 +20,68 @@ public class Application extends Controller {
 //	static List<String> listOfQuestions = new ArrayList<String>();
 //	static List<String> listOfAnswers = new ArrayList<String>();
 	
-	static List<String> questionList = new ArrayList<String>();
-	static List<String> answerList = new ArrayList<String>();
+//	static List<String> questionList = new ArrayList<String>();
+//	static List<String> answerList = new ArrayList<String>();
 	
 	static Map<Question, List<Answer>> myMap = new HashMap<Question, List<Answer>>();
 	
-	  private static void log(Object aObject){
-		    System.out.println( String.valueOf(aObject) );
-		  }
+//	  private static void log(Object aObject){
+//		    System.out.println( String.valueOf(aObject) );
+//		  }
 	
 	// helper-method, only for mocking data while developing
 
 	// TODOH Should look like this:
 	// questionMap.put(ID, List<String>) with List<String> = qText, votes, uid
 	// but how can I get the values then? I.e. how to get the qText and put it into a list, so the index-page can show them?
-	public static void QAinitialisieren() {
+	public static void initialize() {
 		
-		Multimap<String, String> questionMap = ArrayListMultimap.create();
-		Multimap<String, String> answerMap = ArrayListMultimap.create();
-		
-		// FIXME add field "type" (question | answer) and make the ID-field the first one 
-		// Question in the format: Questiontext / ID / votes / UID
-		// Question 1
-		questionMap.put("What happens if I use a break here?", "e77dccbc-fd8d-4641-b9ca-17528e5d56b2");
-		questionMap.put("What happens if I use a break here?", "150");
-		questionMap.put("What happens if I use a break here?", "Marcus");
-		
-		// Answer in the format: Answertext / ID / Question-ID (Answer needs to be linked to a question) / votes / UID
-		// Answer 1.1
-		answerMap.put("The loop will just fall through!", "b8756ff5-ff8a-4a17-9517-811b91639fdf");
-		answerMap.put("The loop will just fall through!", "e77dccbc-fd8d-4641-b9ca-17528e5d56b2");
-		answerMap.put("The loop will just fall through!", "46");
-		answerMap.put("The loop will just fall through!", "Lothar");
-	
-		// Question 2
-		questionMap.put("How many cases must a switchcase have?", "e77dccbc-fd8d-4641-b9ca-17528e5d56b3");
-		questionMap.put("How many cases must a switchcase have?", "34");
-		questionMap.put("How many cases must a switchcase have?", "Frank");
-		
-		// Answer in the format: Answertext / ID / Question-ID (Answer needs to be linked to a question) / votes / UID
-		// Answer 2.1
-		answerMap.put("As many as you want!", "b8756ff5-ff8a-4a17-9517-811b91639fdg");
-		answerMap.put("As many as you want!", "e77dccbc-fd8d-4641-b9ca-17528e5d56b3");
-		answerMap.put("As many as you want!", "12");
-		answerMap.put("As many as you want!", "Lothar");
-		
-		// Answer 2.2
-		answerMap.put("None!", "b8756ff5-ff8a-4a17-9517-811b91639fdh");
-		answerMap.put("None!", "e77dccbc-fd8d-4641-b9ca-17528e5d56b3");
-		answerMap.put("None!", "9");
-		answerMap.put("None!", "Steffi");
-		
-		// Question 3
-		questionMap.put("Will this work with list.clear()?", "e77dccbc-fd8d-4641-b9ca-17528e5d56b4");
-		questionMap.put("Will this work with list.clear()?", "92");
-		questionMap.put("Will this work with list.clear()?", "Stefan");
-		
-		// Answer in the format: Answertext / ID / Question-ID (Answer needs to be linked to a question) / votes / UID
-		// Answer 3.1
-		answerMap.put("Sure!", "b8756ff5-ff8a-4a17-9517-811b91639fdi");
-		answerMap.put("Sure!", "e77dccbc-fd8d-4641-b9ca-17528e5d56b4");
-		answerMap.put("Sure!", "2");
-		answerMap.put("Sure!", "Maria");
+//		Multimap<String, String> questionMap = ArrayListMultimap.create();
+//		Multimap<String, String> answerMap = ArrayListMultimap.create();
+//		
+//		// FIXME add field "type" (question | answer) and make the ID-field the first one 
+//		// Question in the format: Questiontext / ID / votes / UID
+//		// Question 1
+//		questionMap.put("What happens if I use a break here?", "e77dccbc-fd8d-4641-b9ca-17528e5d56b2");
+//		questionMap.put("What happens if I use a break here?", "150");
+//		questionMap.put("What happens if I use a break here?", "Marcus");
+//		
+//		// Answer in the format: Answertext / ID / Question-ID (Answer needs to be linked to a question) / votes / UID
+//		// Answer 1.1
+//		answerMap.put("The loop will just fall through!", "b8756ff5-ff8a-4a17-9517-811b91639fdf");
+//		answerMap.put("The loop will just fall through!", "e77dccbc-fd8d-4641-b9ca-17528e5d56b2");
+//		answerMap.put("The loop will just fall through!", "46");
+//		answerMap.put("The loop will just fall through!", "Lothar");
+//	
+//		// Question 2
+//		questionMap.put("How many cases must a switchcase have?", "e77dccbc-fd8d-4641-b9ca-17528e5d56b3");
+//		questionMap.put("How many cases must a switchcase have?", "34");
+//		questionMap.put("How many cases must a switchcase have?", "Frank");
+//		
+//		// Answer in the format: Answertext / ID / Question-ID (Answer needs to be linked to a question) / votes / UID
+//		// Answer 2.1
+//		answerMap.put("As many as you want!", "b8756ff5-ff8a-4a17-9517-811b91639fdg");
+//		answerMap.put("As many as you want!", "e77dccbc-fd8d-4641-b9ca-17528e5d56b3");
+//		answerMap.put("As many as you want!", "12");
+//		answerMap.put("As many as you want!", "Lothar");
+//		
+//		// Answer 2.2
+//		answerMap.put("None!", "b8756ff5-ff8a-4a17-9517-811b91639fdh");
+//		answerMap.put("None!", "e77dccbc-fd8d-4641-b9ca-17528e5d56b3");
+//		answerMap.put("None!", "9");
+//		answerMap.put("None!", "Steffi");
+//		
+//		// Question 3
+//		questionMap.put("Will this work with list.clear()?", "e77dccbc-fd8d-4641-b9ca-17528e5d56b4");
+//		questionMap.put("Will this work with list.clear()?", "92");
+//		questionMap.put("Will this work with list.clear()?", "Stefan");
+//		
+//		// Answer in the format: Answertext / ID / Question-ID (Answer needs to be linked to a question) / votes / UID
+//		// Answer 3.1
+//		answerMap.put("Sure!", "b8756ff5-ff8a-4a17-9517-811b91639fdi");
+//		answerMap.put("Sure!", "e77dccbc-fd8d-4641-b9ca-17528e5d56b4");
+//		answerMap.put("Sure!", "2");
+//		answerMap.put("Sure!", "Maria");
 		
 //		ListMultimap<String,String> myMultimap = ArrayListMultimap.create();
 //		 
@@ -103,9 +104,9 @@ public class Application extends Controller {
 //			Logger.info(key + answerMap.values() + "\n");
 //		}
 		
-		// both lists contain only the keySets (questions / answers at the moment)
-		questionList.addAll(questionMap.keySet());
-		answerList.addAll(answerMap.keySet());
+//		// both lists contain only the keySets (questions / answers at the moment)
+//		questionList.addAll(questionMap.keySet());
+//		answerList.addAll(answerMap.keySet());
 		
 
 		
@@ -171,6 +172,8 @@ public class Application extends Controller {
 //	    log("UUID One: " + idOne);
 //	    log("UUID Two: " + idTwo);
 		
+		// Question format: ID / questionText / voteScore / userID
+		// Answer format: ID / questionID (answer linked to question) / answerText / voteScore / userID
 		Question question1 = new Question("xyz", "Do Androids dream?", 127, "Marcus");
 		Answer answer11 = new Answer("zab", "xyz", "Only of electric sheep!", 70, "Tibor");
 		Answer answer12 = new Answer("qwert", "xyz", "No, they dont!", 10, "Sarah");
@@ -221,25 +224,27 @@ public class Application extends Controller {
 //		System.out.println(myMultimap.toString());
 	}
 
+	public static Result upVote(){
+		return ok(views.html.index.render(myMap));
+	}
+	
 	public static Result index() {
-		QAinitialisieren();
+		initialize();
 		return ok(views.html.index.render(myMap));
 //		return ok(index.render(listOfQuestions, listOfAnswers));
 	}
 
-	public static Result quizStarten() {
-		QAinitialisieren();
-		return ok(views.html.quiz.render(questionList, answerList));
+	public static Result startQuiz() {
+		initialize();
+		return ok(views.html.quiz.render(myMap));
 //		return ok(views.html.quiz.render(listOfQuestions, listOfAnswers));
 	}
 
-	public static Result zeigeEinstellungen() {
+	public static Result showSettings() {
+		System.out.println("settings");
+		Logger.info("settings"); 
 		return ok(views.html.einstellungen.render());
 	}
 	
-	public static Result voteUp(){
-		System.out.println("voted Up!");
-		Logger.info("voted Up!");
-		return ok("voted Up!");
-	}
+
 }

@@ -54,18 +54,18 @@
 	@for((question, value) <- myMap){
 		<!-- Questions -->
 		<li class="list-group-item" >
-		<button type="button" class="btn btn-default"  onclick="@routes.Application.voteUp()" id="upvoteButton" 
-        	value="upvote" style="width: 30px; height: 30px; text-align: center; vertical-align: center;">
+		<button type="button" class="btn btn-default"  onclick="voteUp()" id="upvoteButton" 
+        	value="voteUp" style="width: 30px; height: 30px; text-align: center; vertical-align: center;">
     		<span class="glyphicon glyphicon-arrow-up" aria-hidden="true" style="color:orange"></span>
 		</button>
-		  @question.voteScore 
-		  
+			@question.voteScore
 		<button type="button" class="btn btn-default" onclick="voteDown()" id="downvoteButton" 
         	value="downvote" style="width: 30px; height: 30px; text-align: center;">
     		<span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:blue"></span>
 		</button>
 
-		@question.questionText - @question.userID
+		<!-- TODO Change to the userpage -->
+		@question.questionText - <i><a href="@routes.Application.index()">@question.userID </a></i>
 		
 		<button type="button" class="btn btn-default" onclick="editQuestion()" id="editQuestionButton" 
         	value="editQuestion" style="width: 30px; height: 30px; text-align: center;">
@@ -93,7 +93,7 @@
     		<span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:blue"></span>
 		</button>
 
-		@answer.answerText - @answer.userID
+		@answer.answerText - <i><a href="@routes.Application.index()">@answer.userID</a></i>
 		
 		<button type="button" class="btn btn-default" onclick="editQuestion()" id="editQuestionButton" 
         	value="editQuestion" style="width: 30px; height: 30px; text-align: center;">
@@ -177,7 +177,7 @@
     <li ><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
   </ul>
 </nav>
-    <a href="@routes.Forum.frageStellen()"><button class="btn btn-default" type="submit">Frage stellen</button>
+    <a href="@routes.Forum.askQuestion()"><button class="btn btn-default" type="submit">Frage stellen</button>
   </div>
 </div>
 }

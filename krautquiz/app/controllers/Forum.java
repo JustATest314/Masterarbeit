@@ -5,35 +5,28 @@ import play.mvc.*;
 
 public class Forum extends Controller {
 
-	public String frage;
-	public String antwort;
-	
-	public Integer rating;
-	
-	public Long id;
-	
-	// Gibt alle Fragen / Antworten zurueck
-	public static List<Forum> auflisten() {
+	// Returns all questions and answers
+	public static List<Forum> listAll() {
 		return new ArrayList<Forum>();
 	}
 	
-	// TODO Frage stellen
-	public static Result frageStellen(){
+	// TODO Ask question
+	public static Result askQuestion(){
 		return ok(views.html.frageAntwort.render());	
 	}
 	
-	// TODO Antwort geben
-	public static Result antwortGeben(){
+	// TODO give Answer
+	public static Result giveAnswer(){
 		return TODO;
 	}
 	
-	// TODO Frage oder Antwort bewerten
-	public static Result bewerten(){
+	// TODO Rate question or answer
+	public static Result voteScore(){
 		return TODO;
 	}
 	
-	// TODO Frage / Antwort loeschen
-	public static Result loeschen(){
+	// TODO Delete question or answer
+	public static Result delete(){
 		return TODO;
 	}
 	

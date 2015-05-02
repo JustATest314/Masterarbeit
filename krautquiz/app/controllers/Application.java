@@ -7,6 +7,7 @@ import java.util.Map;
 
 import model.Answer;
 import model.Question;
+import play.*;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -207,8 +208,6 @@ public class Application extends Controller {
 //			  }
 //		}
 		
-		// TODOH Put those into the parameter for index.scala.html
-
 		myMap.clear();
 		myMap.put(question1, answerList1);
 		myMap.put(question2, answerList2);
@@ -236,5 +235,11 @@ public class Application extends Controller {
 
 	public static Result zeigeEinstellungen() {
 		return ok(views.html.einstellungen.render());
+	}
+	
+	public static Result voteUp(){
+		System.out.println("voted Up!");
+		Logger.info("voted Up!");
+		return ok("voted Up!");
 	}
 }

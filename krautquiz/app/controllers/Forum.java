@@ -1,18 +1,18 @@
 package controllers;
 
 import java.util.*;
+
+import model.Answer;
+import model.Question;
 import play.mvc.*;
 
 public class Forum extends Controller {
 
+	static Map<Question, List<Answer>> myMap = new HashMap<Question, List<Answer>>();
+	
 	// Returns all questions and answers
 	public static List<Forum> listAll() {
 		return new ArrayList<Forum>();
-	}
-	
-	// TODO Ask question
-	public static Result askQuestion(){
-		return ok(views.html.frageAntwort.render());	
 	}
 	
 	// TODO give Answer

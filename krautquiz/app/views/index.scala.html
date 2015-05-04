@@ -30,6 +30,15 @@
 			// });
 		// });
 	 </script>
+	 
+	<!-- FIXME Does not work as intended so far, only updates the first question-score -->
+	<script language="javascript"> 
+    	function voteUp() {
+			var num = $('#num');
+			var currentNumber = num.text().length ? parseInt(num.text()) : 0;
+ 			num.text(currentNumber + 1);
+    	}
+	</script>
     
   <div class="panel panel-default">
   	<div class="panel-heading">
@@ -39,7 +48,6 @@
     <ul class="list-group">
     
     <!-- TODO Remove in production, only needed for Development -->
-	
 	@* 
 	@for((key, value) <- myMap){
 	  @key.questionText <br>
@@ -58,7 +66,7 @@
         	value="voteUp" style="width: 30px; height: 30px; text-align: center; vertical-align: center;">
     		<span class="glyphicon glyphicon-arrow-up" aria-hidden="true" style="color:orange"></span>
 		</button>
-			@question.voteScore
+			<span id="num"> @question.voteScore </span>
 		<button type="button" class="btn btn-default" onclick="voteDown()" id="downvoteButton" 
         	value="downvote" style="width: 30px; height: 30px; text-align: center;">
     		<span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:blue"></span>
@@ -84,10 +92,10 @@
 			
 				<li class="list-group-item" > 
 		<button type="button" class="btn btn-default" onclick="voteUp()" id="upvoteButton" 
-        	value="upvote" style="width: 30px; height: 30px; text-align: center;">
+        	value="voteUp" style="width: 30px; height: 30px; text-align: center;">
     		<span class="glyphicon glyphicon-arrow-up" aria-hidden="true" style="color:orange";></span>
 		</button>
-		  @answer.voteScore 
+		  <span id="num"> @answer.voteScore </span>
 		<button type="button" class="btn btn-default" onclick="voteDown()" id="downvoteButton" 
         	value="downvote" style="width: 30px; height: 30px; text-align: center;">
     		<span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:blue"></span>
@@ -177,7 +185,7 @@
     <li ><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
   </ul>
 </nav>
-    <a href="@routes.Forum.askQuestion()"><button class="btn btn-default" type="submit">Frage stellen</button>
+    <a href="@routes.Application.askQuestion()"><button class="btn btn-default" type="submit">Frage stellen</button>
   </div>
 </div>
 }

@@ -224,10 +224,6 @@ public class Application extends Controller {
 //		System.out.println(myMultimap.toString());
 	}
 
-	public static Result upVote(){
-		return ok(views.html.index.render(myMap));
-	}
-	
 	public static Result index() {
 		initialize();
 		return ok(views.html.index.render(myMap));
@@ -246,5 +242,23 @@ public class Application extends Controller {
 		return ok(views.html.einstellungen.render());
 	}
 	
+	// TODO Ask question
+	// FIXME myMap is empty! Needs to get the Map from the application-controller
+	public static Result askQuestion(){
+		return ok(views.html.frageAntwort.render(myMap));	
+	}
+	
+	public static Result sendMap(Map<Question, List<Answer>> sendMap){
+		Question question4 = new Question("ertw", "SendMap Question?", 34, "Tim");
+		Answer answer41 = new Answer("werw", "ertw", "SendMap Answer 1!", 12, "Oliver");
+		Answer answer42 = new Answer("tzsdfu", "ertw", "SendMap Answer 2!", 1, "Marcus");
+		
+		List<Answer> answerList4 = new ArrayList<Answer>();
+		answerList4.add(answer41);
+		answerList4.add(answer42);
+		
+		sendMap.put(question4, answerList4);
+		return ok(views.html.frageAntwort.render(sendMap));
+	}
 
 }

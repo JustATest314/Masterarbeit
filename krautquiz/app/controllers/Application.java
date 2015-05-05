@@ -7,13 +7,10 @@ import java.util.Map;
 
 import model.Answer;
 import model.Question;
-import play.*;
-import play.api.mvc.Request;
+import play.Logger;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 
 public class Application extends Controller {
 
@@ -242,14 +239,12 @@ public class Application extends Controller {
 		return ok(views.html.einstellungen.render());
 	}
 	
-	// TODO Ask question
-	// FIXME myMap is empty! Needs to get the Map from the application-controller
 	public static Result askQuestion(){
 		return ok(views.html.frageAntwort.render(myMap));	
 	}
 	
-	public static Result sendMap(Map<Question, List<Answer>> sendMap){
-		Question question4 = new Question("ertw", "SendMap Question?", 34, "Tim");
+	public static Result sendMap(){
+		Question question4 = new Question("ertw", "Sendmap Question1", 34, "Tim");
 		Answer answer41 = new Answer("werw", "ertw", "SendMap Answer 1!", 12, "Oliver");
 		Answer answer42 = new Answer("tzsdfu", "ertw", "SendMap Answer 2!", 1, "Marcus");
 		
@@ -257,8 +252,8 @@ public class Application extends Controller {
 		answerList4.add(answer41);
 		answerList4.add(answer42);
 		
-		sendMap.put(question4, answerList4);
-		return ok(views.html.frageAntwort.render(sendMap));
+		myMap.put(question4, answerList4);
+		return ok(views.html.index.render(myMap));
 	}
 
 }

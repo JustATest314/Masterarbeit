@@ -1,5 +1,8 @@
 package model;
 
+/*
+ * Simple model class for a question
+ */
 public class Question {
 	
 	public String ID;
@@ -7,6 +10,7 @@ public class Question {
 	public Integer voteScore;
 	public String userID;
 	
+	// Constructor
 	public Question(String inputID, String inputQuestionText, Integer inputVoteScore, String inputUserID){
 		this.ID = inputID;
 		this.questionText = inputQuestionText;
@@ -14,8 +18,8 @@ public class Question {
 		this.userID = inputUserID;
 	}
 	
+	// Mostly for debugging
 	public String toString(){
 		return "ID = " + ID + " questionText = " + questionText + " voteScore = " + voteScore + " userID = " + userID;
 	}
-
 }

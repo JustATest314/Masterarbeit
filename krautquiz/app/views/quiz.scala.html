@@ -1,3 +1,6 @@
+@* View Class for the quiz that a student can take. It goes through all the questions and gets the ones with the highest voting score. Then it shows possible answers
+with radio buttons and the user has to choose. *@
+
 @import model.Question
 @import model.Answer
 
@@ -6,14 +9,14 @@
 
 @main("Quiz"){
 <div class="panel panel-default">
-
-
 	<div class="panel-heading">
 		<h3 class="panel-title">Quiz</h3>
 	</div>
 	<div class="panel-body">
 		<!-- TODO Need to use LinkedHashMap in order to contain a sorted question answer pair, want to grab the first question only and its matching answers -->
-		<div style="text-align: center;">TESTFRAGE</div>
+		<div style="text-align: center;">
+			TESTFRAGE
+		</div>
 	</div>
 </div>
 
@@ -23,17 +26,15 @@
 	</div>
 	<div class="panel-body">
 		<div style="text-align: center;">
-				@* Sollte ich hier lieber Radiobuttons verwenden, fuer nur eine
-				korrekte Antwort? *@
-	
-	<!-- FIXME Shows ALL answers so far... -->
-			@for((question, value) <- myMap){
-				@for(answer <- value){
-					<div class="checkbox">
-					<label><input type="checkbox" value="">@answer.answerText</label>
-				</div>
-				} 
-			}
+				<!-- TODO Should use radio buttons as only one answer can be correct -->
+				<!-- FIXME Shows ALL answers so far... -->
+				@for((question, value) <- myMap){
+					@for(answer <- value){
+						<div class="checkbox">
+							<label><input type="checkbox" value="">@answer.answerText</label>
+						</div>
+					} 
+				}
 				
 				<a href="@routes.Application.askQuestion()"><button
 						class="btn btn-default" type="submit">Nächste Frage</button>

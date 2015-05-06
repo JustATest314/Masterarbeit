@@ -1,3 +1,7 @@
+@* This page is for when the user wants to ask a question. This page will probably get removed later, when I use Bootstrap modals to show a window which glides into the other view.
+The page gets a hashMap from the controller with all the q/as and renders them.
+*@
+
 @import model.Question
 @import model.Answer
 @import helper.twitterBootstrap._
@@ -6,9 +10,6 @@
 
 @main("Frage stellen"){
 	
-<!-- TODO Write function, that puts the input into a new Question -->
-@* @myMap.put(new Question("id123", "Added Question", 34, "userID"), Nil: List[Answer]); *@
-
 @for((question, value) <- myMap){
 	@question.questionText <br>
 	

@@ -12,6 +12,11 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+/*
+ * This is the application controller. It contains the most of the logic at the moment. Splitting it into several other classes did not
+ * help to make it simpler, therefore this will be the main page for everything that needs to be processed
+ */
+
 public class Application extends Controller {
 
 //	static List<String> listOfQuestions = new ArrayList<String>();
@@ -20,23 +25,16 @@ public class Application extends Controller {
 //	static List<String> questionList = new ArrayList<String>();
 //	static List<String> answerList = new ArrayList<String>();
 	
+	// HashMap for q/a, answers need to be linked somehow to questions, therefore List is used
+	// TODOL HashMap does no sorting i.e. of the voteScore -> Linked HashMap?
 	static Map<Question, List<Answer>> myMap = new HashMap<Question, List<Answer>>();
-	
-//	  private static void log(Object aObject){
-//		    System.out.println( String.valueOf(aObject) );
-//		  }
-	
-	// helper-method, only for mocking data while developing
 
-	// TODOH Should look like this:
-	// questionMap.put(ID, List<String>) with List<String> = qText, votes, uid
-	// but how can I get the values then? I.e. how to get the qText and put it into a list, so the index-page can show them?
+	// Helper-method for initializing the index page
 	public static void initialize() {
 		
 //		Multimap<String, String> questionMap = ArrayListMultimap.create();
 //		Multimap<String, String> answerMap = ArrayListMultimap.create();
 //		
-//		// FIXME add field "type" (question | answer) and make the ID-field the first one 
 //		// Question in the format: Questiontext / ID / votes / UID
 //		// Question 1
 //		questionMap.put("What happens if I use a break here?", "e77dccbc-fd8d-4641-b9ca-17528e5d56b2");
@@ -105,9 +103,7 @@ public class Application extends Controller {
 //		questionList.addAll(questionMap.keySet());
 //		answerList.addAll(answerMap.keySet());
 		
-
-		
-		// Logger.info(questionMap.keys().toString());
+// 		Logger.info(questionMap.keys().toString());
 		
 //		// Clear lists, as the elements get appended. Else there would be duplicates
 //		listOfQuestions.clear();
@@ -184,6 +180,7 @@ public class Application extends Controller {
 		Answer answer32 = new Answer("tzsdfu", "ertw", "Very!", 1, "Marcus");
 		Answer answer33 = new Answer("wcfewf", "ertw", "Not much!", 1, "Frank");
 		
+		// Put answers into a list and later into the HashMap
 		List<Answer> answerList1 = new ArrayList<Answer>();
 		answerList1.add(answer11);
 		answerList1.add(answer12);
@@ -208,6 +205,7 @@ public class Application extends Controller {
 //			  }
 //		}
 		
+		// clear(), else everytime the index page is called the q/as get added again
 		myMap.clear();
 		myMap.put(question1, answerList1);
 		myMap.put(question2, answerList2);
@@ -221,28 +219,36 @@ public class Application extends Controller {
 //		System.out.println(myMultimap.toString());
 		}
 
+	// Frontpage
 	public static Result index() {
 		initialize();
 		return ok(views.html.index.render(myMap));
 //		return ok(index.render(listOfQuestions, listOfAnswers));
 	}
 
+	// Quizpage
 	public static Result startQuiz() {
 		initialize();
 		return ok(views.html.quiz.render(myMap));
 //		return ok(views.html.quiz.render(listOfQuestions, listOfAnswers));
 	}
 
+	// Settings
 	public static Result showSettings() {
 		System.out.println("settings");
 		Logger.info("settings"); 
 		return ok(views.html.einstellungen.render());
 	}
 	
+	// Until now a new page gets generated where the user can enter a new question
+	// TODOL Use Bootstraps "Modal" to smoothly glide into the view
+	// http://getbootstrap.com/javascript/#modals
 	public static Result askQuestion(){
 		return ok(views.html.frageAntwort.render(myMap));	
 	}
 	
+	// In the frageAntwort-view a question gets asked, then the user gets transferred back to the index-page, where
+	// a fake question gets added
 	public static Result sendMap(){
 		Question question4 = new Question("ertw", "Sendmap Question1", 34, "Tim");
 		Answer answer41 = new Answer("werw", "ertw", "SendMap Answer 1!", 12, "Oliver");
@@ -255,5 +261,4 @@ public class Application extends Controller {
 		myMap.put(question4, answerList4);
 		return ok(views.html.index.render(myMap));
 	}
-
 }

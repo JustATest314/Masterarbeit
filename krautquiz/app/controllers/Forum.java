@@ -1,27 +1,24 @@
 package controllers;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import model.Answer;
-import model.Question;
-import play.mvc.*;
+import play.mvc.Controller;
+import play.mvc.Result;
+
+/*
+ * This controller class will probably get deleted soon, as most of the methods can better be dealt with by the application controller class
+ */
 
 public class Forum extends Controller {
 
-	static Map<Question, List<Answer>> myMap = new HashMap<Question, List<Answer>>();
-	
 	// Returns all questions and answers
 	public static List<Forum> listAll() {
 		return new ArrayList<Forum>();
 	}
 	
-	// TODO give Answer
+	// TODO Give Answer
 	public static Result giveAnswer(){
-		return TODO;
-	}
-	
-	// TODO Rate question or answer
-	public static Result voteScore(){
 		return TODO;
 	}
 	
@@ -29,5 +26,4 @@ public class Forum extends Controller {
 	public static Result delete(){
 		return TODO;
 	}
-	
 }

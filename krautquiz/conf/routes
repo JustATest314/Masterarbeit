@@ -8,7 +8,6 @@ GET     /                           controllers.Application.index()
 POST	/FragenListe				controllers.Application.sendMap()
 GET		/FragenListe				controllers.Application.sendMap()
 GET		/FrageStellen				controllers.Application.askQuestion()
-POST	/FrageStellen				controllers.Application.askQuestion()
 GET		/Einstellungen				controllers.Application.showSettings()
 GET		/Quiz						controllers.Application.startQuiz()
 

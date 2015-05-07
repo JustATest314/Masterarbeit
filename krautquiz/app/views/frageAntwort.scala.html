@@ -4,12 +4,18 @@ The page gets a hashMap from the controller with all the q/as and renders them.
 
 @import model.Question
 @import model.Answer
+@import helper._
 @import helper.twitterBootstrap._
 
-@(myMap: Map[Question, List[Answer]])
+
+
+@(questionForm: Form[Question])
+
+@* @(myMap: Map[Question, List[Answer]]) *@
 
 @main("Frage stellen"){
 	
+@*	
 @for((question, value) <- myMap){
 	@question.questionText <br>
 	
@@ -17,7 +23,7 @@ The page gets a hashMap from the controller with all the q/as and renders them.
 		- @answer.answerText <br>
 	}
 	<br>
-}
+}*@
 
 <div class="panel panel-default">
 	<div class="panel-heading">
@@ -41,4 +47,14 @@ The page gets a hashMap from the controller with all the q/as and renders them.
   <input type="text" class="form-control" name="sendMapInput" /><br/>
   <button type="submit" class="btn btn-default" value="Absenden">Absenden</button>
 </form>
+
+	@helper.form(action = routes.Application.askQuestion()){
+		<fieldset>
+			@helper.inputText(questionForm("ID"))
+			@helper.inputText(questionForm("questionText"))
+			@helper.inputText(questionForm("voteScore"))
+			@helper.inputText(questionForm("userID"))
+		</fieldset>
+		<input type="submit" class="btn btn-primary">
+	}
 }

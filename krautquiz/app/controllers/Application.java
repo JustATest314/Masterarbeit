@@ -28,6 +28,8 @@ public class Application extends Controller {
 	// HashMap for q/a, answers need to be linked somehow to questions, therefore List is used
 	// TODOL HashMap does no sorting i.e. of the voteScore -> Linked HashMap?
 	static Map<Question, List<Answer>> myMap = new HashMap<Question, List<Answer>>();
+	
+	private static final Form<Question> newQuestion = Form.form(Question.class);
 
 	// Helper-method for initializing the index page
 	public static void initialize() {
@@ -206,7 +208,7 @@ public class Application extends Controller {
 //		}
 		
 		// clear(), else everytime the index page is called the q/as get added again
-		myMap.clear();
+//		myMap.clear();
 		myMap.put(question1, answerList1);
 		myMap.put(question2, answerList2);
 		myMap.put(question3, answerList3);
@@ -244,12 +246,24 @@ public class Application extends Controller {
 	// TODOL Use Bootstraps "Modal" to smoothly glide into the view
 	// http://getbootstrap.com/javascript/#modals
 	public static Result askQuestion(){
-		return ok(views.html.frageAntwort.render(myMap));	
+//		return ok(views.html.frageAntwort.render(myMap));
+		Form<Question> boundQuestion = newQuestion.bindFromRequest();
+		Question testQuestion = boundQuestion.get();
+		
+		Answer answer51 = new Answer("adsf", "ewr", "SendMap Answer Form1!", 6, "Kittie");	
+		List<Answer> answerList5 = new ArrayList<Answer>();
+		answerList5.add(answer51);
+		
+		myMap.put(testQuestion, answerList5);
+		return ok(views.html.frageAntwort.render(newQuestion));
 	}
 	
 	// In the frageAntwort-view a question gets asked, then the user gets transferred back to the index-page, where
 	// a fake question gets added
 	public static Result sendMap(){
+		
+		
+		
 		Question question4 = new Question("ertw", "Sendmap Question1", 34, "Tim");
 		Answer answer41 = new Answer("werw", "ertw", "SendMap Answer 1!", 12, "Oliver");
 		Answer answer42 = new Answer("tzsdfu", "ertw", "SendMap Answer 2!", 1, "Marcus");

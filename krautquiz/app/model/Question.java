@@ -18,6 +18,10 @@ public class Question {
 		this.userID = inputUserID;
 	}
 	
+	public Question(){
+		
+	}
+	
 	// Mostly for debugging
 	public String toString(){
 		return "ID = " + ID + " questionText = " + questionText + " voteScore = " + voteScore + " userID = " + userID;

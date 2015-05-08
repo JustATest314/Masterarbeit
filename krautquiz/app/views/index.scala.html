@@ -3,7 +3,6 @@
 
 @(myMap: Map[Question, List[Answer]])
 
-@* (questions: List[String], answers: List[String]) *@
 @main("KrautQuiz") {
 
 <div class="panel panel-default">
@@ -48,6 +47,7 @@
     <ul class="list-group">
     
 	@for((question, value) <- myMap){
+		
 		<!-- Questions -->
 		<li class="list-group-item" >
 		<button type="button" class="btn btn-default"  onclick="voteUp()" id="upvoteButton" 
@@ -61,7 +61,7 @@
 		</button>
 
 		<!-- TODO Change to the userpage -->
-		@question.questionText - <i><a href="@routes.Application.index()">@question.userID </a></i>
+		@question.questionText - <i><a href="@routes.Application.showUsers()">@question.userID </a></i>
 		
 		<button type="button" class="btn btn-default" onclick="editQuestion()" id="editQuestionButton" 
         	value="editQuestion" style="width: 30px; height: 30px; text-align: center;">
@@ -89,7 +89,7 @@
     		<span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:blue"></span>
 		</button>
 
-		@answer.answerText - <i><a href="@routes.Application.index()">@answer.userID</a></i>
+		@answer.answerText - <i><a href="@routes.Application.showUsers()">@answer.userID</a></i>
 		
 		<button type="button" class="btn btn-default" onclick="editQuestion()" id="editQuestionButton" 
         	value="editQuestion" style="width: 30px; height: 30px; text-align: center;">
@@ -104,7 +104,8 @@
 		</ul>
 	}
 </ul>
-    
+   
+<!-- TODO Not working at the moment! -->    
 <nav>
   <ul class="pagination">
     <li ><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
@@ -113,7 +114,7 @@
     <li ><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
   </ul>
 </nav>
-	<!-- FIXME The button calls the askQuestion() method, this already creates a new form, the method gets called again in the frageAntwort.scala.html -->
+
     <a href="@routes.Application.askQuestion()"><button class="btn btn-default" type="submit">Frage stellen</button>
   </div>
 </div>

@@ -5,11 +5,14 @@
 # Home page
 
 GET     /                           controllers.Application.index()
-POST	/FragenListe				controllers.Application.sendMap()
-GET		/FragenListe				controllers.Application.sendMap()
+# POST	/FragenListe				controllers.Application.sendMap()
+# GET	/FragenListe				controllers.Application.sendMap()
 GET		/FrageStellen				controllers.Application.askQuestion()
+POST	/							controllers.Application.sendQuestion()
 GET		/Einstellungen				controllers.Application.showSettings()
 GET		/Quiz						controllers.Application.startQuiz()
+# TODO Will need an ID for each user as parameter!
+GET		/Userpage					controllers.Application.showUsers()
 
 
 # Map static resources from the /public folder to the /assets URL path

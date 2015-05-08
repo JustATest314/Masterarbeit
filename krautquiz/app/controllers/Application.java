@@ -26,6 +26,7 @@ public class Application extends Controller {
 	private static final Form<Question> newQuestion = Form.form(Question.class);
 
 	// Helper-method for initializing the index page
+	// TODOH Put this into a database!
 	public static void initialize() {
 		// Question format: ID / questionText / voteScore / userID
 		// Answer format: ID / questionID (answer linked to question) / answerText / voteScore / userID
@@ -58,7 +59,7 @@ public class Application extends Controller {
 		
 
 		// clear(), else everytime the index page is called the q/as get added again
-//		myMap.clear();
+		myMap.clear();
 		myMap.put(question1, answerList1);
 		myMap.put(question2, answerList2);
 		myMap.put(question3, answerList3);
@@ -84,33 +85,25 @@ public class Application extends Controller {
 	// Until now a new page gets generated where the user can enter a new question
 	// TODOL Use Bootstraps "Modal" to smoothly glide into the view
 	// http://getbootstrap.com/javascript/#modals
-	public static Result askQuestion(){
-//		return ok(views.html.frageAntwort.render(myMap));
+	public static Result sendQuestion(){
+		// Create new question-form and fill it with the values from the other page
 		Form<Question> boundQuestion = newQuestion.bindFromRequest();
 		Question testQuestion = boundQuestion.get();
-		
-		System.out.println("boundQuestion: " + boundQuestion.toString());
-		
+		// As an List[Answer] is used, create a fake answer. Cant be empty
 		Answer answer51 = new Answer("adsf", "ewr", "SendMap Answer Form1!", 6, "Kittie");	
 		List<Answer> answerList5 = new ArrayList<Answer>();
 		answerList5.add(answer51);
-		
 		myMap.put(testQuestion, answerList5);
+		return ok(views.html.index.render(myMap));
+	}
+	
+	// Go to the ask question page
+	public static Result askQuestion(){
 		return ok(views.html.frageAntwort.render(newQuestion));
 	}
 	
-	// In the frageAntwort-view a question gets asked, then the user gets transferred back to the index-page, where
-	// a fake question gets added
-	public static Result sendMap(){
-		Question question4 = new Question("ertw", "Sendmap Question1", 34, "Tim");
-		Answer answer41 = new Answer("werw", "ertw", "SendMap Answer 1!", 12, "Oliver");
-		Answer answer42 = new Answer("tzsdfu", "ertw", "SendMap Answer 2!", 1, "Marcus");
-		
-		List<Answer> answerList4 = new ArrayList<Answer>();
-		answerList4.add(answer41);
-		answerList4.add(answer42);
-		
-		myMap.put(question4, answerList4);
-		return ok(views.html.index.render(myMap));
+	// TODOL Show the users page, will need an ID for a routing paramter
+	public static Result showUsers(){
+		return TODO;
 	}
 }

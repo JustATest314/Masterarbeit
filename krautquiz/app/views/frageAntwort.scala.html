@@ -7,11 +7,8 @@ The page gets a hashMap from the controller with all the q/as and renders them.
 @import helper._
 @import helper.twitterBootstrap._
 
-
-
 @(questionForm: Form[Question])
 
-@* @(myMap: Map[Question, List[Answer]]) *@
 
 @main("Frage stellen"){
 	
@@ -25,35 +22,10 @@ The page gets a hashMap from the controller with all the q/as and renders them.
 	<br>
 }*@
 
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3 class="panel-title">Frage stellen</h3>
-		</div>
-		<div class="panel-body">
-			  <div class="col-lg-12">
-	    <div class="input-group">
-	      <input type="text" class="form-control" placeholder="max. 160 Zeichen" name="sendMapInput">
-	      <span class="input-group-btn">
-	        <a href="@routes.Application.sendMap()"><button class="btn btn-default" type="button">Absenden</button></a>
-	      </span>
-	    </div><!-- /input-group -->
-	  </div><!-- /.col-lg-6 -->
-	 	</div>
-	</div>
-
-
-<!-- TODO build a Form-Object and point it to here, then put the input-text into it and return it to the controller-class in order to put the input into the map, then return to the view class -->
-@*
-<form method="post" action="">
-  <input type="text" class="form-control" name="sendMapInput" /><br/>
-  <button type="submit" class="btn btn-default" value="Absenden">Absenden</button>
-</form>
-*@
-
 	<!-- TODO Inputfields dont look like Bootstrap -->
-	@helper.form(action = routes.Application.askQuestion()){
+	@helper.form(action = routes.Application.sendQuestion()){
 		<fieldset>
-			@helper.inputText(questionForm("ID"))
+			@helper.inputText(questionForm("questionID"))
 			@helper.inputText(questionForm("questionText"))
 			@helper.inputText(questionForm("voteScore"))
 			@helper.inputText(questionForm("userID"))

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.avaje.ebean.ExpressionList;
+
 import models.Answer;
 import models.Question;
 import play.Logger;
@@ -63,13 +65,15 @@ public class Application extends Controller {
 		myMap.put(question1, answerList1);
 		myMap.put(question2, answerList2);
 		myMap.put(question3, answerList3);
-		
-//		Question.create(question1);
 	}
 
 	// Frontpage
 	public static Result index() {
 		initialize();
+		
+		for (Question questionItem : Question.find.all()) {
+			System.out.println(questionItem.toString());
+		}
 		return ok(views.html.index.render(myMap));
 	}
 
@@ -91,17 +95,30 @@ public class Application extends Controller {
 		// Create new question-form and fill it with the values from the other page
 		Form<Question> boundQuestion = newQuestion.bindFromRequest();
 		Question testQuestion = boundQuestion.get();
+		
+		Question.create(testQuestion);
+		
 		// As an List[Answer] is used, create a fake answer. Cant be empty
 		Answer answer51 = new Answer("adsf", "ewr", "SendMap Answer Form1!", 6, "Kittie");	
+		Answer.create(answer51);
+		
 		List<Answer> answerList5 = new ArrayList<Answer>();
 		answerList5.add(answer51);
 		myMap.put(testQuestion, answerList5);
+		
+		Question tester = (Question) Question.find.where().eq("questionID" , "abcd").findUnique();
+		System.out.println("Tester: " + tester.toString());
+		
 		return ok(views.html.index.render(myMap));
 	}
 	
 	// Go to the ask question page
 	public static Result askQuestion(){
-		return ok(views.html.frageAntwort.render(newQuestion));
+		List<Question> testList = new ArrayList<Question>();
+		for (Question questionItem : Question.find.all()) {
+			testList.add(questionItem);
+		}
+		return ok(views.html.frageAntwort.render(newQuestion, testList));
 	}
 	
 	// TODOL Show the users page, will need an ID for a routing paramter

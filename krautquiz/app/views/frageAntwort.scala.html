@@ -7,7 +7,7 @@ The page gets a hashMap from the controller with all the q/as and renders them.
 @import helper._
 @import helper.twitterBootstrap._
 
-@(questionForm: Form[Question])
+@(questionForm: Form[Question], questionList: List[Question])
 
 
 @main("Frage stellen"){
@@ -21,6 +21,14 @@ The page gets a hashMap from the controller with all the q/as and renders them.
 	}
 	<br>
 }*@
+
+@for(element <- questionList){
+	<b>QuestionID:</b> @element.questionID <br>	
+	QuestionText: @element.questionText <br>
+	VoteScore: @element.voteScore<br>
+	UserID: @element.userID <br>
+	<br>
+}
 
 	<!-- TODO Inputfields dont look like Bootstrap -->
 	@helper.form(action = routes.Application.sendQuestion()){

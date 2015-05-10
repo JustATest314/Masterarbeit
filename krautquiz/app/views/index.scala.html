@@ -1,9 +1,9 @@
-@import model.Question
-@import model.Answer
+@import models.Question
+@import models.Answer
 
 @(myMap: Map[Question, List[Answer]])
 
-@main("KrautQuiz") {
+@main("Kraut Quiz") {
 
 <div class="panel panel-default">
   <div class="panel-heading">
@@ -105,15 +105,15 @@
 	}
 </ul>
    
-<!-- TODO Not working at the moment! -->    
-<nav>
-  <ul class="pagination">
-    <li ><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-    <li ><a href="#">2 <span class="sr-only">(current)</span></a></li>
-    <li ><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-  </ul>
-</nav>
+	<!-- TODO Not working at the moment! -->    
+	<nav>
+	  <ul class="pagination">
+	    <li ><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+	    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+	    <li ><a href="#">2 <span class="sr-only">(current)</span></a></li>
+	    <li ><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+	  </ul>
+	</nav>
 
     <a href="@routes.Application.askQuestion()"><button class="btn btn-default" type="submit">Frage stellen</button>
   </div>

@@ -1,4 +1,4 @@
-package model;
+package models;
 
 /*
  * This class is for modeling a user

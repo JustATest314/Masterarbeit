@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import model.Answer;
-import model.Question;
+import models.Answer;
+import models.Question;
 import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
@@ -63,7 +63,9 @@ public class Application extends Controller {
 		myMap.put(question1, answerList1);
 		myMap.put(question2, answerList2);
 		myMap.put(question3, answerList3);
-		}
+		
+//		Question.create(question1);
+	}
 
 	// Frontpage
 	public static Result index() {

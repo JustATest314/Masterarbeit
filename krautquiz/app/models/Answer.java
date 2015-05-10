@@ -1,4 +1,4 @@
-package model;
+package models;
 
 /*
  * Simple model class for an answer

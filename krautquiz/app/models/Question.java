@@ -1,10 +1,23 @@
-package model;
+package models;
+
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import play.db.ebean.Model;
 
 /*
  * Simple model class for a question
  */
-public class Question {
+
+@Entity
+public class Question extends Model {
 	
+	// Auto-generated serial
+	private static final long serialVersionUID = 1L;
+	
+	@Id
 	public String questionID;
 	public String questionText;
 	public Integer voteScore;
@@ -22,6 +35,22 @@ public class Question {
 	public Question(){
 		
 	}
+	
+	public static Finder<String,Question> find = new Finder<String, Question>(
+		    String.class, Question.class
+		  );
+	
+	public static List<Question> all() {
+		  return find.all();
+		}
+
+		public static void create(Question question) {
+		  question.save();
+		}
+
+		public void delete(String id) {
+		  find.ref(id).delete();
+		}
 	
 	// Mostly for debugging
 	public String toString(){

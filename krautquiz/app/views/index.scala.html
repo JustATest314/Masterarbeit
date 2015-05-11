@@ -6,19 +6,19 @@
 @main("Kraut Quiz") {
 
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Folien-Teil</h3>
-  </div>
-  <div class="panel-body">
-  
-  <i><b>Reminder: Denk' dran, das PDF zu re-aktivieren!</b></i>
-  <!-- TODO PDF deactivated for development, re-activate for production -->
-   <!--  <embed src="http://www.einfach-fuer-alle.de/artikel/checkliste-barrierefreie-pdf/Checkliste-Barrierefreies-PDF.pdf" width="100%" height="500"></embed> -->    
-  </div>
+	<div class="panel-heading">
+		<h3 class="panel-title">Folien-Teil</h3>
+	</div>
+	<div class="panel-body">
+
+		<i><b>Reminder: Denk' dran, das PDF zu re-aktivieren!</b></i>
+		<!-- TODO PDF deactivated for development, re-activate for production -->
+		<!--  <embed src="http://www.einfach-fuer-alle.de/artikel/checkliste-barrierefreie-pdf/Checkliste-Barrierefreies-PDF.pdf" width="100%" height="500"></embed> -->    
+	</div>
 </div>
-    
-    <!-- TODO remove in production, only for development -->
-	 <script>
+
+<!-- TODO remove in production, only for development -->
+<script>
 		// $(document).ready(function() {
 			// $('#icon').click(function() {
 				// var $this = $(this);
@@ -28,96 +28,103 @@
 				// num.text(currentNumber + 1);
 			// });
 		// });
-	 </script>
-	 
-	<!-- FIXME Does not work as intended so far, only updates the first question-score -->
-	<script language="javascript"> 
-    	function voteUp() {
-			var num = $('#num');
-			var currentNumber = num.text().length ? parseInt(num.text()) : 0;
- 			num.text(currentNumber + 1);
-    	}
-	</script>
-    
-  <div class="panel panel-default">
-  	<div class="panel-heading">
-    	<h3 class="panel-title">Frage- / Antwort-Teil</h3>
-  	</div>
-  <div class="panel-body">
-    <ul class="list-group">
-    
-		 
-	@for(question <- questionList){
-		
-		<!-- Questions -->
-		<li class="list-group-item" >
-		<button type="button" class="btn btn-default"  onclick="voteUp()" id="upvoteButton" 
-        	value="voteUp" style="width: 30px; height: 30px; text-align: center; vertical-align: center;">
-    		<span class="glyphicon glyphicon-arrow-up" aria-hidden="true" style="color:orange"></span>
-		</button>
-			<span id="num"> @question.voteScore </span>
-		<button type="button" class="btn btn-default" onclick="voteDown()" id="downvoteButton" 
-        	value="downvote" style="width: 30px; height: 30px; text-align: center;">
-    		<span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:blue"></span>
-		</button>
+</script>
 
-		<!-- TODO Change to the userpage -->
-		@question.questionText - <i><a href="@routes.Application.showUsers()">@question.userID </a></i>
+<!-- FIXME Does not work as intended so far, only updates the first question-score -->
+<script language="javascript"> 
+function voteUp() {
+	var num = $('#num');
+	var currentNumber = num.text().length ? parseInt(num.text()) : 0;
+	num.text(currentNumber + 1);
+}
+</script>
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">Frage- / Antwort-Teil</h3>
+	</div>
+	<div class="panel-body">
+		<ul class="list-group">
+
+		@for(question <- questionList){
+
+			<!-- Questions -->
+			<li class="list-group-item" >
+				<button type="button" class="btn btn-default"  onclick="voteUp()" id="upvoteButton" 
+					value="voteUp" style="width: 30px; height: 30px; text-align: center; vertical-align: center;">
+					<span class="glyphicon glyphicon-arrow-up" aria-hidden="true" style="color:orange"></span>
+				</button>
+				
+				<span id="num"> @question.voteScore </span>
+				
+				<button type="button" class="btn btn-default" onclick="voteDown()" id="downvoteButton" 
+					value="downvote" style="width: 30px; height: 30px; text-align: center;">
+					<span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:blue"></span>
+				</button>
+
+				<!-- TODO Change to the userpage -->
+				@question.questionText - <i><a href="@routes.Application.showUsers()">@question.userID </a></i>
 		
-		<button type="button" class="btn btn-default" onclick="editQuestion()" id="editQuestionButton" 
-        	value="editQuestion" style="width: 30px; height: 30px; text-align: center;">
-    		<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-		</button>
-		
-		<button type="button" class="btn btn-default" onclick="deleteQuestion()" id="deleteQuestionButton" 
-        	value="deleteQuestion" style="width: 30px; height: 30px; text-align: center;">
-    		<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-		</button>
-		<p></p>
-		}
-		</ul>
-		
-		<!-- Answers -->
-		<ul class="list-group" style="margin-left:20px" >
-		@for(answer <- answerList){
-			
-				<li class="list-group-item" > 
-		<button type="button" class="btn btn-default" onclick="voteUp()" id="upvoteButton" 
-        	value="voteUp" style="width: 30px; height: 30px; text-align: center;">
-    		<span class="glyphicon glyphicon-arrow-up" aria-hidden="true" style="color:orange";></span>
-		</button>
-		  <span id="num"> @answer.voteScore </span>
-		<button type="button" class="btn btn-default" onclick="voteDown()" id="downvoteButton" 
-        	value="downvote" style="width: 30px; height: 30px; text-align: center;">
-    		<span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:blue"></span>
-		</button>
+				<button type="button" class="btn btn-default" onclick="editQuestion()" id="editQuestionButton" 
+					value="editQuestion" style="width: 30px; height: 30px; text-align: center;">
+					<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+				</button>
+
+				<button type="button" class="btn btn-default" onclick="deleteQuestion()" id="deleteQuestionButton" 
+					value="deleteQuestion" style="width: 30px; height: 30px; text-align: center;">
+					<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+				</button>
+<p></p>
+
+			<!-- Answers -->
+			<ul class="list-group" style="margin-left:20px" >
+				@for(answer <- answerList){
+					@if(question.questionID == answer.questionID){
+
+					<li class="list-group-item" > 
+						<button type="button" class="btn btn-default" onclick="voteUp()" id="upvoteButton" 
+							value="voteUp" style="width: 30px; height: 30px; text-align: center;">
+							<span class="glyphicon glyphicon-arrow-up" aria-hidden="true" style="color:orange";></span>
+						</button>
+
+						<span id="num"> @answer.voteScore </span>
+					
+						<button type="button" class="btn btn-default" onclick="voteDown()" id="downvoteButton" 
+							value="downvote" style="width: 30px; height: 30px; text-align: center;">
+							<span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:blue"></span>
+						</button>
 
 		@answer.answerText - <i><a href="@routes.Application.showUsers()">@answer.userID</a></i>
-		
+
 		<button type="button" class="btn btn-default" onclick="editQuestion()" id="editQuestionButton" 
-        	value="editQuestion" style="width: 30px; height: 30px; text-align: center;">
-    		<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+		value="editQuestion" style="width: 30px; height: 30px; text-align: center;">
+		<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
 		</button>
-		
+
 		<button type="button" class="btn btn-default" onclick="deleteQuestion()" id="deleteQuestionButton" 
-        	value="deleteQuestion" style="width: 30px; height: 30px; text-align: center;">
-    		<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+		value="deleteQuestion" style="width: 30px; height: 30px; text-align: center;">
+		<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 		</button>	
 				}
-		</ul>
-	
-   
-	<!-- TODO Not working at the moment! -->    
-	<nav>
-	  <ul class="pagination">
-	    <li ><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-	    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-	    <li ><a href="#">2 <span class="sr-only">(current)</span></a></li>
-	    <li ><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-	  </ul>
-	</nav>
+		}
+			</ul>
+}
+	</ul>
 
-    <a href="@routes.Application.askQuestion()"><button class="btn btn-default" type="submit">Frage stellen</button>
-  </div>
+
+<!-- TODO Not working at the moment! -->    
+<nav>
+	<ul class="pagination">
+		<li ><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+		<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+		<li ><a href="#">2 <span class="sr-only">(current)</span></a></li>
+		<li ><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+	</ul>
+</nav>
+
+<a href="@routes.Application.askQuestion()"><button class="btn btn-default" type="submit">Frage stellen</button>
+
+<a href="@routes.Application.writeAnswer()"><button class="btn btn-default" type="submit">Antwort geben</button>
+</div>
 </div>
 }

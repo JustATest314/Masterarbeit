@@ -34,6 +34,10 @@ public class Answer extends Model{
 		this.userID = inputUserID;
 	}
 	
+	public Answer(){
+		
+	}
+	
 	public static Finder<String,Answer> find = new Finder<String, Answer>(
 		    String.class, Answer.class
 		  );

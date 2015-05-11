@@ -20,13 +20,22 @@
 				onclick="changeImage()" />
 		</p>
 		
-		Questions:
+		<b>Questions:</b> <br>
 		@for(question <- questionList){
-			@question <br>
+			@question.questionText <br>
+			
+			<b>Answers:</b> <br>
+			@for(answer <- answerList){
+				@if(question.questionID == answer.questionID){
+					<b>@answer.answerText</b> <br>	
+				}
+			}
+			<br>
 		}
 		<br>
-		Answers:
+		<b>Answers:</b> <br>
 		@for(answer <- answerList){
+			
 			@answer <br>
 		}
 		

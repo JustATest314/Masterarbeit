@@ -1,0 +1,34 @@
+@* This page is for when the user wants to give an answer. This page will probably get removed later, when I use Bootstrap modals to show a window which glides into the other view.
+*@
+
+@import models.Question
+@import models.Answer
+@import helper._
+@import helper.twitterBootstrap._
+
+@(answerForm: Form[Answer], answerList: List[Answer])
+
+
+@main("Antwort geben"){
+	
+@for(element <- answerList){
+	<b>AnswerID:</b> @element.answerID <br>	
+	QuestionID: @element.questionID <br>	
+	AnswerText: @element.answerText <br>
+	VoteScore: @element.voteScore<br>
+	UserID: @element.userID <br>
+	<br>
+}
+
+	<!-- TODO Inputfields dont look like Bootstrap -->
+	@helper.form(action = routes.Application.sendAnswer()){
+		<fieldset>
+			@helper.inputText(answerForm("answerID"))
+			@helper.inputText(answerForm("questionID"))
+			@helper.inputText(answerForm("answerText"))
+			@helper.inputText(answerForm("voteScore"))
+			@helper.inputText(answerForm("userID"))
+		</fieldset>
+		<input type="submit" class="btn btn-default">
+	}
+}

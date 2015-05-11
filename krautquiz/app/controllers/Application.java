@@ -28,7 +28,8 @@ public class Application extends Controller {
 	static List<Question> questionListAll = new ArrayList<Question>();
 	static List<Answer> answerListAll = new ArrayList<Answer>();
 	
-	private static final Form<Question> newQuestion = Form.form(Question.class);
+	private static final Form<Question> newQuestionForm = Form.form(Question.class);
+	private static final Form<Answer> newAnswerForm = Form.form(Answer.class);
 	
 	public static String generateFakeID(){
 		String fakeID = UUID.randomUUID().toString();
@@ -110,25 +111,44 @@ public class Application extends Controller {
 		return ok(views.html.einstellungen.render(questionListAll, answerListAll));
 	}
 	
-	// Until now a new page gets generated where the user can enter a new question
+	// Go to the ask question page
+	public static Result askQuestion(){
+		List<Question> questionHelper = new ArrayList<Question>();
+		for (Question questionItem : Question.find.all()) {
+			questionHelper.add(questionItem);
+		}
+		return ok(views.html.frageAntwort.render(newQuestionForm, questionHelper));
+	}
+	
+	// Send the question to the indexpage
 	// TODOL Use Bootstraps "Modal" to smoothly glide into the view
 	// http://getbootstrap.com/javascript/#modals
 	public static Result sendQuestion(){
 		// Create new question-form and fill it with the values from the other page
-		Form<Question> boundQuestion = newQuestion.bindFromRequest();
-		Question testQuestion = boundQuestion.get();
-		Question.create(testQuestion);
-		questionListAll.add(testQuestion);
+		Form<Question> boundQuestion = newQuestionForm.bindFromRequest();
+		Question newQuestion = boundQuestion.get();
+		Question.create(newQuestion);
+		questionListAll.add(newQuestion);
 		return ok(views.html.index.render(questionListAll, answerListAll));
 	}
 	
-	// Go to the ask question page
-	public static Result askQuestion(){
-		List<Question> testList = new ArrayList<Question>();
-		for (Question questionItem : Question.find.all()) {
-			testList.add(questionItem);
+	// Write an answer, goto answerpage
+	public static Result writeAnswer(){
+		List<Answer> answerHelper = new ArrayList<Answer>();
+		
+		for (Answer answerItem : Answer.find.all()) {
+			answerHelper.add(answerItem);
 		}
-		return ok(views.html.frageAntwort.render(newQuestion, testList));
+		return ok(views.html.antwortGeben.render(newAnswerForm, answerHelper));
+	}
+	
+	// Send answer to indexpage
+	public static Result sendAnswer(){
+		Form<Answer> boundAnswer = newAnswerForm.bindFromRequest();
+		Answer newAnswer = boundAnswer.get();
+		Answer.create(newAnswer);
+		answerListAll.add(newAnswer);
+		return ok(views.html.index.render(questionListAll, answerListAll));
 	}
 	
 	// TODOL Show the users page, will need an ID for a routing paramter

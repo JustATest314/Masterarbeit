@@ -3,14 +3,23 @@
 # ~~~~
 
 # Home page
-
 GET     /                           controllers.Application.index()
-# POST	/FragenListe				controllers.Application.sendMap()
-# GET	/FragenListe				controllers.Application.sendMap()
+
+#Questions
 GET		/FrageStellen				controllers.Application.askQuestion()
 POST	/							controllers.Application.sendQuestion()
+
+#Answers
+GET		/AntwortGeben				controllers.Application.writeAnswer()
+POST	/							controllers.Application.sendAnswer()
+
+#Settings
 GET		/Einstellungen				controllers.Application.showSettings()
+
+#Quiz
 GET		/Quiz						controllers.Application.startQuiz()
+
+#User
 # TODO Will need an ID for each user as parameter!
 GET		/Userpage					controllers.Application.showUsers()
 

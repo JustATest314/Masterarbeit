@@ -4,8 +4,7 @@ with radio buttons and the user has to choose. *@
 @import models.Question
 @import models.Answer
 
-@(myMap: Map[Question, List[Answer]])
-
+@(questionList: List[Question], answerList: List[Answer])
 
 @main("Quiz"){
 <div class="panel panel-default">
@@ -28,6 +27,7 @@ with radio buttons and the user has to choose. *@
 		<div style="text-align: center;">
 				<!-- TODO Should use radio buttons as only one answer can be correct -->
 				<!-- FIXME Shows ALL answers so far... -->
+				@*
 				@for((question, value) <- myMap){
 					@for(answer <- value){
 						<div class="checkbox">
@@ -35,7 +35,7 @@ with radio buttons and the user has to choose. *@
 						</div>
 					} 
 				}
-				
+				*@
 				<a href="@routes.Application.askQuestion()"><button
 						class="btn btn-default" type="submit">Nächste Frage</button>
 		</div>

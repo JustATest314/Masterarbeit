@@ -1,4 +1,6 @@
 @* View class for the settings a user can change *@
+
+@(questionList: List[Question], answerList: List[Answer])
 @main("Einstellungen"){
 
 <div class="panel panel-default">
@@ -17,6 +19,17 @@
 				style="height: 80px; width: 80px" id="imgClickAndChange"
 				onclick="changeImage()" />
 		</p>
+		
+		Questions:
+		@for(question <- questionList){
+			@question <br>
+		}
+		<br>
+		Answers:
+		@for(answer <- answerList){
+			@answer <br>
+		}
+		
 	</div>
 </div>
 }

@@ -1,7 +1,7 @@
 @import models.Question
 @import models.Answer
 
-@(myMap: Map[Question, List[Answer]])
+@(questionList: List[Question], answerList: List[Answer])
 
 @main("Kraut Quiz") {
 
@@ -46,7 +46,8 @@
   <div class="panel-body">
     <ul class="list-group">
     
-	@for((question, value) <- myMap){
+		 
+	@for(question <- questionList){
 		
 		<!-- Questions -->
 		<li class="list-group-item" >
@@ -73,10 +74,12 @@
     		<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 		</button>
 		<p></p>
+		}
+		</ul>
 		
 		<!-- Answers -->
 		<ul class="list-group" style="margin-left:20px" >
-		@for(answer <- value){
+		@for(answer <- answerList){
 			
 				<li class="list-group-item" > 
 		<button type="button" class="btn btn-default" onclick="voteUp()" id="upvoteButton" 
@@ -102,8 +105,7 @@
 		</button>	
 				}
 		</ul>
-	}
-</ul>
+	
    
 	<!-- TODO Not working at the moment! -->    
 	<nav>

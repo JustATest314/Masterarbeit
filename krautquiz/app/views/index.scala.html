@@ -74,6 +74,8 @@ function voteUp() {
 					value="deleteQuestion" style="width: 30px; height: 30px; text-align: center;">
 					<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 				</button>
+				
+				<i><a href="@routes.Application.writeAnswer()">Frage beantworten</a></i>
 <p></p>
 
 			<!-- Answers -->
@@ -122,9 +124,11 @@ function voteUp() {
 	</ul>
 </nav>
 
-<a href="@routes.Application.askQuestion()"><button class="btn btn-default" type="submit">Frage stellen</button>
+<a href="@routes.Application.askQuestion()"><button class="btn btn-default" type="submit">Frage stellen</button></a>
 
-<a href="@routes.Application.writeAnswer()"><button class="btn btn-default" type="submit">Antwort geben</button>
+<a href="@routes.Application.writeAnswer()"><button class="btn btn-default" type="submit">Antwort geben</button></a>
+
+<a href="@routes.Application.initDB()"><button class="btn btn-default" type="submit">Init DB</button></a>
 </div>
 </div>
 }

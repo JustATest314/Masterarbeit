@@ -4,10 +4,10 @@
 
 # Home page
 GET     /                           controllers.Application.index()
-
+GET		/InitDB						controllers.Application.initDB()
 #Questions
 GET		/FrageStellen				controllers.Application.askQuestion()
-POST	/							controllers.Application.sendQuestion()
+POST	/						controllers.Application.sendQuestion()
 
 #Answers
 GET		/AntwortGeben				controllers.Application.writeAnswer()

@@ -94,8 +94,8 @@ public class Application extends Controller {
 
 	// Frontpage
 	public static Result index() {
-		initialize();
-		
+//		questionListAll.clear();
+//		answerListAll.clear();
 		// TODOH Get questions / answer from the DB, not manually
 		return ok(views.html.index.render(questionListAll, answerListAll));
 	}
@@ -130,6 +130,8 @@ public class Application extends Controller {
 		Question.create(newQuestion);
 		questionListAll.add(newQuestion);
 		return ok(views.html.index.render(questionListAll, answerListAll));
+		// FIXME Not working, why not?
+//		return redirect(routes.Application.index());
 	}
 	
 	// Write an answer, goto answerpage
@@ -148,11 +150,20 @@ public class Application extends Controller {
 		Answer newAnswer = boundAnswer.get();
 		Answer.create(newAnswer);
 		answerListAll.add(newAnswer);
-		return ok(views.html.index.render(questionListAll, answerListAll));
+//		return ok(views.html.index.render(questionListAll, answerListAll));
+		// Redirect to the index-page because else you land on /Antwort and not /index
+		// Also its recommended to use PRG: http://en.wikipedia.org/wiki/Post/Redirect/Get
+		return redirect(routes.Application.index());
 	}
 	
 	// TODOL Show the users page, will need an ID for a routing paramter
 	public static Result showUsers(){
 		return TODO;
+	}
+	
+	public static Result initDB(){
+		initialize();
+		System.out.println("DB initialized");
+		return redirect(routes.Application.index());
 	}
 }

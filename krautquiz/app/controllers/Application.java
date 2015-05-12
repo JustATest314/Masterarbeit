@@ -37,14 +37,13 @@ public class Application extends Controller {
 	}
 	
 	// Helper-method for initializing the index page
-	// TODOH Put this into a database!
+	// TODO Remove in production
 	public static void initialize() {
 		
 		// Question format: ID / questionText / voteScore / userID
 		// Answer format: ID / questionID (answer linked to question) / answerText / voteScore / userID
 		
 		// Fake IDs are needed while developing, so there are no duplicates
-		// TODO Remove in production
 		String questionFakeID1 = generateFakeID();
 		
 		Question question1 = new Question(questionFakeID1, "Do Androids dream?", 127, "Marcus");
@@ -94,15 +93,11 @@ public class Application extends Controller {
 
 	// Frontpage
 	public static Result index() {
-//		questionListAll.clear();
-//		answerListAll.clear();
-		// TODOH Get questions / answer from the DB, not manually
 		return ok(views.html.index.render(questionListAll, answerListAll));
 	}
 
 	// Quizpage
 	public static Result startQuiz() {
-		initialize();
 		return ok(views.html.quiz.render(questionListAll, answerListAll));
 	}
 
@@ -117,7 +112,11 @@ public class Application extends Controller {
 		for (Question questionItem : Question.find.all()) {
 			questionHelper.add(questionItem);
 		}
-		return ok(views.html.frageAntwort.render(newQuestionForm, questionHelper));
+		
+		Question answerWithQuestionID = new Question(generateFakeID(), null, null, null);
+		Form<Question> preFilledAnswer = newQuestionForm.fill(answerWithQuestionID);
+		
+		return ok(views.html.frageAntwort.render(preFilledAnswer, questionHelper));
 	}
 	
 	// Send the question to the indexpage
@@ -130,18 +129,29 @@ public class Application extends Controller {
 		Question.create(newQuestion);
 		questionListAll.add(newQuestion);
 		return ok(views.html.index.render(questionListAll, answerListAll));
-		// FIXME Not working, why not?
+		// TODOL Not working, why not?
 //		return redirect(routes.Application.index());
 	}
 	
 	// Write an answer, goto answerpage
-	public static Result writeAnswer(){
+	public static Result writeAnswer(String questionIDInput){
+		
+		// TODO answerHelper not needed in Production, remove
 		List<Answer> answerHelper = new ArrayList<Answer>();
 		
 		for (Answer answerItem : Answer.find.all()) {
 			answerHelper.add(answerItem);
 		}
-		return ok(views.html.antwortGeben.render(newAnswerForm, answerHelper));
+		
+//		// TODO Remove in production, from another project
+//		User user = new User();
+//		Form<User> preFilledForm = userForm.fill(user);
+//		return ok(views.html.index.render(preFilledForm));
+		
+		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, null, null);
+		Form<Answer> preFilledAnswer = newAnswerForm.fill(answerWithQuestionID);
+		
+		return ok(views.html.antwortGeben.render(preFilledAnswer, answerHelper));
 	}
 	
 	// Send answer to indexpage
@@ -161,6 +171,7 @@ public class Application extends Controller {
 		return TODO;
 	}
 	
+	// TODO Remove in production, only for development. Populates the DB with fake entries
 	public static Result initDB(){
 		initialize();
 		System.out.println("DB initialized");

@@ -7,11 +7,11 @@ GET     /                           controllers.Application.index()
 GET		/InitDB						controllers.Application.initDB()
 #Questions
 GET		/FrageStellen				controllers.Application.askQuestion()
-POST	/						controllers.Application.sendQuestion()
+POST	/FrageStellen				controllers.Application.sendQuestion()
 
 #Answers
-GET		/AntwortGeben				controllers.Application.writeAnswer()
-POST	/Antwort					controllers.Application.sendAnswer()
+GET		/AntwortGeben				controllers.Application.writeAnswer(questionId: String)
+POST	/AntwortGeben				controllers.Application.sendAnswer()
 
 #Settings
 GET		/Einstellungen				controllers.Application.showSettings()

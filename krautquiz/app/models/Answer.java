@@ -12,7 +12,7 @@ import play.db.ebean.Model;
  */
 
 @Entity
-public class Answer extends Model{
+public class Answer extends Model implements Comparable<Answer>{
 
 	// Auto-generated serial
 	private static final long serialVersionUID = 1L;
@@ -57,5 +57,10 @@ public class Answer extends Model{
 	// Mostly for debugging
 	public String toString(){
 		return "ID = " + answerID + " questionID = " + questionID + " answerText = " + answerText + " voteScore = " + voteScore + " userID = " + userID;
+	}
+
+	@Override
+	public int compareTo(Answer answer) {
+		return this.voteScore.compareTo(answer.voteScore);
 	}
 }

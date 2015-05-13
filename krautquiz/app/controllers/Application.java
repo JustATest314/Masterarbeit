@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,19 +21,21 @@ import play.mvc.Result;
  * help to make it simpler, therefore this will be the main page for everything that needs to be processed
  */
 
+// TODOL Votescores are Integer, make sure they are not bigger than MAX_INT!
+
 public class Application extends Controller {
 
 	// ArrayList might not be performant when there are many add / delete operations.
 	// If need be -> use LinkedList!
 	// TODOH Write methods for sorting the lists by voteScore
-	static List<Question> questionListAll = new ArrayList<Question>();
-	static List<Answer> answerListAll = new ArrayList<Answer>();
+	public static List<Question> questionListAll = new ArrayList<Question>();
+	public static List<Answer> answerListAll = new ArrayList<Answer>();
 	
 	public static final Form<Question> newQuestionForm = Form.form(Question.class);
 	public static final Form<Answer> newAnswerForm = Form.form(Answer.class);
 	
-	static List<Question> highestRankedQuestionList = new ArrayList<Question>();
-	static List<Answer> highestRankedAnswerList = new ArrayList<Answer>();
+	public static List<Question> highestRankedQuestionList = new ArrayList<Question>();
+	public static List<Answer> highestRankedAnswerList = new ArrayList<Answer>();
 	
 	public static String generateFakeID(){
 		String fakeID = UUID.randomUUID().toString();
@@ -51,13 +54,13 @@ public class Application extends Controller {
 		// Fake IDs are needed while developing, so there are no duplicates
 		String questionFakeID1 = generateFakeID();
 		
-		Question question1 = new Question(questionFakeID1, "Do Androids dream?", 127, "Marcus");
+		Question question1 = new Question(questionFakeID1, "Do Androids dream?", 76, "Marcus");
 		Answer answer11 = new Answer(generateFakeID(), questionFakeID1, "Only of electric sheep!", 70, "Tibor");
 		Answer answer12 = new Answer(generateFakeID(), questionFakeID1, "No, they dont!", 10, "Sarah");
 		
 		String questionFakeID2 = generateFakeID();
 
-		Question question2 = new Question(questionFakeID2, "Why is the sky blue?", 76, "Frank");
+		Question question2 = new Question(questionFakeID2, "Why is the sky blue?", 124, "Frank");
 		Answer answer21 = new Answer(generateFakeID(), questionFakeID2, "Frequency filtered sunlight!", 45, "Oliver");
 		Answer answer22 = new Answer(generateFakeID(), questionFakeID2, "Light reflects from the blue sea water!", 3, "Tom");
 		
@@ -96,6 +99,23 @@ public class Application extends Controller {
 
 	// Frontpage
 	public static Result index() {
+		questionListAll.clear();
+		answerListAll.clear();
+		
+		
+		// Get all questions from DB
+		for (Question questionItem : Question.find.all()) {
+			questionListAll.add(questionItem);
+		}
+		
+		// Get all answers from DB
+		for (Answer answerItem : Answer.find.all()) {
+			answerListAll.add(answerItem);
+		}
+		
+		Collections.sort(questionListAll, Collections.reverseOrder());
+		Collections.sort(answerListAll, Collections.reverseOrder());
+		
 		return ok(views.html.index.render(questionListAll, answerListAll));
 	}
 
@@ -126,6 +146,7 @@ public class Application extends Controller {
 		Question newQuestion = boundQuestion.get();
 		Question.create(newQuestion);
 		questionListAll.add(newQuestion);
+		Collections.sort(questionListAll, Collections.reverseOrder());
 		return ok(views.html.index.render(questionListAll, answerListAll));
 		// TODOL Not working, why not?
 //		return redirect(routes.Application.index());
@@ -158,6 +179,9 @@ public class Application extends Controller {
 		Answer newAnswer = boundAnswer.get();
 		Answer.create(newAnswer);
 		answerListAll.add(newAnswer);
+		
+		Collections.sort(answerListAll, Collections.reverseOrder());
+		
 //		return ok(views.html.index.render(questionListAll, answerListAll));
 		// Redirect to the index-page because else you land on /Antwort and not /index
 		// Also its recommended to use PRG: http://en.wikipedia.org/wiki/Post/Redirect/Get
@@ -194,8 +218,8 @@ public class Application extends Controller {
 		}	
 		highestRankedQuestionList.add(highestRankedQuestion);
 		highestVotescore = 0;
-		// List will only have 1 item - the highest ranked question!
 		
+		// List will only have 1 item - the highest ranked question!
 		for (Answer answerItem : Answer.find.all()) {
 			if (answerItem.questionID == highestRankedQuestion.questionID){
 				highestRankedAnswerList.add(answerItem);

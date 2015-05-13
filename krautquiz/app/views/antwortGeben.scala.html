@@ -11,15 +11,6 @@
 
 @main("Antwort geben"){
 	
-@for(element <- answerList){
-	<b>AnswerID:</b> @element.answerID <br>	
-	QuestionID: @element.questionID <br>	
-	AnswerText: @element.answerText <br>
-	VoteScore: @element.voteScore<br>
-	UserID: @element.userID <br>
-	<br>
-}
-
 	<!-- TODO Inputfields dont look like Bootstrap -->
 	@helper.form(action = routes.Application.sendAnswer()){
 		<fieldset>

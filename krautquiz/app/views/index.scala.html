@@ -63,7 +63,7 @@ function voteUp() {
 				</button>
 
 				<!-- TODO Change to the userpage -->
-				@question.questionText - <i><a href="@routes.Application.showUsers()">@question.userID </a></i>
+				&nbsp; @question.questionText - <i><a href="@routes.Application.showUsers()">@question.userID </a></i> &nbsp;
 		
 				<button type="button" class="btn btn-default" onclick="editQuestion()" id="editQuestionButton" 
 					value="editQuestion" style="width: 30px; height: 30px; text-align: center;">
@@ -96,7 +96,7 @@ function voteUp() {
 							<span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:blue"></span>
 						</button>
 
-		@answer.answerText - <i><a href="@routes.Application.showUsers()">@answer.userID</a></i>
+		&nbsp; @answer.answerText - <i><a href="@routes.Application.showUsers()">@answer.userID</a></i> &nbsp;
 
 		<button type="button" class="btn btn-default" onclick="editQuestion()" id="editQuestionButton" 
 		value="editQuestion" style="width: 30px; height: 30px; text-align: center;">

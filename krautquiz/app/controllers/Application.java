@@ -28,8 +28,11 @@ public class Application extends Controller {
 	static List<Question> questionListAll = new ArrayList<Question>();
 	static List<Answer> answerListAll = new ArrayList<Answer>();
 	
-	private static final Form<Question> newQuestionForm = Form.form(Question.class);
-	private static final Form<Answer> newAnswerForm = Form.form(Answer.class);
+	public static final Form<Question> newQuestionForm = Form.form(Question.class);
+	public static final Form<Answer> newAnswerForm = Form.form(Answer.class);
+	
+	static List<Question> highestRankedQuestionList = new ArrayList<Question>();
+	static List<Answer> highestRankedAnswerList = new ArrayList<Answer>();
 	
 	public static String generateFakeID(){
 		String fakeID = UUID.randomUUID().toString();
@@ -39,6 +42,8 @@ public class Application extends Controller {
 	// Helper-method for initializing the index page
 	// TODO Remove in production
 	public static void initialize() {
+		questionListAll.clear();
+		answerListAll.clear();
 		
 		// Question format: ID / questionText / voteScore / userID
 		// Answer format: ID / questionID (answer linked to question) / answerText / voteScore / userID
@@ -63,8 +68,6 @@ public class Application extends Controller {
 		Answer answer32 = new Answer(generateFakeID(), questionFakeID3, "Very!", 1, "Marcus");
 		Answer answer33 = new Answer(generateFakeID(), questionFakeID3, "Not much!", 1, "Frank");
 		
-		questionListAll.clear();
-		answerListAll.clear();
 		
 		questionListAll.add(question1);
 		questionListAll.add(question2);
@@ -94,11 +97,6 @@ public class Application extends Controller {
 	// Frontpage
 	public static Result index() {
 		return ok(views.html.index.render(questionListAll, answerListAll));
-	}
-
-	// Quizpage
-	public static Result startQuiz() {
-		return ok(views.html.quiz.render(questionListAll, answerListAll));
 	}
 
 	// Settings
@@ -176,5 +174,33 @@ public class Application extends Controller {
 		initialize();
 		System.out.println("DB initialized");
 		return redirect(routes.Application.index());
+	}
+	
+	// Quizpage
+	// TODO If 2 questions have the exact same score, always the first one will get taken and never the next one
+	// Maybe add some randomness?
+	public static Result startQuiz() {
+		highestRankedQuestionList.clear();
+		highestRankedAnswerList.clear();
+		Integer highestVotescore = 0;
+		Question highestRankedQuestion = new Question();
+		
+		// Gets all entries from the database and finds the highest ranked Question
+		for (Question questionItem : Question.find.all()) {
+			if (questionItem.voteScore > highestVotescore){
+				highestRankedQuestion = questionItem;
+				highestVotescore = questionItem.voteScore;
+			}
+		}	
+		highestRankedQuestionList.add(highestRankedQuestion);
+		highestVotescore = 0;
+		// List will only have 1 item - the highest ranked question!
+		
+		for (Answer answerItem : Answer.find.all()) {
+			if (answerItem.questionID == highestRankedQuestion.questionID){
+				highestRankedAnswerList.add(answerItem);
+			}
+		}
+		return ok(views.html.quiz.render(highestRankedQuestionList, highestRankedAnswerList));
 	}
 }

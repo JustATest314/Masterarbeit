@@ -13,7 +13,8 @@ with radio buttons and the user has to choose. *@
 	</div>
 	<div class="panel-body">
 		<div style="text-align: center;">
-			TESTFRAGE
+			<!-- As only the highest ranked question gets put into the List, there is only one entry on first place -->
+			<b>@questionList.get(0).questionText</b>
 		</div>
 	</div>
 </div>
@@ -24,17 +25,14 @@ with radio buttons and the user has to choose. *@
 	</div>
 	<div class="panel-body">
 		<div style="text-align: center;">
-				<!-- TODO Should use radio buttons as only one answer can be correct -->
-				<!-- FIXME Shows ALL answers so far... -->
-				@*
-				@for((question, value) <- myMap){
-					@for(answer <- value){
-						<div class="checkbox">
-							<label><input type="checkbox" value="">@answer.answerText</label>
+
+				<!-- TODO radiobuttons need to be in a group? -->
+				@for(answer <- answerList){
+ 						<div class="radio">
+  							<label><input type="radio" name="optradio">@answer.answerText</label>
 						</div>
-					} 
-				}
-				*@
+				} 
+				
 				<a href="@routes.Application.askQuestion()"><button
 						class="btn btn-default" type="submit">Nächste Frage</button>
 		</div>

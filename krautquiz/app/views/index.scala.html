@@ -63,12 +63,27 @@ $(document).ready(function(){
 	    	console.log($(this).parent('li'));
 		}
 		else if($(this).val() == 'voteDown'){
+			$(this).html( "<span class='glyphicon glyphicon-arrow-down' aria-hidden='true' style='color:blue'></span>" );
 	    	var currentScore = $(this).parent('li').find('.num').text();
 	    	$(this).parent('li').find('.num').html(parseInt(currentScore) - 1);
 		}
 		else if($(this).val() == 'editQuestion'){
+			var currentScore = $(this).parent('li').find('.num').text();
+			
+			<!-- TODO Send voteScore to controller and put it in DB -->
+			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
+			$.ajax({ 
+				type : 'POST',
+				url : '@routes.Application.testMethod()',
+				data : {text : currentScore},
+				success : function(data){
+					}
+			});
+			
+			console.log("edit-button");
+			
 			alert("TODO - Edit Question");
-		}
+    	}
 		else if($(this).val() == 'deleteQuestion'){
 			alert("TODO - Delete Question");
 		}
@@ -96,7 +111,7 @@ $(document).ready(function(){
 				
 				<button type="button" class="btn btn-default" id="downvoteButton" 
 					value="voteDown" style="width: 30px; height: 30px; text-align: center;">
-					<span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:blue"></span>
+					<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
 				</button>
 
 				<!-- TODO Change to the userpage -->

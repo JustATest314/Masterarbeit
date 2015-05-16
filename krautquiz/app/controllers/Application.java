@@ -232,4 +232,12 @@ public class Application extends Controller {
 		}
 		return ok(views.html.quiz.render(highestRankedQuestionList, highestRankedAnswerList));
 	}
+	
+	public static Result testMethod(){
+		Map<String, String[]> parameters = request().body().asFormUrlEncoded();
+//		String testString = request().body().asText();
+		String textData = parameters.get("text")[0];
+		System.out.println("testMethod parameters: " + textData);
+		return ok(views.html.index.render(questionListAll, answerListAll));
+	}
 }

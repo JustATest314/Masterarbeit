@@ -3,6 +3,7 @@ package controllers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -54,22 +55,22 @@ public class Application extends Controller {
 		// Fake IDs are needed while developing, so there are no duplicates
 		String questionFakeID1 = generateFakeID();
 		
-		Question question1 = new Question(questionFakeID1, "Do Androids dream?", 76, "Marcus");
-		Answer answer11 = new Answer(generateFakeID(), questionFakeID1, "Only of electric sheep!", 70, "Tibor");
-		Answer answer12 = new Answer(generateFakeID(), questionFakeID1, "No, they dont!", 10, "Sarah");
+		Question question1 = new Question(questionFakeID1, "Do Androids dream?", 76, "Marcus", 1);
+		Answer answer11 = new Answer(generateFakeID(), questionFakeID1, "Only of electric sheep!", 70, "Tibor", 1);
+		Answer answer12 = new Answer(generateFakeID(), questionFakeID1, "No, they dont!", 10, "Sarah", 1);
 		
 		String questionFakeID2 = generateFakeID();
 
-		Question question2 = new Question(questionFakeID2, "Why is the sky blue?", 124, "Frank");
-		Answer answer21 = new Answer(generateFakeID(), questionFakeID2, "Frequency filtered sunlight!", 45, "Oliver");
-		Answer answer22 = new Answer(generateFakeID(), questionFakeID2, "Light reflects from the blue sea water!", 3, "Tom");
+		Question question2 = new Question(questionFakeID2, "Why is the sky blue?", 124, "Frank", 1);
+		Answer answer21 = new Answer(generateFakeID(), questionFakeID2, "Frequency filtered sunlight!", 45, "Oliver", 1);
+		Answer answer22 = new Answer(generateFakeID(), questionFakeID2, "Light reflects from the blue sea water!", 3, "Tom", 1);
 		
 		String questionFakeID3 = generateFakeID();
 		
-		Question question3 = new Question(questionFakeID3, "How tall is tall?", 34, "Tim");
-		Answer answer31 = new Answer(generateFakeID(), questionFakeID3, "Depends on your definition!", 12, "Oliver");
-		Answer answer32 = new Answer(generateFakeID(), questionFakeID3, "Very!", 1, "Marcus");
-		Answer answer33 = new Answer(generateFakeID(), questionFakeID3, "Not much!", 1, "Frank");
+		Question question3 = new Question(questionFakeID3, "How tall is tall?", 34, "Tim", 1);
+		Answer answer31 = new Answer(generateFakeID(), questionFakeID3, "Depends on your definition!", 12, "Oliver", 1);
+		Answer answer32 = new Answer(generateFakeID(), questionFakeID3, "Very!", 1, "Marcus", 1);
+		Answer answer33 = new Answer(generateFakeID(), questionFakeID3, "Not much!", 1, "Frank", 1);
 		
 		
 		questionListAll.add(question1);
@@ -126,12 +127,13 @@ public class Application extends Controller {
 	
 	// Go to the ask question page
 	public static Result askQuestion(){
+		// TODO questionHelper not needed? Check and remove!
 		List<Question> questionHelper = new ArrayList<Question>();
 		for (Question questionItem : Question.find.all()) {
 			questionHelper.add(questionItem);
 		}
 		
-		Question answerWithQuestionID = new Question(generateFakeID(), null, null, null);
+		Question answerWithQuestionID = new Question(generateFakeID(), null, null, null, 1);
 		Form<Question> preFilledAnswer = newQuestionForm.fill(answerWithQuestionID);
 		
 		return ok(views.html.frageAntwort.render(preFilledAnswer, questionHelper));
@@ -145,6 +147,9 @@ public class Application extends Controller {
 		Form<Question> boundQuestion = newQuestionForm.bindFromRequest();
 		Question newQuestion = boundQuestion.get();
 		Question.create(newQuestion);
+		
+		
+		
 		questionListAll.add(newQuestion);
 		Collections.sort(questionListAll, Collections.reverseOrder());
 		return ok(views.html.index.render(questionListAll, answerListAll));
@@ -167,7 +172,7 @@ public class Application extends Controller {
 //		Form<User> preFilledForm = userForm.fill(user);
 //		return ok(views.html.index.render(preFilledForm));
 		
-		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, null, null);
+		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, null, null, 1);
 		Form<Answer> preFilledAnswer = newAnswerForm.fill(answerWithQuestionID);
 		
 		return ok(views.html.antwortGeben.render(preFilledAnswer, answerHelper));

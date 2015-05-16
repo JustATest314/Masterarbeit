@@ -9,6 +9,7 @@ create table answer (
   answer_text               varchar(255),
   vote_score                integer,
   user_id                   varchar(255),
+  page                      integer,
   constraint pk_answer primary key (answer_id))
 ;
 
@@ -17,6 +18,7 @@ create table question (
   question_text             varchar(255),
   vote_score                integer,
   user_id                   varchar(255),
+  page                      integer,
   constraint pk_question primary key (question_id))
 ;
 

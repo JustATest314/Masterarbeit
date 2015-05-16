@@ -22,13 +22,15 @@ public class Question extends Model implements Comparable<Question> {
 	public String questionText;
 	public Integer voteScore;
 	public String userID;
+	public Integer page;
 	
 	// Constructor
-	public Question(String inputID, String inputQuestionText, Integer inputVoteScore, String inputUserID){
+	public Question(String inputID, String inputQuestionText, Integer inputVoteScore, String inputUserID, Integer inputPage){
 		this.questionID = inputID;
 		this.questionText = inputQuestionText;
 		this.voteScore = inputVoteScore;
 		this.userID = inputUserID;
+		this.page = inputPage;
 	}
 	
 	// Default Constructor is needed for the form, else the play framework breaks!
@@ -54,7 +56,7 @@ public class Question extends Model implements Comparable<Question> {
 	
 	// Mostly for debugging
 	public String toString(){
-		return "questionID = " + questionID + " questionText = " + questionText + " voteScore = " + voteScore + " userID = " + userID;
+		return "questionID = " + questionID + " questionText = " + questionText + " voteScore = " + voteScore + " userID = " + userID + " page = " + page;
 	}
 
 	@Override

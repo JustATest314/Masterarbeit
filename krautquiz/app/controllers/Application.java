@@ -233,11 +233,15 @@ public class Application extends Controller {
 		return ok(views.html.quiz.render(highestRankedQuestionList, highestRankedAnswerList));
 	}
 	
-	public static Result testMethod(){
+	public static Result voteUp(){
 		Map<String, String[]> parameters = request().body().asFormUrlEncoded();
 //		String testString = request().body().asText();
-		String textData = parameters.get("text")[0];
-		System.out.println("testMethod parameters: " + textData);
+		String voteScoreInput = parameters.get("text")[0];
+		
+		// FIXME Only works with hardcoded questionID! Need to give the questionID into the AJAX POST in the view
+		Question changeMe = Question.find.byId("aaa");
+		changeMe.voteScore = Integer.parseInt(voteScoreInput);
+		changeMe.save();
 		return ok(views.html.index.render(questionListAll, answerListAll));
 	}
 }

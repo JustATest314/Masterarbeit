@@ -23,7 +23,7 @@ GET		/Quiz						controllers.Application.startQuiz()
 # TODO Will need an ID for each user as parameter!
 GET		/Userpage					controllers.Application.showUsers()
 
-POST		/TestPage					controllers.Application.testMethod()
+POST		/VoteUp					controllers.Application.voteUp()
 
 
 # Map static resources from the /public folder to the /assets URL path

@@ -23,12 +23,10 @@ import play.mvc.Result;
  */
 
 // TODOL Votescores are Integer, make sure they are not bigger than MAX_INT!
-
 public class Application extends Controller {
 
 	// ArrayList might not be performant when there are many add / delete operations.
 	// If need be -> use LinkedList!
-	// TODOH Write methods for sorting the lists by voteScore
 	public static List<Question> questionListAll = new ArrayList<Question>();
 	public static List<Answer> answerListAll = new ArrayList<Answer>();
 	
@@ -44,7 +42,7 @@ public class Application extends Controller {
 	}
 	
 	// Helper-method for initializing the index page
-	// TODO Remove in production
+	// TODO Remove in production, populate DB with fake entries
 	public static void initialize() {
 		questionListAll.clear();
 		answerListAll.clear();
@@ -71,7 +69,6 @@ public class Application extends Controller {
 		Answer answer31 = new Answer(generateFakeID(), questionFakeID3, "Depends on your definition!", 12, "Oliver", 1);
 		Answer answer32 = new Answer(generateFakeID(), questionFakeID3, "Very!", 1, "Marcus", 1);
 		Answer answer33 = new Answer(generateFakeID(), questionFakeID3, "Not much!", 1, "Frank", 1);
-		
 		
 		questionListAll.add(question1);
 		questionListAll.add(question2);
@@ -102,7 +99,6 @@ public class Application extends Controller {
 	public static Result index() {
 		questionListAll.clear();
 		answerListAll.clear();
-		
 		
 		// Get all questions from DB
 		for (Question questionItem : Question.find.all()) {
@@ -148,30 +144,22 @@ public class Application extends Controller {
 		Question newQuestion = boundQuestion.get();
 		Question.create(newQuestion);
 		
-		
-		
 		questionListAll.add(newQuestion);
 		Collections.sort(questionListAll, Collections.reverseOrder());
 		return ok(views.html.index.render(questionListAll, answerListAll));
 		// TODOL Not working, why not?
-//		return redirect(routes.Application.index());
+		// return redirect(routes.Application.index());
 	}
 	
 	// Write an answer, goto answerpage
 	public static Result writeAnswer(String questionIDInput){
-		
 		// TODO answerHelper not needed in Production, remove
 		List<Answer> answerHelper = new ArrayList<Answer>();
 		
 		for (Answer answerItem : Answer.find.all()) {
 			answerHelper.add(answerItem);
 		}
-		
-//		// TODO Remove in production, from another project
-//		User user = new User();
-//		Form<User> preFilledForm = userForm.fill(user);
-//		return ok(views.html.index.render(preFilledForm));
-		
+	
 		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, null, null, 1);
 		Form<Answer> preFilledAnswer = newAnswerForm.fill(answerWithQuestionID);
 		
@@ -187,7 +175,6 @@ public class Application extends Controller {
 		
 		Collections.sort(answerListAll, Collections.reverseOrder());
 		
-//		return ok(views.html.index.render(questionListAll, answerListAll));
 		// Redirect to the index-page because else you land on /Antwort and not /index
 		// Also its recommended to use PRG: http://en.wikipedia.org/wiki/Post/Redirect/Get
 		return redirect(routes.Application.index());
@@ -233,15 +220,15 @@ public class Application extends Controller {
 		return ok(views.html.quiz.render(highestRankedQuestionList, highestRankedAnswerList));
 	}
 	
+	// Method for voting on questions / answers, gets a map from an AJAX POST in the view class
+	// The parameters are Q/A ID and voteScore, new score gets saved in DB
 	public static Result voteUp(){
 		Map<String, String[]> parameters = request().body().asFormUrlEncoded();
-//		String testString = request().body().asText();
-		String voteScoreInput = parameters.get("text")[0];
-		
-		// FIXME Only works with hardcoded questionID! Need to give the questionID into the AJAX POST in the view
-		Question changeMe = Question.find.byId("aaa");
-		changeMe.voteScore = Integer.parseInt(voteScoreInput);
-		changeMe.save();
+		String questionIDInput = parameters.get("questionID")[0];
+		String voteScoreInput = parameters.get("score")[0];
+		Question changeQuestion = Question.find.byId(questionIDInput);
+		changeQuestion.voteScore = Integer.parseInt(voteScoreInput);
+		changeQuestion.save();
 		return ok(views.html.index.render(questionListAll, answerListAll));
 	}
 }

@@ -61,13 +61,16 @@ $(document).ready(function(){
 	    	var currentScore = $(this).parent('li').find('.num').text();
 	    	$(this).parent('li').find('.num').html(parseInt(currentScore) + 1);
 	    	
+	    	var currentID = $(this).parent('li').find('.num').attr('id');
+	    	
 	    	<!-- TODO Send voteScore to controller and put it in DB -->
 			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
 			$.ajax({ 
 				type : 'POST',
 				url : '@routes.Application.voteUp()',
 				data : {
-					text : currentScore
+					questionID : currentID,
+					score : currentScore
 					},
 				success : function(data){
 					}
@@ -79,12 +82,9 @@ $(document).ready(function(){
 	    	var currentScore = $(this).parent('li').find('.num').text();
 	    	$(this).parent('li').find('.num').html(parseInt(currentScore) - 1);
 		}
+		
 		else if($(this).val() == 'editQuestion'){
 			var currentScore = $(this).parent('li').find('.num').text();
-			
-			
-			
-			
 			alert("TODO - Edit Question");
     	}
 		else if($(this).val() == 'deleteQuestion'){
@@ -110,7 +110,7 @@ $(document).ready(function(){
 					<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
 				</button>
 				
-				<span class="num">@question.voteScore</span>
+				<span class="num" id="@question.questionID">@question.voteScore</span>
 				
 				<button type="button" class="btn btn-default" id="downvoteButton" 
 					value="voteDown" style="width: 30px; height: 30px; text-align: center;">

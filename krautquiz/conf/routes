@@ -24,6 +24,7 @@ GET		/Quiz						controllers.Application.startQuiz()
 GET		/Userpage					controllers.Application.showUsers()
 
 POST		/VoteUp					controllers.Application.voteUp()
+POST		/VoteDown				controllers.Application.voteDown()
 
 
 # Map static resources from the /public folder to the /assets URL path

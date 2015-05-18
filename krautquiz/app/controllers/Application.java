@@ -227,8 +227,22 @@ public class Application extends Controller {
 		String questionIDInput = parameters.get("questionID")[0];
 		String voteScoreInput = parameters.get("score")[0];
 		Question changeQuestion = Question.find.byId(questionIDInput);
-		changeQuestion.voteScore = Integer.parseInt(voteScoreInput);
+		// voteScore needs to get +1 as the score gets AJAXed after the click
+		changeQuestion.voteScore = Integer.parseInt(voteScoreInput) + 1;
 		changeQuestion.save();
 		return ok(views.html.index.render(questionListAll, answerListAll));
 	}
+	
+	// Method for voting on questions / answers, gets a map from an AJAX POST in the view class
+		// The parameters are Q/A ID and voteScore, new score gets saved in DB
+		public static Result voteDown(){
+			Map<String, String[]> parameters = request().body().asFormUrlEncoded();
+			String questionIDInput = parameters.get("questionID")[0];
+			String voteScoreInput = parameters.get("score")[0];
+			Question changeQuestion = Question.find.byId(questionIDInput);
+			// voteScore needs to get -1 as the score gets AJAXed after the click
+			changeQuestion.voteScore = Integer.parseInt(voteScoreInput) -1;
+			changeQuestion.save();
+			return ok(views.html.index.render(questionListAll, answerListAll));
+		}
 }

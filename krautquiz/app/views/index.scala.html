@@ -17,41 +17,6 @@
 	</div>
 </div>
 
-<!-- TODO remove in production, only for development -->
-<script>
-		// $(document).ready(function() {
-			// $('#icon').click(function() {
-				// var $this = $(this);
-				// $this.css("color","orange");
-				// var num = $('#num');
-				// var currentNumber = num.text().length ? parseInt(num.text()) : 0;
-				// num.text(currentNumber + 1);
-			// });
-		// });
-</script>
-
-@*
-<!-- FIXME Does not work as intended so far, only updates the first question-score -->
-<script language="javascript"> 
-function voteUp() {
-	var num = $('#num');
-	var currentNumber = num.text().length ? parseInt(num.text()) : 0;
-	num.text(currentNumber + 1);
-}
-</script>
-
-
-<script>
-$(document).ready(function(){
-    $(".btn-default").click(function(){
-        $(this).slideUp().slideDown();
-        console.log($('.num').html());
-
-    });
-});
-</script>
-*@
-
 <!-- FIXME Buttons in the answer-list dont work yet -->
 <script>
 $(document).ready(function(){
@@ -63,7 +28,6 @@ $(document).ready(function(){
 	    	
 	    	var currentID = $(this).parent('li').find('.num').attr('id');
 	    	
-	    	<!-- TODO Send voteScore to controller and put it in DB -->
 			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
 			$.ajax({ 
 				type : 'POST',
@@ -81,6 +45,24 @@ $(document).ready(function(){
 			$(this).html( "<span class='glyphicon glyphicon-arrow-down' aria-hidden='true' style='color:blue'></span>" );
 	    	var currentScore = $(this).parent('li').find('.num').text();
 	    	$(this).parent('li').find('.num').html(parseInt(currentScore) - 1);
+	    	
+	    	var test = $(this).parent('li').find('.num').text(); 
+	    	console.log('Contents: ' + test);
+	    	
+	    	var currentID = $(this).parent('li').find('.num').attr('id');
+	    	@*
+			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
+			$.ajax({ 
+				type : 'POST',
+				url : '@routes.Application.voteDown()',
+				data : {
+					questionID : currentID,
+					score : currentScore
+					},
+				success : function(data){
+					}
+			});
+			*@
 		}
 		
 		else if($(this).val() == 'editQuestion'){
@@ -139,12 +121,13 @@ $(document).ready(function(){
 					@if(question.questionID == answer.questionID){
 
 					<li class="list-group-item" > 
-						<button type="button" class="btn btn-default" id="upvoteButton" 
+						<button type="button" class="btn btn-default answerTest" id="upvoteButton" 
 							value="voteUp" style="width: 30px; height: 30px; text-align: center;">
 							<span class="glyphicon glyphicon-arrow-up" aria-hidden="true" style="color:orange";></span>
 						</button>
 
-						<span id="num"> @answer.voteScore </span>
+						<!-- TODO Do I need questionID or answerID or both? -->
+						<span class="num" id="@question.questionID">@answer.voteScore</span>
 					
 						<button type="button" class="btn btn-default" id="downvoteButton" 
 							value="voteDown" style="width: 30px; height: 30px; text-align: center;">

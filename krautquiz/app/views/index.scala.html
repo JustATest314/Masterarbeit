@@ -17,16 +17,17 @@
 	</div>
 </div>
 
-<!-- FIXME Buttons in the answer-list dont work yet -->
 <script>
 $(document).ready(function(){
 	$(".btn-default").click(function(){
 		if( $(this).val() == 'voteUp'){
+			
 			$(this).html( "<span class='glyphicon glyphicon-arrow-up' aria-hidden='true' style='color:orange'></span>" );
-	    	var currentScore = $(this).parent('li').find('.num').text();
-	    	$(this).parent('li').find('.num').html(parseInt(currentScore) + 1);
+			
+	    	var currentScore = $(this).parent('li').find('> .num').text();
+	    	$(this).parent('li').find('> .num').html(parseInt(currentScore) + 1);
 	    	
-	    	var currentID = $(this).parent('li').find('.num').attr('id');
+	    	var currentID = $(this).parent('li').find('> .num').attr('id');
 	    	
 			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
 			$.ajax({ 
@@ -43,14 +44,14 @@ $(document).ready(function(){
 		}
 		else if($(this).val() == 'voteDown'){
 			$(this).html( "<span class='glyphicon glyphicon-arrow-down' aria-hidden='true' style='color:blue'></span>" );
-	    	var currentScore = $(this).parent('li').find('.num').text();
-	    	$(this).parent('li').find('.num').html(parseInt(currentScore) - 1);
+	    	var currentScore = $(this).parent('li').find('> .num').text();
+	    	$(this).parent('li').find('> .num').html(parseInt(currentScore) - 1);
 	    	
-	    	var test = $(this).parent('li').find('.num').text(); 
+	    	var test = $(this).parent('li').find('> .num').text(); 
 	    	console.log('Contents: ' + test);
 	    	
-	    	var currentID = $(this).parent('li').find('.num').attr('id');
-	    	@*
+	    	var currentID = $(this).parent('li').find('> .num').attr('id');
+	    	
 			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
 			$.ajax({ 
 				type : 'POST',
@@ -62,11 +63,10 @@ $(document).ready(function(){
 				success : function(data){
 					}
 			});
-			*@
+			
 		}
 		
 		else if($(this).val() == 'editQuestion'){
-			var currentScore = $(this).parent('li').find('.num').text();
 			alert("TODO - Edit Question");
     	}
 		else if($(this).val() == 'deleteQuestion'){
@@ -123,7 +123,7 @@ $(document).ready(function(){
 					<li class="list-group-item" > 
 						<button type="button" class="btn btn-default answerTest" id="upvoteButton" 
 							value="voteUp" style="width: 30px; height: 30px; text-align: center;">
-							<span class="glyphicon glyphicon-arrow-up" aria-hidden="true" style="color:orange";></span>
+							<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
 						</button>
 
 						<!-- TODO Do I need questionID or answerID or both? -->
@@ -131,7 +131,7 @@ $(document).ready(function(){
 					
 						<button type="button" class="btn btn-default" id="downvoteButton" 
 							value="voteDown" style="width: 30px; height: 30px; text-align: center;">
-							<span class="glyphicon glyphicon-arrow-down" aria-hidden="true" style="color:blue"></span>
+							<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
 						</button>
 
 		&nbsp; @answer.answerText - <i><a href="@routes.Application.showUsers()">@answer.userID</a></i> &nbsp;

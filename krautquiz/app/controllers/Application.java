@@ -226,6 +226,8 @@ public class Application extends Controller {
 		Map<String, String[]> parameters = request().body().asFormUrlEncoded();
 		String questionIDInput = parameters.get("questionID")[0];
 		String voteScoreInput = parameters.get("score")[0];
+		
+		
 		Question changeQuestion = Question.find.byId(questionIDInput);
 		// voteScore needs to get +1 as the score gets AJAXed after the click
 		changeQuestion.voteScore = Integer.parseInt(voteScoreInput) + 1;

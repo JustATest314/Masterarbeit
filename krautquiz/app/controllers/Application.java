@@ -130,9 +130,9 @@ public class Application extends Controller {
 		}
 		
 		Question answerWithQuestionID = new Question(generateFakeID(), null, null, null, 1);
-		Form<Question> preFilledAnswer = newQuestionForm.fill(answerWithQuestionID);
+		Form<Question> preFilledQuestion = newQuestionForm.fill(answerWithQuestionID);
 		
-		return ok(views.html.frageAntwort.render(preFilledAnswer, questionHelper));
+		return ok(views.html.frageAntwort.render(preFilledQuestion, questionHelper));
 	}
 	
 	// Send the question to the indexpage
@@ -268,5 +268,59 @@ public class Application extends Controller {
 				changeAnswer.save();
 			}
 			return ok(views.html.index.render(questionListAll, answerListAll));
+		}
+		
+		public static Result editQuestion(String questionIDInput){
+			
+			List<Question> questionHelper = new ArrayList<Question>();
+			for (Question questionItem : Question.find.all()) {
+				questionHelper.add(questionItem);
+			}
+			
+			Question helper = Question.find.byId(questionIDInput);
+			
+			Form<Question> preFilledQuestion = newQuestionForm.fill(helper);
+			
+			return ok(views.html.editQuestion.render(preFilledQuestion, questionHelper));
+		}
+		
+		public static Result sendEditedQuestion(){
+			
+			Form<Question> boundQuestion = newQuestionForm.bindFromRequest();
+			Question newQuestion = boundQuestion.get();
+			
+			Question.find.byId(newQuestion.questionID).delete();
+			Question.create(newQuestion);
+			
+			questionListAll.add(newQuestion);
+			Collections.sort(questionListAll, Collections.reverseOrder());
+			return redirect(routes.Application.index());
+		}
+		
+public static Result editAnswer(String answerIDInput){
+			
+			List<Answer> answerHelper = new ArrayList<Answer>();
+			for (Answer answerItem : Answer.find.all()) {
+				answerHelper.add(answerItem);
+			}
+			
+			Answer helper = Answer.find.byId(answerIDInput);
+			
+			Form<Answer> preFilledAnswer = newAnswerForm.fill(helper);
+			
+			return ok(views.html.editAnswer.render(preFilledAnswer, answerHelper));
+		}
+		
+		public static Result sendEditedAnswer(){
+			
+			Form<Answer> boundAnswer = newAnswerForm.bindFromRequest();
+			Answer newAnswer = boundAnswer.get();
+			
+			Answer.find.byId(newAnswer.answerID).delete();
+			Answer.create(newAnswer);
+			
+			answerListAll.add(newAnswer);
+			Collections.sort(questionListAll, Collections.reverseOrder());
+			return redirect(routes.Application.index());
 		}
 }

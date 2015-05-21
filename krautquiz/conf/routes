@@ -9,9 +9,15 @@ GET		/InitDB						controllers.Application.initDB()
 GET		/FrageStellen				controllers.Application.askQuestion()
 POST	/FrageStellen				controllers.Application.sendQuestion()
 
+GET	    /FrageEditieren				controllers.Application.editQuestion(questionId: String)
+POST	/FrageEditieren				controllers.Application.sendEditedQuestion()
+
 #Answers
 GET		/AntwortGeben				controllers.Application.writeAnswer(questionId: String)
 POST	/AntwortGeben				controllers.Application.sendAnswer()
+
+GET	    /AntwortEditieren			controllers.Application.editAnswer(answerId: String)
+POST	/AntwortEditieren			controllers.Application.sendEditedAnswer()
 
 #Settings
 GET		/Einstellungen				controllers.Application.showSettings()

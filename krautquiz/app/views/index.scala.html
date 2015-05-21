@@ -20,45 +20,33 @@
 <script>
 $(document).ready(function(){
 	$(".btn-default").click(function(){
+
+		<!-- VoteUp -->
 		if( $(this).val() == 'voteUp'){
 			
 			if( $(this).hasClass("questionButton") ){
 			
-			$(this).html( "<span class='glyphicon glyphicon-arrow-up' aria-hidden='true' style='color:orange'></span>" );
-			
-	    	var currentScore = $(this).parent('li').find('> .num').text();
-	    	$(this).parent('li').find('> .num').html(parseInt(currentScore) + 1);
-	    	
-	    	var currentID = $(this).parent('li').find('> .num').attr('id');
-	    	
-	    	var buttonType = "questionButton";
-	    	
-			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
-			$.ajax({ 
-				type : 'POST',
-				url : '@routes.Application.voteUp()',
-				data : {
-					questionID : currentID,
-					score : currentScore,
-					type: buttonType
-					},
-				success : function(data){
-					}
-			});
+				var $findNum = $(this).parent('li').find('> .num');
+		    	var currentScore = $findNum.text();
+		    	$findNum.html(parseInt(currentScore) + 1);
+		    	
+		    	var currentID = $findNum.attr('id');
+		    	var buttonType = "questionButton";
 	    	}
-	    	
+		    	
 	    	if( $(this).hasClass("answerButton") ){
-			
-			$(this).html( "<span class='glyphicon glyphicon-arrow-up' aria-hidden='true' style='color:orange'></span>" );
-			
-	    	var currentScore = $(this).parent('li').find('> .num').text();
-	    	$(this).parent('li').find('> .num').html(parseInt(currentScore) + 1);
+				
+				var $findNum = $(this).parent('li').find('> .num');
+		    	var currentScore = $findNum.text();
+		    	$findNum.html(parseInt(currentScore) + 1);
+		    	
+		    	var currentID = $findNum.attr('id');
+		    	var buttonType = "answerButton";
+	    	}
+
+	    	$(this).html( "<span class='glyphicon glyphicon-arrow-up' aria-hidden='true' style='color:orange'></span>" );
 	    	
-	    	var currentID = $(this).parent('li').find('> .num').attr('id');
-	    	
-	    	var buttonType = "answerButton";
-	    	
-			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
+	    	<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
 			$.ajax({ 
 				type : 'POST',
 				url : '@routes.Application.voteUp()',
@@ -70,46 +58,33 @@ $(document).ready(function(){
 				success : function(data){
 					}
 			});
-	    	}
 		}
+
+		<!-- VoteDown -->
 		else if($(this).val() == 'voteDown'){
 			
 			if($(this).hasClass("questionButton")){
 			
-			
-			$(this).html( "<span class='glyphicon glyphicon-arrow-down' aria-hidden='true' style='color:blue'></span>" );
-	    	var currentScore = $(this).parent('li').find('> .num').text();
-	    	$(this).parent('li').find('> .num').html(parseInt(currentScore) - 1);
+			var $findNum = $(this).parent('li').find('> .num');
+	    	var currentScore = $findNum.text();
+	    	$findNum.html(parseInt(currentScore) - 1);
 	    	
-	    	
-	    	var currentID = $(this).parent('li').find('> .num').attr('id');
+	    	var currentID = $findNum.attr('id');
 	    	var buttonType = "questionButton";
-	    	
-			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
-			$.ajax({ 
-				type : 'POST',
-				url : '@routes.Application.voteDown()',
-				data : {
-					questionID : currentID,
-					score : currentScore,
-					type : buttonType
-					},
-				success : function(data){
-					}
-			});
 			}
 			
 			if($(this).hasClass("answerButton")){
 			
-			
-			$(this).html( "<span class='glyphicon glyphicon-arrow-down' aria-hidden='true' style='color:blue'></span>" );
-	    	var currentScore = $(this).parent('li').find('> .num').text();
-	    	$(this).parent('li').find('> .num').html(parseInt(currentScore) - 1);
-	    	
+			var $findNum = $(this).parent('li').find('> .num');
+	    	var currentScore = $findNum.text();
+	    	$findNum.html(parseInt(currentScore) - 1);
 	    	
 	    	var currentID = $(this).parent('li').find('> .num').attr('id');
 	    	var buttonType = "answerButton";
-	    	
+			}
+
+			$(this).html( "<span class='glyphicon glyphicon-arrow-down' aria-hidden='true' style='color:blue'></span>" );
+
 			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
 			$.ajax({ 
 				type : 'POST',
@@ -122,8 +97,7 @@ $(document).ready(function(){
 				success : function(data){
 					}
 			});
-			}
-		}
+		} 
 		
 		else if($(this).val() == 'editQuestion'){
 			alert("TODO - Edit Question");

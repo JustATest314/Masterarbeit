@@ -22,6 +22,8 @@ $(document).ready(function(){
 	$(".btn-default").click(function(){
 		if( $(this).val() == 'voteUp'){
 			
+			if( $(this).hasClass("questionButton") ){
+			
 			$(this).html( "<span class='glyphicon glyphicon-arrow-up' aria-hidden='true' style='color:orange'></span>" );
 			
 	    	var currentScore = $(this).parent('li').find('> .num').text();
@@ -29,28 +31,59 @@ $(document).ready(function(){
 	    	
 	    	var currentID = $(this).parent('li').find('> .num').attr('id');
 	    	
+	    	var buttonType = "questionButton";
+	    	
 			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
 			$.ajax({ 
 				type : 'POST',
 				url : '@routes.Application.voteUp()',
 				data : {
 					questionID : currentID,
-					score : currentScore
+					score : currentScore,
+					type: buttonType
 					},
 				success : function(data){
 					}
 			});
+	    	}
 	    	
+	    	if( $(this).hasClass("answerButton") ){
+			
+			$(this).html( "<span class='glyphicon glyphicon-arrow-up' aria-hidden='true' style='color:orange'></span>" );
+			
+	    	var currentScore = $(this).parent('li').find('> .num').text();
+	    	$(this).parent('li').find('> .num').html(parseInt(currentScore) + 1);
+	    	
+	    	var currentID = $(this).parent('li').find('> .num').attr('id');
+	    	
+	    	var buttonType = "answerButton";
+	    	
+			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
+			$.ajax({ 
+				type : 'POST',
+				url : '@routes.Application.voteUp()',
+				data : {
+					questionID : currentID,
+					score : currentScore,
+					type: buttonType
+					},
+				success : function(data){
+					}
+			});
+	    	}
 		}
 		else if($(this).val() == 'voteDown'){
+			
+			if($(this).hasClass("questionButton")){
+			
+			
 			$(this).html( "<span class='glyphicon glyphicon-arrow-down' aria-hidden='true' style='color:blue'></span>" );
 	    	var currentScore = $(this).parent('li').find('> .num').text();
 	    	$(this).parent('li').find('> .num').html(parseInt(currentScore) - 1);
 	    	
-	    	var test = $(this).parent('li').find('> .num').text(); 
-	    	console.log('Contents: ' + test);
 	    	
 	    	var currentID = $(this).parent('li').find('> .num').attr('id');
+	    	var buttonType = "questionButton";
 	    	
 			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
 			$.ajax({ 
@@ -58,12 +91,38 @@ $(document).ready(function(){
 				url : '@routes.Application.voteDown()',
 				data : {
 					questionID : currentID,
-					score : currentScore
+					score : currentScore,
+					type : buttonType
 					},
 				success : function(data){
 					}
 			});
+			}
 			
+			if($(this).hasClass("answerButton")){
+			
+			
+			$(this).html( "<span class='glyphicon glyphicon-arrow-down' aria-hidden='true' style='color:blue'></span>" );
+	    	var currentScore = $(this).parent('li').find('> .num').text();
+	    	$(this).parent('li').find('> .num').html(parseInt(currentScore) - 1);
+	    	
+	    	
+	    	var currentID = $(this).parent('li').find('> .num').attr('id');
+	    	var buttonType = "answerButton";
+	    	
+			<!-- AJAX script to send the voteScore to the controller and then put it into the DB -->
+			$.ajax({ 
+				type : 'POST',
+				url : '@routes.Application.voteDown()',
+				data : {
+					questionID : currentID,
+					score : currentScore,
+					type : buttonType
+					},
+				success : function(data){
+					}
+			});
+			}
 		}
 		
 		else if($(this).val() == 'editQuestion'){
@@ -87,14 +146,14 @@ $(document).ready(function(){
 
 			<!-- Questions -->
 			<li class="list-group-item" >
-				<button type="button" class="btn btn-default"  id="upvoteButton" 
+				<button type="button" class="btn btn-default questionButton"  id="upvoteButton" 
 					value="voteUp" style="width: 30px; height: 30px; text-align: center; vertical-align: center;">
 					<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
 				</button>
 				
 				<span class="num" id="@question.questionID">@question.voteScore</span>
 				
-				<button type="button" class="btn btn-default" id="downvoteButton" 
+				<button type="button" class="btn btn-default questionButton" id="downvoteButton" 
 					value="voteDown" style="width: 30px; height: 30px; text-align: center;">
 					<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
 				</button>
@@ -121,15 +180,14 @@ $(document).ready(function(){
 					@if(question.questionID == answer.questionID){
 
 					<li class="list-group-item" > 
-						<button type="button" class="btn btn-default answerTest" id="upvoteButton" 
+						<button type="button" class="btn btn-default answerButton" id="upvoteButton" 
 							value="voteUp" style="width: 30px; height: 30px; text-align: center;">
 							<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
 						</button>
 
-						<!-- TODO Do I need questionID or answerID or both? -->
-						<span class="num" id="@question.questionID">@answer.voteScore</span>
+						<span class="num" id="@answer.answerID">@answer.voteScore</span>
 					
-						<button type="button" class="btn btn-default" id="downvoteButton" 
+						<button type="button" class="btn btn-default answerButton" id="downvoteButton" 
 							value="voteDown" style="width: 30px; height: 30px; text-align: center;">
 							<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
 						</button>

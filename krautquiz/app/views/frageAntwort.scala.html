@@ -12,7 +12,7 @@ The page gets a hashMap from the controller with all the q/as and renders them.
 
 @main("Frage stellen"){
 	
-	<!-- TODO Inputfields dont look like Bootstrap -->
+	<!-- TODO Inputfields dont look like Bootstrap, write own helper! -->
 	@helper.form(action = routes.Application.sendQuestion()){
 		<fieldset>
 			@helper.inputText(questionForm("questionID"))

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 
 import models.Answer;
@@ -270,55 +271,52 @@ public class Application extends Controller {
 			return ok(views.html.index.render(questionListAll, answerListAll));
 		}
 		
+		// Gets an ID from the form in the view class, finds the matching question and updates it
 		public static Result editQuestion(String questionIDInput){
-			
 			List<Question> questionHelper = new ArrayList<Question>();
 			for (Question questionItem : Question.find.all()) {
 				questionHelper.add(questionItem);
 			}
-			
 			Question helper = Question.find.byId(questionIDInput);
-			
+			// Fill a form with the last entered values
 			Form<Question> preFilledQuestion = newQuestionForm.fill(helper);
-			
 			return ok(views.html.editQuestion.render(preFilledQuestion, questionHelper));
 		}
 		
+		// Sends an edited Question
 		public static Result sendEditedQuestion(){
-			
+			// Get the input text by a request
 			Form<Question> boundQuestion = newQuestionForm.bindFromRequest();
 			Question newQuestion = boundQuestion.get();
-			
+			// Delete the old question, create a new with the entered input
+			// TODOL Should the question really be deleted and created? No method for update()?
+			// Ebean.update(QUESTION); might work?
 			Question.find.byId(newQuestion.questionID).delete();
 			Question.create(newQuestion);
 			
 			questionListAll.add(newQuestion);
+			// Sort the list, so best rated goes to the top
 			Collections.sort(questionListAll, Collections.reverseOrder());
 			return redirect(routes.Application.index());
 		}
 		
-public static Result editAnswer(String answerIDInput){
-			
+		// Similar to editQuestion()
+		public static Result editAnswer(String answerIDInput){
 			List<Answer> answerHelper = new ArrayList<Answer>();
 			for (Answer answerItem : Answer.find.all()) {
 				answerHelper.add(answerItem);
 			}
-			
 			Answer helper = Answer.find.byId(answerIDInput);
-			
 			Form<Answer> preFilledAnswer = newAnswerForm.fill(helper);
-			
 			return ok(views.html.editAnswer.render(preFilledAnswer, answerHelper));
 		}
 		
+		// Similar to sendEditedQuestion()
 		public static Result sendEditedAnswer(){
-			
 			Form<Answer> boundAnswer = newAnswerForm.bindFromRequest();
 			Answer newAnswer = boundAnswer.get();
-			
 			Answer.find.byId(newAnswer.answerID).delete();
 			Answer.create(newAnswer);
-			
 			answerListAll.add(newAnswer);
 			Collections.sort(questionListAll, Collections.reverseOrder());
 			return redirect(routes.Application.index());

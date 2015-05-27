@@ -12,6 +12,8 @@ import models.Question;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
+import controllers.Application.Login;
 
 /*
  * This is the application controller. It contains the most of the logic at the moment. Splitting it into several other classes did not
@@ -92,6 +94,7 @@ public class Application extends Controller {
 	}
 
 	// Frontpage
+	@Security.Authenticated(Secured.class)
 	public static Result index() {
 		questionListAll.clear();
 		answerListAll.clear();
@@ -334,12 +337,20 @@ public class Application extends Controller {
 		// TODOL Remove, just for development
 		public static void createAndRetrieveUser() {
 	        new Nutzer("bob@mail.com", "Bob", "secret").save();
+	        new Nutzer("marcus@mail.com", "Marcus", "12345").save();
+	        new Nutzer("tim@mail.com", "Tim", "12345").save();
 	    }
 		
 		public static Result login() {
 			// TODOL Remove, just for development
 //			createAndRetrieveUser();
 			return ok(views.html.login.render(Form.form(Login.class)));
+		}
+		
+		public static Result logout() {
+		    session().clear();
+		    flash("success", "You've been logged out");
+		    return redirect(routes.Application.login());
 		}
 		
 		public static Result authenticate() {

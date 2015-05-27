@@ -7,8 +7,10 @@ GET     /                           controllers.Application.index()
 GET		/InitDB						controllers.Application.initDB()
 
 #Login
-GET     /login                  	controllers.Application.login()
-POST    /login                      controllers.Application.authenticate()
+GET     /Login                  	controllers.Application.login()
+POST    /Login                      controllers.Application.authenticate()
+
+GET     /Logout                     controllers.Application.logout()
 
 
 #Questions

@@ -2,18 +2,13 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.ExpressionList;
-
 import models.Answer;
+import models.Nutzer;
 import models.Question;
-import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -321,4 +316,45 @@ public class Application extends Controller {
 			Collections.sort(questionListAll, Collections.reverseOrder());
 			return redirect(routes.Application.index());
 		}
+		
+		public static class Login {
+		    public String email;
+		    public String password;
+		    
+
+		    
+		    public String validate() {
+			    if (Nutzer.authenticate(email, password) == null) {
+			      return "Invalid user or password";
+			    }
+			    return null;
+			}
+		}
+		
+		// TODOL Remove, just for development
+		public static void createAndRetrieveUser() {
+	        new Nutzer("bob@mail.com", "Bob", "secret").save();
+	    }
+		
+		public static Result login() {
+			// TODOL Remove, just for development
+//			createAndRetrieveUser();
+			return ok(views.html.login.render(Form.form(Login.class)));
+		}
+		
+		public static Result authenticate() {
+		    Form<Login> loginForm = Form.form(Login.class).bindFromRequest();
+		    if (loginForm.hasErrors()) {
+		        return badRequest(views.html.login.render(loginForm));
+		    } else {
+		        session().clear();
+		        session("email", loginForm.get().email);
+		        System.out.println(loginForm.get().email);
+		        return redirect(routes.Application.index());
+		    }
+		}
+		
+		
+		
+		
 }

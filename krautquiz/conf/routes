@@ -5,6 +5,12 @@
 # Home page
 GET     /                           controllers.Application.index()
 GET		/InitDB						controllers.Application.initDB()
+
+#Login
+GET     /login                  	controllers.Application.login()
+POST    /login                      controllers.Application.authenticate()
+
+
 #Questions
 GET		/FrageStellen				controllers.Application.askQuestion()
 POST	/FrageStellen				controllers.Application.sendQuestion()

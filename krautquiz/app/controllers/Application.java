@@ -320,12 +320,11 @@ public class Application extends Controller {
 			return redirect(routes.Application.index());
 		}
 		
+		// Inner class to handle login
 		public static class Login {
 		    public String email;
 		    public String password;
-		    
-
-		    
+    
 		    public String validate() {
 			    if (Nutzer.authenticate(email, password) == null) {
 			      return "Invalid user or password";
@@ -336,14 +335,14 @@ public class Application extends Controller {
 		
 		// TODOL Remove, just for development
 		public static void createAndRetrieveUser() {
-	        new Nutzer("bob@mail.com", "Bob", "secret").save();
-	        new Nutzer("marcus@mail.com", "Marcus", "12345").save();
-	        new Nutzer("tim@mail.com", "Tim", "12345").save();
+	        new Nutzer(generateFakeID(), "bob@mail.com", "Bob", "secret").save();
+	        new Nutzer(generateFakeID(), "marcus@mail.com", "Marcus", "12345").save();
+	        new Nutzer(generateFakeID(), "tim@mail.com", "Tim", "12345").save();
 	    }
 		
 		public static Result login() {
 			// TODOL Remove, just for development
-//			createAndRetrieveUser();
+			createAndRetrieveUser();
 			return ok(views.html.login.render(Form.form(Login.class)));
 		}
 		
@@ -361,6 +360,10 @@ public class Application extends Controller {
 		        session().clear();
 		        session("email", loginForm.get().email);
 		        System.out.println(loginForm.get().email);
+		        
+		        for (Nutzer nutzer : Nutzer.find.all()) {
+		        	System.out.println("UserIDs: " + nutzer.userID);
+		        }
 		        return redirect(routes.Application.index());
 		    }
 		}

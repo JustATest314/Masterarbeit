@@ -151,6 +151,7 @@ public class Application extends Controller {
 	}
 	
 	// Write an answer, goto answerpage
+	@Security.Authenticated(Secured.class)
 	public static Result writeAnswer(String questionIDInput){
 		// TODO answerHelper not needed in Production, remove
 		List<Answer> answerHelper = new ArrayList<Answer>();
@@ -159,8 +160,12 @@ public class Application extends Controller {
 			answerHelper.add(answerItem);
 		}
 	
-		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, null, null, 1);
+		Nutzer formUser = Nutzer.find.byId(request().username());
+		System.out.println("Name FormUser: " + formUser.name);
+		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, null, request().username(), 1);
 		Form<Answer> preFilledAnswer = newAnswerForm.fill(answerWithQuestionID);
+		
+		System.out.println("writeAnswer() username: " + request().username());
 		
 		return ok(views.html.antwortGeben.render(preFilledAnswer, answerHelper));
 	}
@@ -327,6 +332,7 @@ public class Application extends Controller {
     
 		    public String validate() {
 			    if (Nutzer.authenticate(email, password) == null) {
+			    	System.out.println("validate() has been called");
 			      return "Invalid user or password";
 			    }
 			    return null;

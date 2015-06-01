@@ -14,11 +14,11 @@ create table answer (
 ;
 
 create table nutzer (
-  user_id                   varchar(255) not null,
-  email                     varchar(255),
+  email                     varchar(255) not null,
+  user_id                   varchar(255),
   name                      varchar(255),
   password                  varchar(255),
-  constraint pk_nutzer primary key (user_id))
+  constraint pk_nutzer primary key (email))
 ;
 
 create table question (

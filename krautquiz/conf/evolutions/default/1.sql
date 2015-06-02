@@ -8,14 +8,13 @@ create table answer (
   question_id               varchar(255),
   answer_text               varchar(255),
   vote_score                integer,
-  user_id                   varchar(255),
+  owner_id                  varchar(255),
   page                      integer,
   constraint pk_answer primary key (answer_id))
 ;
 
 create table nutzer (
   email                     varchar(255) not null,
-  user_id                   varchar(255),
   name                      varchar(255),
   password                  varchar(255),
   constraint pk_nutzer primary key (email))
@@ -25,7 +24,7 @@ create table question (
   question_id               varchar(255) not null,
   question_text             varchar(255),
   vote_score                integer,
-  user_id                   varchar(255),
+  owner_id                  varchar(255),
   page                      integer,
   constraint pk_question primary key (question_id))
 ;

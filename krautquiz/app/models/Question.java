@@ -21,15 +21,15 @@ public class Question extends Model implements Comparable<Question> {
 	public String questionID;
 	public String questionText;
 	public Integer voteScore;
-	public String userID;
+	public String ownerID;
 	public Integer page;
 	
 	// Constructor
-	public Question(String inputID, String inputQuestionText, Integer inputVoteScore, String inputUserID, Integer inputPage){
+	public Question(String inputID, String inputQuestionText, Integer inputVoteScore, String inputOwnerID, Integer inputPage){
 		this.questionID = inputID;
 		this.questionText = inputQuestionText;
 		this.voteScore = inputVoteScore;
-		this.userID = inputUserID;
+		this.ownerID = inputOwnerID;
 		this.page = inputPage;
 	}
 	
@@ -56,7 +56,7 @@ public class Question extends Model implements Comparable<Question> {
 	
 	// Mostly for debugging
 	public String toString(){
-		return "questionID = " + questionID + " questionText = " + questionText + " voteScore = " + voteScore + " userID = " + userID + " page = " + page;
+		return "questionID = " + questionID + " questionText = " + questionText + " voteScore = " + voteScore + " ownerID = " + ownerID + " page = " + page;
 	}
 
 	@Override

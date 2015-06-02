@@ -23,16 +23,16 @@ public class Answer extends Model implements Comparable<Answer>{
 	public String questionID;
 	public String answerText;
 	public Integer voteScore;
-	public String userID;
+	public String ownerID;
 	public Integer page;
 	
 	// Contructor
-	public Answer(String inputID, String inputQuestionID, String inputAnswerText, Integer inputVoteScore, String inputUserID, Integer inputPage){
+	public Answer(String inputID, String inputQuestionID, String inputAnswerText, Integer inputVoteScore, String inputOwnerID, Integer inputPage){
 		this.answerID = inputID;
 		this.questionID = inputQuestionID;
 		this.answerText = inputAnswerText;
 		this.voteScore = inputVoteScore;
-		this.userID = inputUserID;
+		this.ownerID = inputOwnerID;
 		this.page = inputPage;
 	}
 	
@@ -58,7 +58,7 @@ public class Answer extends Model implements Comparable<Answer>{
 	
 	// Mostly for debugging
 	public String toString(){
-		return "ID = " + answerID + " questionID = " + questionID + " answerText = " + answerText + " voteScore = " + voteScore + " userID = " + userID + " page = " + page;
+		return "ID = " + answerID + " questionID = " + questionID + " answerText = " + answerText + " voteScore = " + voteScore + " ownerID = " + ownerID + " page = " + page;
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import models.Nutzer;
 import models.Question;
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
 import controllers.Application.Login;
@@ -121,6 +122,7 @@ public class Application extends Controller {
 	}
 	
 	// Go to the ask question page
+	@Security.Authenticated(Secured.class)
 	public static Result askQuestion(){
 		// TODO questionHelper not needed? Check and remove!
 		List<Question> questionHelper = new ArrayList<Question>();
@@ -128,7 +130,11 @@ public class Application extends Controller {
 			questionHelper.add(questionItem);
 		}
 		
-		Question answerWithQuestionID = new Question(generateFakeID(), null, null, null, 1);
+		System.out.println("Context: " + Context.current().request().username());
+		System.out.println("askQuestion: " + request().username());
+		Nutzer formUser = Nutzer.find.byId(request().username());
+		
+		Question answerWithQuestionID = new Question(generateFakeID(), null, null, formUser.name, 1);
 		Form<Question> preFilledQuestion = newQuestionForm.fill(answerWithQuestionID);
 		
 		return ok(views.html.frageAntwort.render(preFilledQuestion, questionHelper));
@@ -145,9 +151,8 @@ public class Application extends Controller {
 		
 		questionListAll.add(newQuestion);
 		Collections.sort(questionListAll, Collections.reverseOrder());
-		return ok(views.html.index.render(questionListAll, answerListAll));
-		// TODOL Not working, why not?
-		// return redirect(routes.Application.index());
+//		return ok(views.html.index.render(questionListAll, answerListAll));
+		 return redirect(routes.Application.index());
 	}
 	
 	// Write an answer, goto answerpage
@@ -162,10 +167,11 @@ public class Application extends Controller {
 	
 		Nutzer formUser = Nutzer.find.byId(request().username());
 		System.out.println("Name FormUser: " + formUser.name);
-		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, null, request().username(), 1);
+		
+		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, null, formUser.name, 1);
 		Form<Answer> preFilledAnswer = newAnswerForm.fill(answerWithQuestionID);
 		
-		System.out.println("writeAnswer() username: " + request().username());
+		System.out.println("formAnswer: " + preFilledAnswer.toString());
 		
 		return ok(views.html.antwortGeben.render(preFilledAnswer, answerHelper));
 	}
@@ -341,14 +347,14 @@ public class Application extends Controller {
 		
 		// TODOL Remove, just for development
 		public static void createAndRetrieveUser() {
-	        new Nutzer(generateFakeID(), "bob@mail.com", "Bob", "secret").save();
-	        new Nutzer(generateFakeID(), "marcus@mail.com", "Marcus", "12345").save();
-	        new Nutzer(generateFakeID(), "tim@mail.com", "Tim", "12345").save();
+	        new Nutzer("bob@mail.com", "Bob", "secret").save();
+	        new Nutzer("marcus@mail.com", "Marcus", "12345").save();
+	        new Nutzer("tim@mail.com", "Tim", "12345").save();
 	    }
 		
 		public static Result login() {
 			// TODOL Remove, just for development
-			createAndRetrieveUser();
+//			createAndRetrieveUser();
 			return ok(views.html.login.render(Form.form(Login.class)));
 		}
 		
@@ -368,7 +374,7 @@ public class Application extends Controller {
 		        System.out.println(loginForm.get().email);
 		        
 		        for (Nutzer nutzer : Nutzer.find.all()) {
-		        	System.out.println("UserIDs: " + nutzer.userID);
+		        	System.out.println("UserIDs: " + nutzer.email);
 		        }
 		        return redirect(routes.Application.index());
 		    }

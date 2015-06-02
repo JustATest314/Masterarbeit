@@ -130,7 +130,7 @@ $(document).ready(function(){
 				</button>
 
 				<!-- TODO Change to the userpage -->
-				&nbsp; @question.questionText - <i><a href="@routes.Application.showUsers()">@question.userID </a></i> &nbsp;
+				&nbsp; @question.questionText - <i><a href="@routes.Application.showUsers()">@question.ownerID </a></i> &nbsp;
 		
 				<a href="@routes.Application.editQuestion(question.questionID)">
 					<button class="btn btn-default" type="button" id="editQuestionButton" 
@@ -165,7 +165,7 @@ $(document).ready(function(){
 							<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
 						</button>
 
-						&nbsp; @answer.answerText - <i><a href="@routes.Application.showUsers()">@answer.userID</a></i> &nbsp;
+						&nbsp; @answer.answerText - <i><a href="@routes.Application.showUsers()">@answer.ownerID</a></i> &nbsp;
 
 						<a href="@routes.Application.editAnswer(answer.answerID)">
 						<button type="button" class="btn btn-default" id="editQuestionButton" 

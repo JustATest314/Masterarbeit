@@ -1,17 +1,17 @@
-@(form: Form[Application.Login])
+@(form: Form[Application.Register])
 
 <html>
 <head>
-	<title>Login Screen</title>
+	<title>Registrieren</title>
 	<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
 	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/login.css")">
 </head>
 	<body>
 		<header>
+			<h1>Registrieren</h1>
 		</header>
 
-		@helper.form(routes.Application.authenticate) {
-			<h1>Sign in</h1>
+		@helper.form(routes.Application.registerUser) {
 			@if(form.hasGlobalErrors) {
 			    <p class="error">
 			        @form.globalError.message
@@ -23,7 +23,9 @@
 			        @flash.get("success")
 			    </p>
 			}
-
+			<p>
+				<input type="name" name="name" placeholder="Name" value="@form("name").value">
+			</p>
 			<p>
 				<input type="email" name="email" placeholder="Email" value="@form("email").value">
 			</p>
@@ -31,10 +33,8 @@
 				<input type="password" name="password" placeholder="Password">
 			</p>
 			<p>
-				<button type="submit">Login</button>
-				<a href="@routes.Application.register">Registrieren?</a>
+				<button type="submit">Registrieren</button>
 			</p>
 		}
-
 	</body>
 </html>

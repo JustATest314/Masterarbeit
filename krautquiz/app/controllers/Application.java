@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import akka.io.Tcp.Register;
 import models.Answer;
 import models.Nutzer;
 import models.Question;
@@ -124,20 +125,10 @@ public class Application extends Controller {
 	// Go to the ask question page
 	@Security.Authenticated(Secured.class)
 	public static Result askQuestion(){
-		// TODO questionHelper not needed? Check and remove!
-		List<Question> questionHelper = new ArrayList<Question>();
-		for (Question questionItem : Question.find.all()) {
-			questionHelper.add(questionItem);
-		}
-		
-		System.out.println("Context: " + Context.current().request().username());
-		System.out.println("askQuestion: " + request().username());
 		Nutzer formUser = Nutzer.find.byId(request().username());
-		
 		Question answerWithQuestionID = new Question(generateFakeID(), null, null, formUser.name, 1);
 		Form<Question> preFilledQuestion = newQuestionForm.fill(answerWithQuestionID);
-		
-		return ok(views.html.frageAntwort.render(preFilledQuestion, questionHelper));
+		return ok(views.html.frageAntwort.render(preFilledQuestion));
 	}
 	
 	// Send the question to the indexpage
@@ -158,13 +149,6 @@ public class Application extends Controller {
 	// Write an answer, goto answerpage
 	@Security.Authenticated(Secured.class)
 	public static Result writeAnswer(String questionIDInput){
-		// TODO answerHelper not needed in Production, remove
-		List<Answer> answerHelper = new ArrayList<Answer>();
-		
-		for (Answer answerItem : Answer.find.all()) {
-			answerHelper.add(answerItem);
-		}
-	
 		Nutzer formUser = Nutzer.find.byId(request().username());
 		System.out.println("Name FormUser: " + formUser.name);
 		
@@ -173,7 +157,7 @@ public class Application extends Controller {
 		
 		System.out.println("formAnswer: " + preFilledAnswer.toString());
 		
-		return ok(views.html.antwortGeben.render(preFilledAnswer, answerHelper));
+		return ok(views.html.antwortGeben.render(preFilledAnswer));
 	}
 	
 	// Send answer to indexpage
@@ -345,6 +329,12 @@ public class Application extends Controller {
 			}
 		}
 		
+		public static class Register{
+			public String name;
+			public String email;
+			public String password;
+		}
+		
 		// TODOL Remove, just for development
 		public static void createAndRetrieveUser() {
 	        new Nutzer("bob@mail.com", "Bob", "secret").save();
@@ -371,16 +361,18 @@ public class Application extends Controller {
 		    } else {
 		        session().clear();
 		        session("email", loginForm.get().email);
-		        System.out.println(loginForm.get().email);
-		        
-		        for (Nutzer nutzer : Nutzer.find.all()) {
-		        	System.out.println("UserIDs: " + nutzer.email);
-		        }
 		        return redirect(routes.Application.index());
 		    }
 		}
 		
+		public static Result register(){
+			return ok(views.html.register.render(Form.form(Register.class)));
+		}
 		
-		
-		
+		public static Result registerUser(){
+			Form<Register> registerForm = Form.form(Register.class).bindFromRequest();
+			Nutzer formNutzer = new Nutzer(registerForm.get().email, registerForm.get().name, registerForm.get().password);
+			formNutzer.save();
+			return redirect(routes.Application.index());
+		}
 }

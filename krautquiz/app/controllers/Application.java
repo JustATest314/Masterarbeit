@@ -33,8 +33,8 @@ public class Application extends Controller {
 	public static final Form<Question> newQuestionForm = Form.form(Question.class);
 	public static final Form<Answer> newAnswerForm = Form.form(Answer.class);
 	
-	public static List<Question> highestRankedQuestionList = new ArrayList<Question>();
-	public static List<Answer> highestRankedAnswerList = new ArrayList<Answer>();
+//	public static List<Question> highestRankedQuestionList = new ArrayList<Question>();
+//	public static List<Answer> highestRankedAnswerList = new ArrayList<Answer>();
 	
 	public static String generateFakeID(){
 		String fakeID = UUID.randomUUID().toString();
@@ -126,7 +126,7 @@ public class Application extends Controller {
 	@Security.Authenticated(Secured.class)
 	public static Result askQuestion(){
 		Nutzer formUser = Nutzer.find.byId(request().username());
-		Question answerWithQuestionID = new Question(generateFakeID(), null, null, formUser.name, 1);
+		Question answerWithQuestionID = new Question(generateFakeID(), null, null, formUser.email, 1);
 		Form<Question> preFilledQuestion = newQuestionForm.fill(answerWithQuestionID);
 		return ok(views.html.frageAntwort.render(preFilledQuestion));
 	}
@@ -152,7 +152,7 @@ public class Application extends Controller {
 		Nutzer formUser = Nutzer.find.byId(request().username());
 		System.out.println("Name FormUser: " + formUser.name);
 		
-		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, null, formUser.name, 1);
+		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, null, formUser.email, 1);
 		Form<Answer> preFilledAnswer = newAnswerForm.fill(answerWithQuestionID);
 		
 		System.out.println("formAnswer: " + preFilledAnswer.toString());
@@ -189,29 +189,58 @@ public class Application extends Controller {
 	// Quizpage
 	// TODO If 2 questions have the exact same score, always the first one will get taken and never the next one
 	// Maybe add some randomness?
+	@Security.Authenticated(Secured.class)
 	public static Result startQuiz() {
-		highestRankedQuestionList.clear();
-		highestRankedAnswerList.clear();
-		Integer highestVotescore = 0;
-		Question highestRankedQuestion = new Question();
-		
-		// Gets all entries from the database and finds the highest ranked Question
+		/**
+		 * What do I need for a quiz?
+		 * Interval - only in fixed time periods can a new quiz be generated, else the old one will be shown
+		 * Should I keep already given answers for new versions?
+		 * Threshold - Quiz collects questions based on voting, but not lower than 0?
+		 * get positive Q/As from DB, if user has not answered yet -> show
+		 * 
+		 */
+		List<Question> questionOwners = new ArrayList<Question>();
+		List<Answer> answerOwners = new ArrayList<Answer>();
+
+		System.out.println("username startQuiz(): " + request().username());
 		for (Question questionItem : Question.find.all()) {
-			if (questionItem.voteScore > highestVotescore){
-				highestRankedQuestion = questionItem;
-				highestVotescore = questionItem.voteScore;
-			}
-		}	
-		highestRankedQuestionList.add(highestRankedQuestion);
-		highestVotescore = 0;
-		
-		// List will only have 1 item - the highest ranked question!
-		for (Answer answerItem : Answer.find.all()) {
-			if (answerItem.questionID == highestRankedQuestion.questionID){
-				highestRankedAnswerList.add(answerItem);
+			if(request().username().equals(questionItem.ownerID)){
+				questionOwners.add(questionItem);
+				for (Answer answerItem : Answer.find.all()) {
+					if(answerItem.questionID == questionItem.questionID){
+						answerOwners.add(answerItem);
+					}
+				}
 			}
 		}
-		return ok(views.html.quiz.render(highestRankedQuestionList, highestRankedAnswerList));
+		
+		
+		
+		
+//		highestRankedQuestionList.clear();
+//		highestRankedAnswerList.clear();
+//		Integer highestVotescore = 0;
+//		Question highestRankedQuestion = new Question();
+//		
+//		// Gets all entries from the database and finds the highest ranked Question
+//		for (Question questionItem : Question.find.all()) {
+//			if (questionItem.voteScore > highestVotescore){
+//				highestRankedQuestion = questionItem;
+//				highestVotescore = questionItem.voteScore;
+//			}
+//		}	
+//		highestRankedQuestionList.add(highestRankedQuestion);
+//		highestVotescore = 0;
+//		
+//		// List will only have 1 item - the highest ranked question!
+//		for (Answer answerItem : Answer.find.all()) {
+//			if (answerItem.questionID == highestRankedQuestion.questionID){
+//				highestRankedAnswerList.add(answerItem);
+//			}
+//		}
+//		return ok(views.html.quiz.render(highestRankedQuestionList, highestRankedAnswerList));
+//		return ok(views.html.quiz.render(questionListAll, answerListAll));
+		return ok(views.html.quiz.render(questionOwners, answerOwners));
 	}
 	
 	// Method for voting on questions / answers, gets a map from an AJAX POST in the view class

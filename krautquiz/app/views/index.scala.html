@@ -165,6 +165,7 @@ $(document).ready(function(){
 							<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
 						</button>
 
+						<!-- FIXME Should show the username, not the email! -->
 						&nbsp; @answer.answerText - <i><a href="@routes.Application.showUsers()">@answer.ownerID</a></i> &nbsp;
 
 						<a href="@routes.Application.editAnswer(answer.answerID)">

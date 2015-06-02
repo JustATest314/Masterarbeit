@@ -12,9 +12,13 @@ with radio buttons and the user has to choose. *@
 		<h3 class="panel-title">Quiz</h3>
 	</div>
 	<div class="panel-body">
-		<div style="text-align: center;">
+		<div style="text-align: center;"> 
 			<!-- As only the highest ranked question gets put into the List, there is only one entry on first place -->
 			<b>@questionList.get(0).questionText</b>
+
+			@for(question <- questionList)	{
+				@question.questionText - @question.ownerID <br>
+			}
 		</div>
 	</div>
 </div>
@@ -31,8 +35,7 @@ with radio buttons and the user has to choose. *@
  						<div class="radio">
   							<label><input type="radio" name="optradio">@answer.answerText</label>
 						</div>
-				} 
-				
+				}
 				<a href="@routes.Application.askQuestion()"><button
 						class="btn btn-default" type="submit">Nächste Frage</button>
 		</div>

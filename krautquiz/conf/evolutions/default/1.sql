@@ -29,11 +29,22 @@ create table question (
   constraint pk_question primary key (question_id))
 ;
 
+create table quiz (
+  entry_id                  varchar(255) not null,
+  user_id                   varchar(255),
+  question_id               varchar(255),
+  answer_id                 varchar(255),
+  time                      bigint,
+  constraint pk_quiz primary key (entry_id))
+;
+
 create sequence answer_seq;
 
 create sequence nutzer_seq;
 
 create sequence question_seq;
+
+create sequence quiz_seq;
 
 
 
@@ -48,6 +59,8 @@ drop table if exists nutzer;
 
 drop table if exists question;
 
+drop table if exists quiz;
+
 SET REFERENTIAL_INTEGRITY TRUE;
 
 drop sequence if exists answer_seq;
@@ -55,4 +68,6 @@ drop sequence if exists answer_seq;
 drop sequence if exists nutzer_seq;
 
 drop sequence if exists question_seq;
+
+drop sequence if exists quiz_seq;
 

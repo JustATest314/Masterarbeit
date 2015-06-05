@@ -1,20 +1,29 @@
 package controllers;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
+
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.RawSql;
+import com.avaje.ebean.RawSqlBuilder;
 
 import akka.io.Tcp.Register;
 import models.Answer;
 import models.Nutzer;
 import models.Question;
+import models.Quiz;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
+import scala.collection.immutable.HashMap;
 import controllers.Application.Login;
 
 /*
@@ -53,22 +62,22 @@ public class Application extends Controller {
 		// Fake IDs are needed while developing, so there are no duplicates
 		String questionFakeID1 = generateFakeID();
 		
-		Question question1 = new Question(questionFakeID1, "Do Androids dream?", 76, "Marcus", 1);
-		Answer answer11 = new Answer(generateFakeID(), questionFakeID1, "Only of electric sheep!", 70, "Tibor", 1);
-		Answer answer12 = new Answer(generateFakeID(), questionFakeID1, "No, they dont!", 10, "Sarah", 1);
+		Question question1 = new Question(questionFakeID1, "Do Androids dream?", 76, "marcus@mail.de", 1);
+		Answer answer11 = new Answer(generateFakeID(), questionFakeID1, "Only of electric sheep!", 70, "tibor@mail.de", 1);
+		Answer answer12 = new Answer(generateFakeID(), questionFakeID1, "No, they dont!", 10, "sarah@mail.de", 1);
 		
 		String questionFakeID2 = generateFakeID();
 
-		Question question2 = new Question(questionFakeID2, "Why is the sky blue?", 124, "Frank", 1);
-		Answer answer21 = new Answer(generateFakeID(), questionFakeID2, "Frequency filtered sunlight!", 45, "Oliver", 1);
-		Answer answer22 = new Answer(generateFakeID(), questionFakeID2, "Light reflects from the blue sea water!", 3, "Tom", 1);
+		Question question2 = new Question(questionFakeID2, "Why is the sky blue?", 124, "frank@mail.de", 1);
+		Answer answer21 = new Answer(generateFakeID(), questionFakeID2, "Frequency filtered sunlight!", 45, "oliver@mail.de", 1);
+		Answer answer22 = new Answer(generateFakeID(), questionFakeID2, "Light reflects from the blue sea water!", 3, "tom@mail.de", 1);
 		
 		String questionFakeID3 = generateFakeID();
 		
-		Question question3 = new Question(questionFakeID3, "How tall is tall?", 34, "Tim", 1);
-		Answer answer31 = new Answer(generateFakeID(), questionFakeID3, "Depends on your definition!", 12, "Oliver", 1);
-		Answer answer32 = new Answer(generateFakeID(), questionFakeID3, "Very!", 1, "Marcus", 1);
-		Answer answer33 = new Answer(generateFakeID(), questionFakeID3, "Not much!", 1, "Frank", 1);
+		Question question3 = new Question(questionFakeID3, "How tall is tall?", 34, "tim@mail.de", 1);
+		Answer answer31 = new Answer(generateFakeID(), questionFakeID3, "Depends on your definition!", 12, "oliver@mail.de", 1);
+		Answer answer32 = new Answer(generateFakeID(), questionFakeID3, "Very!", 1, "marcus@mail.de", 1);
+		Answer answer33 = new Answer(generateFakeID(), questionFakeID3, "Not much!", 1, "frank@mail.de", 1);
 		
 		questionListAll.add(question1);
 		questionListAll.add(question2);
@@ -139,6 +148,9 @@ public class Application extends Controller {
 		Form<Question> boundQuestion = newQuestionForm.bindFromRequest();
 		Question newQuestion = boundQuestion.get();
 		Question.create(newQuestion);
+//		Quiz.createQuestion(newQuestion);
+		
+		System.out.println("Quizquestion created!");
 		
 		questionListAll.add(newQuestion);
 		Collections.sort(questionListAll, Collections.reverseOrder());
@@ -187,8 +199,6 @@ public class Application extends Controller {
 	}
 	
 	// Quizpage
-	// TODO If 2 questions have the exact same score, always the first one will get taken and never the next one
-	// Maybe add some randomness?
 	@Security.Authenticated(Secured.class)
 	public static Result startQuiz() {
 		/**
@@ -198,49 +208,49 @@ public class Application extends Controller {
 		 * Threshold - Quiz collects questions based on voting, but not lower than 0?
 		 * get positive Q/As from DB, if user has not answered yet -> show
 		 * 
+		 * --------
+		 * Quiz geht durch alle Fragen
+		 * - wählt random eine aus, deren letzte Stellzeit - aktuelle Zeit < Interval ist
+		 * - wenn Nutzer richtig antwortet Interval erhöhen
+		 * - wenn Nutzer falsch antwortet, Interval auf 0 setzen (also sofort wieder)
+		 * 
 		 */
-		List<Question> questionOwners = new ArrayList<Question>();
-		List<Answer> answerOwners = new ArrayList<Answer>();
+		// Construct a randomized list of questions, depending on if the user has already seen the question in the quiz before
+		List<Answer> answerList = new ArrayList<Answer>();
+		List<Question> randomQuestionList = new ArrayList<Question>();
 
-		System.out.println("username startQuiz(): " + request().username());
+		// Find all questions, put them into list
 		for (Question questionItem : Question.find.all()) {
-			if(request().username().equals(questionItem.ownerID)){
-				questionOwners.add(questionItem);
-				for (Answer answerItem : Answer.find.all()) {
-					if(answerItem.questionID == questionItem.questionID){
-						answerOwners.add(answerItem);
-					}
-				}
+			randomQuestionList.add(questionItem);
+		}
+		
+
+		
+		// Take a random question from the list, clear list, put the left behind item in it
+		Question randomQuestion = randomQuestionList.get(new Random().nextInt(randomQuestionList.size())); 
+		randomQuestionList.clear();
+		randomQuestionList.add(randomQuestion);
+		
+		
+		for (Answer answerItem : Answer.find.all()) {
+			if(answerItem.questionID == randomQuestion.questionID){
+				answerList.add(answerItem);
 			}
 		}
 		
+		// Shuffle the answers, so the correct answer is not always on top
+		Collections.shuffle(answerList);
 		
-		
-		
-//		highestRankedQuestionList.clear();
-//		highestRankedAnswerList.clear();
-//		Integer highestVotescore = 0;
-//		Question highestRankedQuestion = new Question();
-//		
-//		// Gets all entries from the database and finds the highest ranked Question
-//		for (Question questionItem : Question.find.all()) {
-//			if (questionItem.voteScore > highestVotescore){
-//				highestRankedQuestion = questionItem;
-//				highestVotescore = questionItem.voteScore;
-//			}
-//		}	
-//		highestRankedQuestionList.add(highestRankedQuestion);
-//		highestVotescore = 0;
-//		
-//		// List will only have 1 item - the highest ranked question!
-//		for (Answer answerItem : Answer.find.all()) {
-//			if (answerItem.questionID == highestRankedQuestion.questionID){
-//				highestRankedAnswerList.add(answerItem);
-//			}
-//		}
-//		return ok(views.html.quiz.render(highestRankedQuestionList, highestRankedAnswerList));
-//		return ok(views.html.quiz.render(questionListAll, answerListAll));
-		return ok(views.html.quiz.render(questionOwners, answerOwners));
+		return ok(views.html.quiz.render(randomQuestionList, answerList));
+	}
+	
+	public static Result nextQuizPage(){
+		/**
+		 * if user has answered correct
+		 * - save interval into quiz db
+		 * - goto next question
+		 */
+		return redirect(routes.Application.startQuiz());
 	}
 	
 	// Method for voting on questions / answers, gets a map from an AJAX POST in the view class

@@ -34,6 +34,7 @@ GET		/Einstellungen				controllers.Application.showSettings()
 
 #Quiz
 GET		/Quiz						controllers.Application.startQuiz()
+POST	/Quiz						controllers.Application.nextQuizPage()
 
 #User
 # TODO Will need an ID for each user as parameter!

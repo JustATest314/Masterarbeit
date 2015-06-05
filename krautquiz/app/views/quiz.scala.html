@@ -31,12 +31,16 @@ with radio buttons and the user has to choose. *@
 		<div style="text-align: center;">
 
 				<!-- TODO radiobuttons need to be in a group? -->
+				<div class="btn-group" data-toggle="buttons">
 				@for(answer <- answerList){
- 						<div class="radio">
-  							<label><input type="radio" name="optradio">@answer.answerText</label>
-						</div>
+					<p>
+						<label class="btn btn-default"><input type="radio" id=@answer.answerID name="optradio"> @answer.answerText</label>
+					</p>
 				}
-				<a href="@routes.Application.askQuestion()"><button
+				</div>
+				<br>
+
+				<a href="@routes.Application.nextQuizPage()"><button
 						class="btn btn-default" type="submit">Nächste Frage</button>
 		</div>
 	</div>

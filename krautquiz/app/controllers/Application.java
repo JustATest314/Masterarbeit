@@ -241,6 +241,7 @@ public class Application extends Controller {
 		// Shuffle the answers, so the correct answer is not always on top
 		Collections.shuffle(answerList);
 		
+		
 		return ok(views.html.quiz.render(randomQuestionList, answerList));
 	}
 	
@@ -250,6 +251,8 @@ public class Application extends Controller {
 		 * - save interval into quiz db
 		 * - goto next question
 		 */
+		
+		
 		return redirect(routes.Application.startQuiz());
 	}
 	

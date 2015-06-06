@@ -4,7 +4,10 @@ with radio buttons and the user has to choose. *@
 @import models.Question
 @import models.Answer
 
-@(questionList: List[Question], answerList: List[Answer])
+@import helper._
+@import helper.twitterBootstrap._
+
+@(questionList: List[Question], answerList: List[Answer], answerRadioForm: Form[Answer])
 
 @main("Quiz"){
 <div class="panel panel-default">
@@ -30,20 +33,21 @@ with radio buttons and the user has to choose. *@
 	<div class="panel-body">
 		<div style="text-align: center;">
 
-				<!-- TODO radiobuttons need to be in a group? -->
-				<div class="btn-group" data-toggle="buttons">
-				@for(answer <- answerList){
-					<p>
-						<label class="btn btn-default"><input type="radio" id=@answer.answerID name="optradio"> @answer.answerText</label>
-					</p>
-				}
-				</div>
-				<br>
+		@helper.form(action = routes.Application.nextQuizPage(), 'id -> "answerRadioForm"){
+			<fieldset>
+				@helper.inputRadioGroup(
+	          	answerRadioForm("Antwort"),
+	          	options = answerList.map(answer => answer.answerText.toString -> answer.answerText),
+	          	'_label -> "answer",
+	         	'_error -> answerRadioForm("Antwort").error.map(_.withMessage("select answer"))
+	          	)
+	        </fieldset>
 
-				
+        <button type="submit" class="btn btn-default" value="Send">
+			Nächste Frage
+		</button>
+		}
 
-				<a href="@routes.Application.nextQuizPage()"><button
-						class="btn btn-default" type="submit">Nächste Frage</button>
 		</div>
 	</div>
 </div>

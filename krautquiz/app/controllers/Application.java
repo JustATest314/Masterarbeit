@@ -1,30 +1,19 @@
 package controllers;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.RawSql;
-import com.avaje.ebean.RawSqlBuilder;
-
-import akka.io.Tcp.Register;
 import models.Answer;
 import models.Nutzer;
 import models.Question;
-import models.Quiz;
 import play.data.Form;
 import play.mvc.Controller;
-import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
-import scala.collection.immutable.HashMap;
-import controllers.Application.Login;
 
 /*
  * This is the application controller. It contains the most of the logic at the moment. Splitting it into several other classes did not
@@ -44,6 +33,8 @@ public class Application extends Controller {
 	
 //	public static List<Question> highestRankedQuestionList = new ArrayList<Question>();
 //	public static List<Answer> highestRankedAnswerList = new ArrayList<Answer>();
+	
+	static Form<Answer> answerForm = Form.form(Answer.class);
 	
 	public static String generateFakeID(){
 		String fakeID = UUID.randomUUID().toString();
@@ -241,8 +232,9 @@ public class Application extends Controller {
 		// Shuffle the answers, so the correct answer is not always on top
 		Collections.shuffle(answerList);
 		
+		 
 		
-		return ok(views.html.quiz.render(randomQuestionList, answerList));
+		return ok(views.html.quiz.render(randomQuestionList, answerList, answerForm));
 	}
 	
 	public static Result nextQuizPage(){
@@ -251,7 +243,9 @@ public class Application extends Controller {
 		 * - save interval into quiz db
 		 * - goto next question
 		 */
+		Form<Answer> filledForm = answerForm.bindFromRequest();
 		
+		System.out.println(filledForm.data().get("Antwort").toString());
 		
 		return redirect(routes.Application.startQuiz());
 	}

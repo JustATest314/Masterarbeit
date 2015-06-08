@@ -19,13 +19,15 @@ public class Quiz extends Model {
 	public String questionID;
 	public String answerID;
 	public long time;
+	public long interval;
 	
-	public Quiz(String inputEntryID, String inputUserID, String inputQuestionID, String inputAnswerID, long inputTime){
+	public Quiz(String inputEntryID, String inputUserID, String inputQuestionID, String inputAnswerID, long inputTime, long inputInterval){
 		this.entryID = inputEntryID;
 		this.userID = inputUserID;
 		this.questionID = inputQuestionID;
 		this.answerID = inputAnswerID;
 		this.time = inputTime;
+		this.interval = inputInterval;
 	}
 	
 	public static Finder<String,Quiz> find = new Finder<String, Quiz>(
@@ -43,12 +45,12 @@ public class Quiz extends Model {
 	}
 	
 	public static void createQuestion(Question question, String userID) {
-		Quiz entry = new Quiz(generateFakeID(), userID, question.questionID, null, System.currentTimeMillis());
+		Quiz entry = new Quiz(generateFakeID(), userID, question.questionID, null, System.currentTimeMillis(), 0);
 		entry.save();
 	}
 	
 	public static void createAnswer(Answer answer, String userID) {
-		Quiz entry = new Quiz(generateFakeID(), userID, answer.questionID, null, System.currentTimeMillis());
+		Quiz entry = new Quiz(generateFakeID(), userID, answer.questionID, null, System.currentTimeMillis(), 0);
 		entry.save();
 	}
 

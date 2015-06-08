@@ -216,10 +216,20 @@ public class Application extends Controller {
 		 * 
 		 */
 
-
+		
+		
 		// Find all questions, put them into list
 		for (Question questionItem : Question.find.all()) {
+			
+			Quiz searchedJourneys = Quiz.find.where().like("question_ID", "de32143f-0173-4f04-9871-49a87c96fe7a").findUnique();
+			
+			if(questionItem.questionID == searchedJourneys.questionID){
+				System.out.println("if entered");
+			}
+			
+			
 			randomQuestionList.add(questionItem);
+			
 		}
 		
 		// Take a random question from the list, clear list, put the left behind item in it
@@ -232,6 +242,7 @@ public class Application extends Controller {
 				answerList.add(answerItem);
 			}
 		}
+		
 		
 		// Shuffle the answers, so the correct answer is not always on top
 		Collections.shuffle(answerList);

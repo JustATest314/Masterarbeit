@@ -35,6 +35,7 @@ create table quiz (
   question_id               varchar(255),
   answer_id                 varchar(255),
   time                      bigint,
+  interval                  bigint,
   constraint pk_quiz primary key (entry_id))
 ;
 

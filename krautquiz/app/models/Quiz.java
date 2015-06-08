@@ -1,6 +1,5 @@
 package models;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,13 +42,13 @@ public class Quiz extends Model {
 		return fakeID;
 	}
 	
-	public static void createQuestion(Question question) {
-		Quiz entry = new Quiz(generateFakeID(), question.ownerID, question.questionID, null, System.currentTimeMillis());
+	public static void createQuestion(Question question, String userID) {
+		Quiz entry = new Quiz(generateFakeID(), userID, question.questionID, null, System.currentTimeMillis());
 		entry.save();
 	}
 	
-	public static void createAnswer(Answer answer) {
-		Quiz entry = new Quiz(generateFakeID(), answer.ownerID, answer.questionID, null, System.currentTimeMillis());
+	public static void createAnswer(Answer answer, String userID) {
+		Quiz entry = new Quiz(generateFakeID(), userID, answer.questionID, null, System.currentTimeMillis());
 		entry.save();
 	}
 

@@ -58,7 +58,7 @@ public class Answer extends Model implements Comparable<Answer>{
 	
 	// Mostly for debugging
 	public String toString(){
-		return "ID = " + answerID + " questionID = " + questionID + " answerText = " + answerText + " voteScore = " + voteScore + " ownerID = " + ownerID + " page = " + page;
+		return "AnswerID = " + answerID + " questionID = " + questionID + " answerText = " + answerText + " voteScore = " + voteScore + " ownerID = " + ownerID + " page = " + page;
 	}
 
 	@Override

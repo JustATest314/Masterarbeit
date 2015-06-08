@@ -10,8 +10,10 @@ import java.util.UUID;
 import models.Answer;
 import models.Nutzer;
 import models.Question;
+import models.Quiz;
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
 
@@ -30,6 +32,10 @@ public class Application extends Controller {
 	
 	public static final Form<Question> newQuestionForm = Form.form(Question.class);
 	public static final Form<Answer> newAnswerForm = Form.form(Answer.class);
+	
+	// Construct a randomized list of questions, depending on if the user has already seen the question in the quiz before
+	public static List<Answer> answerList = new ArrayList<Answer>();
+	public static List<Question> randomQuestionList = new ArrayList<Question>();
 	
 //	public static List<Question> highestRankedQuestionList = new ArrayList<Question>();
 //	public static List<Answer> highestRankedAnswerList = new ArrayList<Answer>();
@@ -192,6 +198,9 @@ public class Application extends Controller {
 	// Quizpage
 	@Security.Authenticated(Secured.class)
 	public static Result startQuiz() {
+		// TODOL Do I need to clear both lists?
+		randomQuestionList.clear();
+		answerList.clear();
 		/**
 		 * What do I need for a quiz?
 		 * Interval - only in fixed time periods can a new quiz be generated, else the old one will be shown
@@ -206,22 +215,17 @@ public class Application extends Controller {
 		 * - wenn Nutzer falsch antwortet, Interval auf 0 setzen (also sofort wieder)
 		 * 
 		 */
-		// Construct a randomized list of questions, depending on if the user has already seen the question in the quiz before
-		List<Answer> answerList = new ArrayList<Answer>();
-		List<Question> randomQuestionList = new ArrayList<Question>();
+
 
 		// Find all questions, put them into list
 		for (Question questionItem : Question.find.all()) {
 			randomQuestionList.add(questionItem);
 		}
 		
-
-		
 		// Take a random question from the list, clear list, put the left behind item in it
 		Question randomQuestion = randomQuestionList.get(new Random().nextInt(randomQuestionList.size())); 
 		randomQuestionList.clear();
 		randomQuestionList.add(randomQuestion);
-		
 		
 		for (Answer answerItem : Answer.find.all()) {
 			if(answerItem.questionID == randomQuestion.questionID){
@@ -231,12 +235,10 @@ public class Application extends Controller {
 		
 		// Shuffle the answers, so the correct answer is not always on top
 		Collections.shuffle(answerList);
-		
-		 
-		
 		return ok(views.html.quiz.render(randomQuestionList, answerList, answerForm));
 	}
 	
+	@Security.Authenticated(Secured.class)
 	public static Result nextQuizPage(){
 		/**
 		 * if user has answered correct
@@ -244,8 +246,19 @@ public class Application extends Controller {
 		 * - goto next question
 		 */
 		Form<Answer> filledForm = answerForm.bindFromRequest();
+//		System.out.println(request().body().toString());
+//		System.out.println("filledForm: " + filledForm.toString());	
+//		
+//		System.out.println(filledForm.data().get("Antwort").toString());
+
 		
-		System.out.println(filledForm.data().get("Antwort").toString());
+		// TODOL What if 2 answers have the same text? Might be a collision then
+		for (Answer answer : answerList) {
+			if(filledForm.data().get("Antwort").toString().equals(answer.answerText)){
+				Quiz.createAnswer(answer, request().username());
+			}
+		}
+//		System.out.println("answerList: " + answerList.toString());
 		
 		return redirect(routes.Application.startQuiz());
 	}

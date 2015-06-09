@@ -44,13 +44,14 @@ public class Quiz extends Model {
 		return fakeID;
 	}
 	
+	// TODOL Not necessary? The quiz only creates answer-entries in the quiz-table, but never question-entries
 	public static void createQuestion(Question question, String userID) {
-		Quiz entry = new Quiz(generateFakeID(), userID, question.questionID, null, System.currentTimeMillis(), 0);
+		Quiz entry = new Quiz(generateFakeID(), userID, question.questionID, null, System.currentTimeMillis(), 5000);
 		entry.save();
 	}
 	
 	public static void createAnswer(Answer answer, String userID) {
-		Quiz entry = new Quiz(generateFakeID(), userID, answer.questionID, null, System.currentTimeMillis(), 0);
+		Quiz entry = new Quiz(generateFakeID(), userID, answer.questionID, null, System.currentTimeMillis(), 5000);
 		entry.save();
 	}
 

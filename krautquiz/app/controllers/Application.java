@@ -219,7 +219,6 @@ public class Application extends Controller {
 		// Search in the Quiz-table if there is already an answered quiz-question for all questions		
 		Quiz searchedQuizEntry = new Quiz("", "", "", "", 0, 0);
 				
-				
 		/**
 		 * suche alle fragen mit pos. Score
 		 * - falls nutzer noch nicht beantwortet hat -> kein Eintrag bei Quiztabelle
@@ -230,58 +229,65 @@ public class Application extends Controller {
 
 		// If Quiz-Table empty, get the first question and make an entry for the random question list
 		if(Quiz.find.all().isEmpty()){
+			// FIXME Only works the first time!
 			Question randomFirstQuestion = Question.find.setMaxRows(1).findUnique();
 			randomQuestionList.add(randomFirstQuestion);
 		}
 		
-		// Find all questions with positive score, put them into list
-		for (Question questionItem : Question.find.all()) {
-			if(questionItem.voteScore > 0){
-				
-//				List<Quiz> helperList = Quiz.find.where().like("question_ID", questionItem.questionID).findList();
-//				if(helperList.size() == 0){
-//					System.out.println("No entry found!");
-//				}
-//				else {
-//					System.out.println("Entry in question: " + questionItem.questionText);
-//					System.out.println("Entry in quiz: " + helperList.toString());
-//				}
-				
-				// FIXME Find 2 quiz entries with the same questionID
-				// Warum landet eine Frage 2 mal in der Quiz Tabelle?!
-				Quiz findUniqueQuiz = Quiz.find.where().like("question_ID", questionItem.questionID).findUnique();
-				
-				if(findUniqueQuiz != null && searchedQuizEntry.interval == 0){
-						randomQuestionList.add(questionItem);
-				}
-				
-				if(findUniqueQuiz == null){
-					System.out.println("empty list?");
+		// Quiz table NOT empty
+		else {
+			Nutzer findUser = Nutzer.find.byId(request().username());
+			for (Quiz quizItem : Quiz.find.all()) {
+				if( (findUser.email == quizItem.userID) && (quizItem.interval == 0)){
+					Question findUniqueQuestion = Question.find.where().like("question_ID", quizItem.questionID).findUnique();
+					randomQuestionList.add(findUniqueQuestion);
+
 				}
 			}
-		}
-		
-		if(randomQuestionList.size() > 0){
-			// Take a random question from the list, clear list, put the left behind item in it
-			Question randomQuestion = randomQuestionList.get(new Random().nextInt(randomQuestionList.size())); 
-			randomQuestionList.clear();
-			randomQuestionList.add(randomQuestion);	
-		
-			for (Answer answerItem : Answer.find.all()) {
-				if(answerItem.questionID == randomQuestion.questionID){
-					answerList.add(answerItem);
-				}
+//			for (Question questionItem : randomQuestionList) {
+//				System.out.println("Frage in randomQuestionList: " + questionItem.questionText); 
+//			}
+			
+//			// Find all questions with positive score, put them into list
+//			for (Question questionItem : Question.find.all()) {
+//				if(questionItem.voteScore > 0){
+//					
+//	//				List<Quiz> helperList = Quiz.find.where().like("question_ID", questionItem.questionID).findList();
+//	//				if(helperList.size() == 0){
+//	//					System.out.println("No entry found!");
+//	//				}
+//	//				else {
+//	//					System.out.println("Entry in question: " + questionItem.questionText);
+//	//					System.out.println("Entry in quiz: " + helperList.toString());
+//	//				}
+//					
+//					// FIXME Find 2 quiz entries with the same questionID
+//					// Warum landet eine Frage 2 mal in der Quiz Tabelle?!
+//					Quiz findUniqueQuiz = Quiz.find.where().like("question_ID", questionItem.questionID).findUnique();
+//					
+//					if(findUniqueQuiz != null && searchedQuizEntry.interval == 0){
+//							randomQuestionList.add(questionItem);
+//					}
+//					
+//					if(findUniqueQuiz == null){
+//						System.out.println("empty list?");
+//					}
+//				}
 			}
-		
-		}
-		
-		
-		
-		// If there is no entry, null will be raised
-		// TODO Check for user
-		if (searchedQuizEntry == null){
-			System.out.println("Warning null");
-		}
+			
+			if(randomQuestionList.size() > 0){
+				// Take a random question from the list, clear list, put the left behind item in it
+				Question randomQuestion = randomQuestionList.get(new Random().nextInt(randomQuestionList.size())); 
+				randomQuestionList.clear();
+				randomQuestionList.add(randomQuestion);	
+			
+				for (Answer answerItem : Answer.find.all()) {
+					if(answerItem.questionID == randomQuestion.questionID){
+						answerList.add(answerItem);
+					}
+				}
+			
+			}
 		
 		// Shuffle the answers, so the correct answer is not always on top
 		Collections.shuffle(answerList);
@@ -303,9 +309,13 @@ public class Application extends Controller {
 
 		
 		// TODOL What if 2 answers have the same text? Might be a collision then
+		// For loop not neccessary?
 		for (Answer answer : answerList) {
+			// User has answered correctly
 			if(filledForm.data().get("Antwort").toString().equals(answer.answerText)){
 				Quiz.createAnswer(answer, request().username());
+			} else {
+				System.out.println("User did answer wrongly!");
 			}
 		}
 //		System.out.println("answerList: " + answerList.toString());

@@ -216,33 +216,72 @@ public class Application extends Controller {
 		 * 
 		 */
 
+		// Search in the Quiz-table if there is already an answered quiz-question for all questions		
+		Quiz searchedQuizEntry = new Quiz("", "", "", "", 0, 0);
+				
+				
+		/**
+		 * suche alle fragen mit pos. Score
+		 * - falls nutzer noch nicht beantwortet hat -> kein Eintrag bei Quiztabelle
+		 * - falls nutzer beantwortet hat
+		 * -- falls korrekt -> Interval + x
+		 * -- falls falsch -> Interval = 0
+		 */
+
+		// If Quiz-Table empty, get the first question and make an entry for the random question list
+		if(Quiz.find.all().isEmpty()){
+			Question randomFirstQuestion = Question.find.setMaxRows(1).findUnique();
+			randomQuestionList.add(randomFirstQuestion);
+		}
 		
-		
-		// Find all questions, put them into list
+		// Find all questions with positive score, put them into list
 		for (Question questionItem : Question.find.all()) {
-			
-			Quiz searchedJourneys = Quiz.find.where().like("question_ID", "de32143f-0173-4f04-9871-49a87c96fe7a").findUnique();
-			
-			if(questionItem.questionID == searchedJourneys.questionID){
-				System.out.println("if entered");
+			if(questionItem.voteScore > 0){
+				
+//				List<Quiz> helperList = Quiz.find.where().like("question_ID", questionItem.questionID).findList();
+//				if(helperList.size() == 0){
+//					System.out.println("No entry found!");
+//				}
+//				else {
+//					System.out.println("Entry in question: " + questionItem.questionText);
+//					System.out.println("Entry in quiz: " + helperList.toString());
+//				}
+				
+				// FIXME Find 2 quiz entries with the same questionID
+				// Warum landet eine Frage 2 mal in der Quiz Tabelle?!
+				Quiz findUniqueQuiz = Quiz.find.where().like("question_ID", questionItem.questionID).findUnique();
+				
+				if(findUniqueQuiz != null && searchedQuizEntry.interval == 0){
+						randomQuestionList.add(questionItem);
+				}
+				
+				if(findUniqueQuiz == null){
+					System.out.println("empty list?");
+				}
 			}
-			
-			
-			randomQuestionList.add(questionItem);
-			
 		}
 		
-		// Take a random question from the list, clear list, put the left behind item in it
-		Question randomQuestion = randomQuestionList.get(new Random().nextInt(randomQuestionList.size())); 
-		randomQuestionList.clear();
-		randomQuestionList.add(randomQuestion);
+		if(randomQuestionList.size() > 0){
+			// Take a random question from the list, clear list, put the left behind item in it
+			Question randomQuestion = randomQuestionList.get(new Random().nextInt(randomQuestionList.size())); 
+			randomQuestionList.clear();
+			randomQuestionList.add(randomQuestion);	
 		
-		for (Answer answerItem : Answer.find.all()) {
-			if(answerItem.questionID == randomQuestion.questionID){
-				answerList.add(answerItem);
+			for (Answer answerItem : Answer.find.all()) {
+				if(answerItem.questionID == randomQuestion.questionID){
+					answerList.add(answerItem);
+				}
 			}
+		
 		}
 		
+		
+		
+		// If there is no entry, null will be raised
+		// TODO Check for user
+		if (searchedQuizEntry == null){
+			System.out.println("Warning null");
+		}
 		
 		// Shuffle the answers, so the correct answer is not always on top
 		Collections.shuffle(answerList);

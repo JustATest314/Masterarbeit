@@ -16,12 +16,21 @@ with radio buttons and the user has to choose. *@
 	</div>
 	<div class="panel-body">
 		<div style="text-align: center;"> 
-			<!-- As only the highest ranked question gets put into the List, there is only one entry on first place -->
+
+			@if(questionList.isEmpty){
+				Keine Fragen vorhanden!
+			} 
+
+			@if(questionList.size > 0){
+				<!-- As only the highest ranked question gets put into the List, there is only one entry on first place -->
 			<b>@questionList.get(0).questionText</b>
 
 			@for(question <- questionList)	{
 				@question.questionText - @question.ownerID <br>
 			}
+			} 
+
+			
 		</div>
 	</div>
 </div>

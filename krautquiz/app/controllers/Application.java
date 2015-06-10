@@ -204,9 +204,14 @@ public class Application extends Controller {
 
 		// If Quiz-Table empty, get the first question and make an entry for the random question list
 		if(Quiz.find.all().isEmpty()){
-			
-			// FIXME Only works the first time!
-			Question randomFirstQuestion = Question.find.setMaxRows(1).findUnique();
+			// Go through all questions and put them into a list
+			List<Question> allQuestionsList = new ArrayList<Question>();
+			for (Question question : Question.find.all()) {
+				allQuestionsList.add(question);
+			}
+			// Get a random item from the question list
+			// This is the first Question
+			Question randomFirstQuestion = allQuestionsList.get(new Random().nextInt(allQuestionsList.size())); 
 			randomQuestionList.add(randomFirstQuestion);
 		}
 		
@@ -256,6 +261,8 @@ public class Application extends Controller {
 		// FIXME What if 2 answers have the same text? Might be a collision then
 		List<Answer> findAnswerList = Answer.find.where().like("answer_text", filledForm.data().get("Antwort").toString()).findList();
 		
+		System.out.println("Filled Form: " + filledForm.toString());
+		
 		// TODO How can I see if the user gave the correct or wrong answer?
 		// Have to compare given answer to highest ranked answer in db!
 		if(findAnswerList.size() == 0){
@@ -282,7 +289,6 @@ public class Application extends Controller {
 				System.out.println("findUniqueAnswer: " + findUniqueAnswer.questionID + "Quiz.find()" + Quiz.find.where().like("question_id", findUniqueAnswer.questionID) );
 				
 				Quiz quizFinder = Quiz.find.where().like("question_id", findUniqueAnswer.questionID).findUnique();
-				// FIXME Comparison not working atm
 				if(findUniqueAnswer.questionID.equals(quizFinder.questionID)){
 					System.out.println("if findUniqueAnswer angesprungen");
 					Quiz.updateAnswer(findUniqueAnswer.questionID, 5000);

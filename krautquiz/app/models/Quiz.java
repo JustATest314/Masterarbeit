@@ -6,6 +6,8 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.avaje.ebean.Ebean;
+
 import play.db.ebean.Model;
 
 @Entity
@@ -30,9 +32,12 @@ public class Quiz extends Model {
 		this.interval = inputInterval;
 	}
 	
-	public static Finder<String,Quiz> find = new Finder<String, Quiz>(
-		    String.class, Quiz.class
-		  );
+	public static Finder<String,Quiz> find = new Finder<String, Quiz>(String.class, Quiz.class);
+	
+	// TODOL Method used after all?
+	public static Question findByQuestionID(String questionID){
+		return Ebean.find(Question.class).where().eq("questionID", questionID).findUnique();
+	}
 	
 	public static List<Quiz> all() {
 		return find.all();

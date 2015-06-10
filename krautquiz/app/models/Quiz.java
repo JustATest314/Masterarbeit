@@ -39,20 +39,30 @@ public class Quiz extends Model {
 		}
 
 	
+	public void setInterval(long interval){
+		this.interval = interval;
+	}
+	
 	public static String generateFakeID(){
 		String fakeID = UUID.randomUUID().toString();
 		return fakeID;
 	}
 	
 	// TODOL Not necessary? The quiz only creates answer-entries in the quiz-table, but never question-entries
-	public static void createQuestion(Question question, String userID) {
-		Quiz entry = new Quiz(generateFakeID(), userID, question.questionID, null, System.currentTimeMillis(), 5000);
+	public static void createQuestion(Question question, String userID, long interval) {
+		Quiz entry = new Quiz(generateFakeID(), userID, question.questionID, null, System.currentTimeMillis(), interval);
 		entry.save();
 	}
 	
-	public static void createAnswer(Answer answer, String userID) {
-		Quiz entry = new Quiz(generateFakeID(), userID, answer.questionID, null, System.currentTimeMillis(), 5000);
+	public static void createAnswer(Answer answer, String userID, long interval) {
+		Quiz entry = new Quiz(generateFakeID(), userID, answer.questionID, null, System.currentTimeMillis(), interval);
 		entry.save();
+	}
+	
+	public static void updateAnswer(String questionID, long inputInterval){
+		Quiz entry = Quiz.find.where().like("question_id", questionID).findUnique();
+		entry.setInterval(inputInterval);
+		entry.update();
 	}
 
 	public void delete(String id) {
@@ -61,6 +71,6 @@ public class Quiz extends Model {
 	
 	// Mostly for debugging
 	public String toString(){
-		return "EntryID: " + entryID + " userID: " + userID + " questionID: " + questionID + " answerID: " + answerID + " time: " + time;
+		return "EntryID: " + entryID + " userID: " + userID + " questionID: " + questionID + " answerID: " + answerID + " time: " + time + " interval: " + interval;
 	}
 }

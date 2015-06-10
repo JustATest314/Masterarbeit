@@ -201,93 +201,49 @@ public class Application extends Controller {
 		// TODOL Do I need to clear both lists?
 		randomQuestionList.clear();
 		answerList.clear();
-		/**
-		 * What do I need for a quiz?
-		 * Interval - only in fixed time periods can a new quiz be generated, else the old one will be shown
-		 * Should I keep already given answers for new versions?
-		 * Threshold - Quiz collects questions based on voting, but not lower than 0?
-		 * get positive Q/As from DB, if user has not answered yet -> show
-		 * 
-		 * --------
-		 * Quiz geht durch alle Fragen
-		 * - wählt random eine aus, deren letzte Stellzeit - aktuelle Zeit < Interval ist
-		 * - wenn Nutzer richtig antwortet Interval erhöhen
-		 * - wenn Nutzer falsch antwortet, Interval auf 0 setzen (also sofort wieder)
-		 * 
-		 */
-
-		// Search in the Quiz-table if there is already an answered quiz-question for all questions		
-		Quiz searchedQuizEntry = new Quiz("", "", "", "", 0, 0);
-				
-		/**
-		 * suche alle fragen mit pos. Score
-		 * - falls nutzer noch nicht beantwortet hat -> kein Eintrag bei Quiztabelle
-		 * - falls nutzer beantwortet hat
-		 * -- falls korrekt -> Interval + x
-		 * -- falls falsch -> Interval = 0
-		 */
 
 		// If Quiz-Table empty, get the first question and make an entry for the random question list
 		if(Quiz.find.all().isEmpty()){
+			
 			// FIXME Only works the first time!
 			Question randomFirstQuestion = Question.find.setMaxRows(1).findUnique();
 			randomQuestionList.add(randomFirstQuestion);
 		}
 		
 		// Quiz table NOT empty
+		// FIXME Only works the first time!
 		else {
+			System.out.println("Else angesprungen");
+			// Suche alle Einträge aus der Quiz Tabelle, wo quiz_nutzer == aktueller Nutzer && interval == 0
 			Nutzer findUser = Nutzer.find.byId(request().username());
+			// Suche alle quizfragen aus der Tabelle
 			for (Quiz quizItem : Quiz.find.all()) {
-				if( (findUser.email == quizItem.userID) && (quizItem.interval == 0)){
+				System.out.println("for angesprungen");
+				System.out.println(quizItem.questionID);
+				// TODOH Check here for staying question
+				// Wenn der Nutzer in der Quiz tabelle der gleiche wie der aktuelle ist UND wenn das Intervall der Quizfrage == 0 ist, dann:...
+				if( (findUser.email.equals(quizItem.userID) ) && (quizItem.interval == 0)){
+					System.out.println("If angesprungen");
 					Question findUniqueQuestion = Question.find.where().like("question_ID", quizItem.questionID).findUnique();
+					
+					// Suche die Question, deren ID zur Quizfrage passt (gibt nur 1)
 					randomQuestionList.add(findUniqueQuestion);
+				}
+			}
+		}
+			
+		if(randomQuestionList.size() > 0){
+			// Take a random question from the list, clear list, put the left behind item in it
+			Question randomQuestion = randomQuestionList.get(new Random().nextInt(randomQuestionList.size())); 
+			randomQuestionList.clear();
+			randomQuestionList.add(randomQuestion);	
 
+			for (Answer answerItem : Answer.find.all()) {
+				if(answerItem.questionID == randomQuestion.questionID){
+					answerList.add(answerItem);
 				}
 			}
-//			for (Question questionItem : randomQuestionList) {
-//				System.out.println("Frage in randomQuestionList: " + questionItem.questionText); 
-//			}
-			
-//			// Find all questions with positive score, put them into list
-//			for (Question questionItem : Question.find.all()) {
-//				if(questionItem.voteScore > 0){
-//					
-//	//				List<Quiz> helperList = Quiz.find.where().like("question_ID", questionItem.questionID).findList();
-//	//				if(helperList.size() == 0){
-//	//					System.out.println("No entry found!");
-//	//				}
-//	//				else {
-//	//					System.out.println("Entry in question: " + questionItem.questionText);
-//	//					System.out.println("Entry in quiz: " + helperList.toString());
-//	//				}
-//					
-//					// FIXME Find 2 quiz entries with the same questionID
-//					// Warum landet eine Frage 2 mal in der Quiz Tabelle?!
-//					Quiz findUniqueQuiz = Quiz.find.where().like("question_ID", questionItem.questionID).findUnique();
-//					
-//					if(findUniqueQuiz != null && searchedQuizEntry.interval == 0){
-//							randomQuestionList.add(questionItem);
-//					}
-//					
-//					if(findUniqueQuiz == null){
-//						System.out.println("empty list?");
-//					}
-//				}
-			}
-			
-			if(randomQuestionList.size() > 0){
-				// Take a random question from the list, clear list, put the left behind item in it
-				Question randomQuestion = randomQuestionList.get(new Random().nextInt(randomQuestionList.size())); 
-				randomQuestionList.clear();
-				randomQuestionList.add(randomQuestion);	
-			
-				for (Answer answerItem : Answer.find.all()) {
-					if(answerItem.questionID == randomQuestion.questionID){
-						answerList.add(answerItem);
-					}
-				}
-			
-			}
+		}
 		
 		// Shuffle the answers, so the correct answer is not always on top
 		Collections.shuffle(answerList);
@@ -296,30 +252,52 @@ public class Application extends Controller {
 	
 	@Security.Authenticated(Secured.class)
 	public static Result nextQuizPage(){
-		/**
-		 * if user has answered correct
-		 * - save interval into quiz db
-		 * - goto next question
-		 */
 		Form<Answer> filledForm = answerForm.bindFromRequest();
-//		System.out.println(request().body().toString());
-//		System.out.println("filledForm: " + filledForm.toString());	
-//		
-//		System.out.println(filledForm.data().get("Antwort").toString());
-
+		// FIXME What if 2 answers have the same text? Might be a collision then
+		List<Answer> findAnswerList = Answer.find.where().like("answer_text", filledForm.data().get("Antwort").toString()).findList();
 		
-		// TODOL What if 2 answers have the same text? Might be a collision then
-		// For loop not neccessary?
-		for (Answer answer : answerList) {
-			// User has answered correctly
-			if(filledForm.data().get("Antwort").toString().equals(answer.answerText)){
-				Quiz.createAnswer(answer, request().username());
-			} else {
-				System.out.println("User did answer wrongly!");
+		// TODO How can I see if the user gave the correct or wrong answer?
+		// Have to compare given answer to highest ranked answer in db!
+		if(findAnswerList.size() == 0){
+			System.out.println("Not found");
+		} else if(findAnswerList.size() == 1) {
+//			System.out.println(findAnswerList.size() + " Entries found");
+			Answer findUniqueAnswer = Answer.find.where().like("answer_text", filledForm.data().get("Antwort").toString()).findUnique();
+						
+			List<Answer> highestAnswer = Answer.find.where().like("question_id", findUniqueAnswer.questionID).findList();
+			
+			// Works, as compareTo() in Answer.java has been overridden and sorts for voteScore
+			Answer bestAnswer = Collections.max(highestAnswer);
+			
+			// Anhand der questionID prüfen, ob Frage bereits beantwortet wurde!
+			// Falls ja -> update
+			// Falls nein -> neu erzeugen
+			// User answered correctly
+			if(findUniqueAnswer.answerID.equals(bestAnswer.answerID)){
+				// If quizAnswer already was there -> update
+
+				//					Question.find.byId(newQuestion.questionID).delete();
+//					Question.create(newQuestion); 
+					
+				System.out.println("findUniqueAnswer: " + findUniqueAnswer.questionID + "Quiz.find()" + Quiz.find.where().like("question_id", findUniqueAnswer.questionID) );
+				
+				Quiz quizFinder = Quiz.find.where().like("question_id", findUniqueAnswer.questionID).findUnique();
+				// FIXME Comparison not working atm
+				if(findUniqueAnswer.questionID.equals(quizFinder.questionID)){
+					System.out.println("if findUniqueAnswer angesprungen");
+					Quiz.updateAnswer(findUniqueAnswer.questionID, 5000);
+				}
+				// If quizAnswer was not given before -> create
+				else{
+					Quiz.createAnswer(findUniqueAnswer, request().username(), 5000);
+				}
+				
+			}
+			// User answered wrongly
+			else {
+				Quiz.createAnswer(findUniqueAnswer, request().username(), 0);
 			}
 		}
-//		System.out.println("answerList: " + answerList.toString());
-		
 		return redirect(routes.Application.startQuiz());
 	}
 	

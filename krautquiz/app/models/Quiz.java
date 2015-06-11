@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import com.avaje.ebean.Ebean;
 
 import play.db.ebean.Model;
+import scala.reflect.internal.Trees.This;
 
 @Entity
 public class Quiz extends Model {
@@ -45,7 +46,7 @@ public class Quiz extends Model {
 
 	
 	public void setInterval(long interval){
-		this.interval = interval;
+		this.interval = this.interval + interval;
 	}
 	
 	public static String generateFakeID(){

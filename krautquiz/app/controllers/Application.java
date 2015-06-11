@@ -188,6 +188,7 @@ public class Application extends Controller {
 	}
 	
 	// Quizpage
+	// FIXME Weiterer Nutzer bekommt keine Fragen
 	@Security.Authenticated(Secured.class)
 	public static Result startQuiz() {
 		// TODOL Do I need to clear both lists?
@@ -208,21 +209,22 @@ public class Application extends Controller {
 		}
 		
 		// Quiz table NOT empty
-		// FIXME Only works the first time!
 		else {
-			System.out.println("Else angesprungen");
 			// Suche alle Einträge aus der Quiz Tabelle, wo quiz_nutzer == aktueller Nutzer && interval == 0
 			Nutzer findUser = Nutzer.find.byId(request().username());
+			// Has the user questions in questionTable that are not in quizTable?
+			for (Question questionItem : Question.find.all()) {
+				if(Quiz.find.where().like("question_id", questionItem.questionID).findUnique() == null ){
+					randomQuestionList.add(questionItem);
+				}
+			}
+			
+
 			// Suche alle quizfragen aus der Tabelle
 			for (Quiz quizItem : Quiz.find.all()) {
-				System.out.println("for angesprungen");
-				System.out.println(quizItem.questionID);
-				// TODOH Check here for staying question
 				// Wenn der Nutzer in der Quiz tabelle der gleiche wie der aktuelle ist UND wenn das Intervall der Quizfrage == 0 ist, dann:...
 				if( (findUser.email.equals(quizItem.userID) ) && (quizItem.interval == 0)){
-					System.out.println("If angesprungen");
 					Question findUniqueQuestion = Question.find.where().like("question_ID", quizItem.questionID).findUnique();
-					
 					// Suche die Question, deren ID zur Quizfrage passt (gibt nur 1)
 					randomQuestionList.add(findUniqueQuestion);
 				}
@@ -249,50 +251,48 @@ public class Application extends Controller {
 	
 	@Security.Authenticated(Secured.class)
 	public static Result nextQuizPage(){
+		// Get the answerID from the form
 		Form<Answer> filledForm = answerForm.bindFromRequest();
-		
-//		List<Answer> findAnswerList = Answer.find.where().like("answer_text", filledForm.data().get("Antwort").toString()).findList();
-		
 		String answerIDfromForm = filledForm.data().get("Antwort");
-		Answer clickedRadioAnswer = Answer.find.where().like("answer_ID", answerIDfromForm).findUnique();
-		Question matchingQuestionRadio = Question.find.where().like("question_ID", clickedRadioAnswer.questionID).findUnique();
 		
-		List<Answer> highestAnswer = Answer.find.where().like("question_id", clickedRadioAnswer.questionID).findList();
-		// Works, as compareTo() in Answer.java has been overridden and sorts for voteScore
-		Answer bestAnswer = Collections.max(highestAnswer);
-		
-		System.out.println("Question was: " + matchingQuestionRadio.questionText);
-		System.out.println("clicked answer was: " + clickedRadioAnswer.answerText + " score: " + clickedRadioAnswer.voteScore);
-		System.out.println("Best answer was: " + bestAnswer.answerText + " score: " + bestAnswer.voteScore);
-		
-//			// Anhand der questionID prüfen, ob Frage bereits beantwortet wurde!
-//			// Falls ja -> update
-//			// Falls nein -> neu erzeugen
-//			// User answered correctly
-//			if(findUniqueAnswer.answerID.equals(bestAnswer.answerID)){
-//				// If quizAnswer already was there -> update
-//
-//				//					Question.find.byId(newQuestion.questionID).delete();
-////					Question.create(newQuestion); 
-//					
-//				System.out.println("findUniqueAnswer: " + findUniqueAnswer.questionID + "Quiz.find()" + Quiz.find.where().like("question_id", findUniqueAnswer.questionID) );
-//				
-//				Quiz quizFinder = Quiz.find.where().like("question_id", findUniqueAnswer.questionID).findUnique();
-//				if(findUniqueAnswer.questionID.equals(quizFinder.questionID)){
-//					System.out.println("if findUniqueAnswer angesprungen");
-//					Quiz.updateAnswer(findUniqueAnswer.questionID, 5000);
-//				}
-//				// If quizAnswer was not given before -> create
-//				else{
-//					Quiz.createAnswer(findUniqueAnswer, request().username(), 5000);
-//				}
-//				
-//			}
-//			// User answered wrongly
-//			else {
-//				Quiz.createAnswer(findUniqueAnswer, request().username(), 0);
-//			}
-//		}
+		// If button for next page gets clicked without any question to ask, redirect to quiz page
+		if(filledForm.data().get("Antwort") == null){
+			return redirect(routes.Application.startQuiz());
+		}
+		// Another Quizquestion is available
+		else{
+			// With the clicked answer get the matching Question
+			Answer clickedRadioAnswer = Answer.find.where().like("answer_ID", answerIDfromForm).findUnique();
+			Question matchingQuestionRadio = Question.find.where().like("question_ID", clickedRadioAnswer.questionID).findUnique();
+			
+			// Find the best voted answer for the question
+			List<Answer> highestAnswerList = Answer.find.where().like("question_id", clickedRadioAnswer.questionID).findList();
+			// Works, as compareTo() in Answer.java has been overridden and sorts for voteScore
+			Answer bestAnswer = Collections.max(highestAnswerList);
+			
+//			System.out.println("Question was: " + matchingQuestionRadio.questionText);
+//			System.out.println("clicked answer was: " + clickedRadioAnswer.answerText + " score: " + clickedRadioAnswer.voteScore);
+//			System.out.println("Best answer was: " + bestAnswer.answerText + " score: " + bestAnswer.voteScore);
+			
+			// Quizquestion already answered
+			if( Quiz.find.where().like("question_ID", clickedRadioAnswer.questionID).findUnique() != null){
+				if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
+					Quiz.updateAnswer(clickedRadioAnswer.questionID, 5000);
+				} 
+				else{
+					Quiz.updateAnswer(clickedRadioAnswer.questionID, 0);
+				}
+			}
+			else{
+				// Quizquestion never answered before
+				if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
+					Quiz.createAnswer(clickedRadioAnswer, request().username(), 5000);
+				} 
+				else{
+					Quiz.createAnswer(clickedRadioAnswer, request().username(), 0);
+				}
+			}
+		}
 		return redirect(routes.Application.startQuiz());
 	}
 	

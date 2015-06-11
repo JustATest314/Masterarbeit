@@ -46,9 +46,9 @@ with radio buttons and the user has to choose. *@
 			<fieldset>
 				@helper.inputRadioGroup(
 	          	answerRadioForm("Antwort"),
-	          	options = answerList.map(answer => answer.answerText.toString -> answer.answerText),
-	          	'_label -> "answer",
-	         	'_error -> answerRadioForm("Antwort").error.map(_.withMessage("select answer"))
+	          	options = answerList.map(answer => answer.answerID.toString -> answer.answerText),
+	          	'_label -> "Antwort",
+	         	'_error -> answerRadioForm("answerID").error.map(_.withMessage("select answer"))
 	          	)
 	        </fieldset>
 

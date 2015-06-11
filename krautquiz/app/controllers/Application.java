@@ -147,8 +147,6 @@ public class Application extends Controller {
 		Question.create(newQuestion);
 //		Quiz.createQuestion(newQuestion);
 		
-		System.out.println("Quizquestion created!");
-		
 		questionListAll.add(newQuestion);
 		Collections.sort(questionListAll, Collections.reverseOrder());
 //		return ok(views.html.index.render(questionListAll, answerListAll));
@@ -159,13 +157,8 @@ public class Application extends Controller {
 	@Security.Authenticated(Secured.class)
 	public static Result writeAnswer(String questionIDInput){
 		Nutzer formUser = Nutzer.find.byId(request().username());
-		System.out.println("Name FormUser: " + formUser.name);
-		
 		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, null, formUser.email, 1);
 		Form<Answer> preFilledAnswer = newAnswerForm.fill(answerWithQuestionID);
-		
-		System.out.println("formAnswer: " + preFilledAnswer.toString());
-		
 		return ok(views.html.antwortGeben.render(preFilledAnswer));
 	}
 	
@@ -191,7 +184,6 @@ public class Application extends Controller {
 	// TODO Remove in production, only for development. Populates the DB with fake entries
 	public static Result initDB(){
 		initialize();
-		System.out.println("DB initialized");
 		return redirect(routes.Application.index());
 	}
 	
@@ -258,52 +250,49 @@ public class Application extends Controller {
 	@Security.Authenticated(Secured.class)
 	public static Result nextQuizPage(){
 		Form<Answer> filledForm = answerForm.bindFromRequest();
-		// FIXME What if 2 answers have the same text? Might be a collision then
-		List<Answer> findAnswerList = Answer.find.where().like("answer_text", filledForm.data().get("Antwort").toString()).findList();
 		
-		System.out.println("Filled Form: " + filledForm.toString());
+//		List<Answer> findAnswerList = Answer.find.where().like("answer_text", filledForm.data().get("Antwort").toString()).findList();
 		
-		// TODO How can I see if the user gave the correct or wrong answer?
-		// Have to compare given answer to highest ranked answer in db!
-		if(findAnswerList.size() == 0){
-			System.out.println("Not found");
-		} else if(findAnswerList.size() == 1) {
-//			System.out.println(findAnswerList.size() + " Entries found");
-			Answer findUniqueAnswer = Answer.find.where().like("answer_text", filledForm.data().get("Antwort").toString()).findUnique();
-						
-			List<Answer> highestAnswer = Answer.find.where().like("question_id", findUniqueAnswer.questionID).findList();
-			
-			// Works, as compareTo() in Answer.java has been overridden and sorts for voteScore
-			Answer bestAnswer = Collections.max(highestAnswer);
-			
-			// Anhand der questionID prüfen, ob Frage bereits beantwortet wurde!
-			// Falls ja -> update
-			// Falls nein -> neu erzeugen
-			// User answered correctly
-			if(findUniqueAnswer.answerID.equals(bestAnswer.answerID)){
-				// If quizAnswer already was there -> update
-
-				//					Question.find.byId(newQuestion.questionID).delete();
-//					Question.create(newQuestion); 
-					
-				System.out.println("findUniqueAnswer: " + findUniqueAnswer.questionID + "Quiz.find()" + Quiz.find.where().like("question_id", findUniqueAnswer.questionID) );
-				
-				Quiz quizFinder = Quiz.find.where().like("question_id", findUniqueAnswer.questionID).findUnique();
-				if(findUniqueAnswer.questionID.equals(quizFinder.questionID)){
-					System.out.println("if findUniqueAnswer angesprungen");
-					Quiz.updateAnswer(findUniqueAnswer.questionID, 5000);
-				}
-				// If quizAnswer was not given before -> create
-				else{
-					Quiz.createAnswer(findUniqueAnswer, request().username(), 5000);
-				}
-				
-			}
-			// User answered wrongly
-			else {
-				Quiz.createAnswer(findUniqueAnswer, request().username(), 0);
-			}
-		}
+		String answerIDfromForm = filledForm.data().get("Antwort");
+		Answer clickedRadioAnswer = Answer.find.where().like("answer_ID", answerIDfromForm).findUnique();
+		Question matchingQuestionRadio = Question.find.where().like("question_ID", clickedRadioAnswer.questionID).findUnique();
+		
+		List<Answer> highestAnswer = Answer.find.where().like("question_id", clickedRadioAnswer.questionID).findList();
+		// Works, as compareTo() in Answer.java has been overridden and sorts for voteScore
+		Answer bestAnswer = Collections.max(highestAnswer);
+		
+		System.out.println("Question was: " + matchingQuestionRadio.questionText);
+		System.out.println("clicked answer was: " + clickedRadioAnswer.answerText + " score: " + clickedRadioAnswer.voteScore);
+		System.out.println("Best answer was: " + bestAnswer.answerText + " score: " + bestAnswer.voteScore);
+		
+//			// Anhand der questionID prüfen, ob Frage bereits beantwortet wurde!
+//			// Falls ja -> update
+//			// Falls nein -> neu erzeugen
+//			// User answered correctly
+//			if(findUniqueAnswer.answerID.equals(bestAnswer.answerID)){
+//				// If quizAnswer already was there -> update
+//
+//				//					Question.find.byId(newQuestion.questionID).delete();
+////					Question.create(newQuestion); 
+//					
+//				System.out.println("findUniqueAnswer: " + findUniqueAnswer.questionID + "Quiz.find()" + Quiz.find.where().like("question_id", findUniqueAnswer.questionID) );
+//				
+//				Quiz quizFinder = Quiz.find.where().like("question_id", findUniqueAnswer.questionID).findUnique();
+//				if(findUniqueAnswer.questionID.equals(quizFinder.questionID)){
+//					System.out.println("if findUniqueAnswer angesprungen");
+//					Quiz.updateAnswer(findUniqueAnswer.questionID, 5000);
+//				}
+//				// If quizAnswer was not given before -> create
+//				else{
+//					Quiz.createAnswer(findUniqueAnswer, request().username(), 5000);
+//				}
+//				
+//			}
+//			// User answered wrongly
+//			else {
+//				Quiz.createAnswer(findUniqueAnswer, request().username(), 0);
+//			}
+//		}
 		return redirect(routes.Application.startQuiz());
 	}
 	

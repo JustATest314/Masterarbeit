@@ -191,7 +191,7 @@ public class Application extends Controller {
 	// FIXME Weiterer Nutzer bekommt keine Fragen
 	@Security.Authenticated(Secured.class)
 	public static Result startQuiz() {
-		// TODOL Do I need to clear both lists?
+		Nutzer currentUser = Nutzer.find.byId(request().username());
 		randomQuestionList.clear();
 		answerList.clear();
 
@@ -210,23 +210,44 @@ public class Application extends Controller {
 		
 		// Quiz table NOT empty
 		else {
-			// Suche alle Einträge aus der Quiz Tabelle, wo quiz_nutzer == aktueller Nutzer && interval == 0
-			Nutzer findUser = Nutzer.find.byId(request().username());
-			// Has the user questions in questionTable that are not in quizTable?
-			for (Question questionItem : Question.find.all()) {
-				if(Quiz.find.where().like("question_id", questionItem.questionID).findUnique() == null ){
-					randomQuestionList.add(questionItem);
-				}
-			}
-			
-
-			// Suche alle quizfragen aus der Tabelle
+			// Gibt es noch quizFragen für den aktuellen Nutzer?
 			for (Quiz quizItem : Quiz.find.all()) {
 				// Wenn der Nutzer in der Quiz tabelle der gleiche wie der aktuelle ist UND wenn das Intervall der Quizfrage == 0 ist, dann:...
-				if( (findUser.email.equals(quizItem.userID) ) && (quizItem.interval == 0)){
+				if( (currentUser.email.equals(quizItem.userID) ) && (quizItem.interval == 0)){
 					Question findUniqueQuestion = Question.find.where().like("question_ID", quizItem.questionID).findUnique();
 					// Suche die Question, deren ID zur Quizfrage passt (gibt nur 1)
 					randomQuestionList.add(findUniqueQuestion);
+				}
+			}
+			
+			
+			Boolean questionAskedBefore = false;
+			// Gibt es noch Question-Fragen für den aktuellen Nutzer?
+			for (Question questionItem : Question.find.all()) {
+				questionAskedBefore = false;
+				for (Quiz quizItem : Quiz.find.all()) {
+					if(questionItem.questionID.equals(quizItem.questionID) && (quizItem.userID.equals(currentUser.email))){
+						questionAskedBefore = true;
+					}
+					else{
+						questionAskedBefore = false;
+						
+					}
+				}
+				
+				//HERE!!!
+				
+				if(questionAskedBefore){
+					System.out.println("Question " + questionItem.questionText + " has been asked for " + currentUser.email + " before");
+				}
+				else {
+					System.out.println("Question " + questionItem.questionText + " has not been asked for " + currentUser.email + "before");
+				}
+				
+				
+				if(Quiz.find.where().like("question_id", questionItem.questionID).findUnique() == null){
+					
+					randomQuestionList.add(questionItem);
 				}
 			}
 		}
@@ -251,6 +272,7 @@ public class Application extends Controller {
 	
 	@Security.Authenticated(Secured.class)
 	public static Result nextQuizPage(){
+		Nutzer currentUser = Nutzer.find.byId(request().username());
 		// Get the answerID from the form
 		Form<Answer> filledForm = answerForm.bindFromRequest();
 		String answerIDfromForm = filledForm.data().get("Antwort");
@@ -274,8 +296,10 @@ public class Application extends Controller {
 //			System.out.println("clicked answer was: " + clickedRadioAnswer.answerText + " score: " + clickedRadioAnswer.voteScore);
 //			System.out.println("Best answer was: " + bestAnswer.answerText + " score: " + bestAnswer.voteScore);
 			
-			// Quizquestion already answered
-			if( Quiz.find.where().like("question_ID", clickedRadioAnswer.questionID).findUnique() != null){
+			// Quizquestion already answered by current user
+			// TODOH Is this correct? Do I have to check for the user here somewhere?
+			
+			if( Quiz.find.where().like("question_ID", clickedRadioAnswer.questionID).findUnique() != null && Quiz.find.where().like("user_id", currentUser.email ).findList() != null){
 				if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
 					Quiz.updateAnswer(clickedRadioAnswer.questionID, 5000);
 				} 
@@ -283,8 +307,8 @@ public class Application extends Controller {
 					Quiz.updateAnswer(clickedRadioAnswer.questionID, 0);
 				}
 			}
-			else{
-				// Quizquestion never answered before
+			else {
+				// Quizquestion never answered before by current user
 				if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
 					Quiz.createAnswer(clickedRadioAnswer, request().username(), 5000);
 				} 

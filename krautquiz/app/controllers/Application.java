@@ -221,33 +221,23 @@ public class Application extends Controller {
 			}
 			
 			
-			Boolean questionAskedBefore = false;
 			// Gibt es noch Question-Fragen für den aktuellen Nutzer?
 			for (Question questionItem : Question.find.all()) {
-				questionAskedBefore = false;
 				for (Quiz quizItem : Quiz.find.all()) {
-					if(questionItem.questionID.equals(quizItem.questionID) && (quizItem.userID.equals(currentUser.email))){
-						questionAskedBefore = true;
+					// If question appears in the questionTable and quizTable
+					if(questionItem.questionID.equals(quizItem.questionID)){
+						// and the user is the same as the current one
+						if(quizItem.userID.equals(currentUser.email)){
+							// and the interval is zero
+							if(quizItem.interval == 0){
+								randomQuestionList.add(questionItem);
+							}
+						}
 					}
 					else{
-						questionAskedBefore = false;
-						
+						randomQuestionList.add(questionItem);
 					}
-				}
-				
-				//HERE!!!
-				
-				if(questionAskedBefore){
-					System.out.println("Question " + questionItem.questionText + " has been asked for " + currentUser.email + " before");
-				}
-				else {
-					System.out.println("Question " + questionItem.questionText + " has not been asked for " + currentUser.email + "before");
-				}
-				
-				
-				if(Quiz.find.where().like("question_id", questionItem.questionID).findUnique() == null){
 					
-					randomQuestionList.add(questionItem);
 				}
 			}
 		}
@@ -299,23 +289,31 @@ public class Application extends Controller {
 			// Quizquestion already answered by current user
 			// TODOH Is this correct? Do I have to check for the user here somewhere?
 			
-			if( Quiz.find.where().like("question_ID", clickedRadioAnswer.questionID).findUnique() != null && Quiz.find.where().like("user_id", currentUser.email ).findList() != null){
-				if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
-					Quiz.updateAnswer(clickedRadioAnswer.questionID, 5000);
-				} 
-				else{
-					Quiz.updateAnswer(clickedRadioAnswer.questionID, 0);
+			List<Quiz> tempQuizList = Quiz.find.where().like("question_ID", clickedRadioAnswer.questionID).findList();
+			System.out.println("tempQuizList.size(): " + tempQuizList.size());
+			
+			if( tempQuizList.size() > 0 ){
+				for (Quiz quiz : tempQuizList) {
+					if(Quiz.find.where().like("user_id", currentUser.email ).equals(currentUser.email)){
+						if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
+							Quiz.updateAnswer(clickedRadioAnswer.questionID, 5000);
+						} 
+						else{
+							Quiz.updateAnswer(clickedRadioAnswer.questionID, 0);
+						}
+					}
+					
+				}
+				if(!Quiz.find.where().like("user_id", currentUser.email ).equals(currentUser.email)){
+					if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
+						Quiz.createAnswer(clickedRadioAnswer, request().username(), 5000);
+					} 
+					else{
+						Quiz.createAnswer(clickedRadioAnswer, request().username(), 0);
+					}
 				}
 			}
-			else {
-				// Quizquestion never answered before by current user
-				if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
-					Quiz.createAnswer(clickedRadioAnswer, request().username(), 5000);
-				} 
-				else{
-					Quiz.createAnswer(clickedRadioAnswer, request().username(), 0);
-				}
-			}
+			tempQuizList.clear();
 		}
 		return redirect(routes.Application.startQuiz());
 	}

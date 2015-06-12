@@ -215,25 +215,22 @@ public class Application extends Controller {
 		// Quiz table NOT empty
 		else {
 			System.out.println("Fall 2 - Quiztabelle NICHT leer");
-			// Gibt es noch quizFragen für den aktuellen Nutzer?
-			
+			// Are there still quizQuestions for current user?
 			List<Quiz> quizList1 = Quiz.find.where().like("user_id", currentUser.email).findList(); 
 			
 			if(quizList1.size() > 0){
 				for (Quiz quizItem : quizList1) {
-					// Wenn der Nutzer in der Quiz tabelle der gleiche wie der aktuelle ist UND wenn das Intervall der Quizfrage == 0 ist, dann:...
 					if( (currentUser.email.equals(quizItem.userID) ) ){
 						if(quizItem.interval == 0){
 							Question findUniqueQuestion = Question.find.where().like("question_ID", quizItem.questionID).findUnique();
-							// Suche die Question, deren ID zur Quizfrage passt (gibt nur 1)
+							// There can only be one question that matches the questionID
 							randomQuestionList.add(findUniqueQuestion);
 						}
 					}
 				}
 			}
 			
-			
-			// Gibt es noch Question-Fragen für den aktuellen Nutzer?
+			// Are there still questionQuestions?
 			for (Question questionItem : Question.find.all()) {
 				for (Quiz quizItem : Quiz.find.all()) {
 					// If question appears in the questionTable and quizTable
@@ -249,7 +246,6 @@ public class Application extends Controller {
 					else{
 						randomQuestionList.add(questionItem);
 					}
-					
 				}
 			}
 		}
@@ -300,42 +296,46 @@ public class Application extends Controller {
 			
 			// Quizquestion already answered by current user
 			// TODOH Is this correct? Do I have to check for the user here somewhere?
+			List<Quiz> tempQuizList = Quiz.find.where().like("question_ID", clickedRadioAnswer.questionID).like("user_id", currentUser.email).findList();
 			
-			List<Quiz> tempQuizList = Quiz.find.where().like("question_ID", clickedRadioAnswer.questionID).findList();
-			
+			// If at least one entry in quiz-table matches the question that has been asked
 			if( tempQuizList.size() > 0 ){
-				for (Quiz quizItem : Quiz.find.all()) {
-					if((quizItem.userID).equals(request().username())){
-						System.out.println("if update angesprungen");
+				
+				for (Quiz quizItem : tempQuizList) {
+					if((quizItem.userID).equals(currentUser.email)){
+						System.out.println("if update called");
 						if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
-							Quiz.updateAnswer(clickedRadioAnswer.questionID, request().username(), 5000);
+							Quiz.updateAnswer(clickedRadioAnswer.questionID, currentUser.email, 4000);
 						} 
-						else{
-							Quiz.updateAnswer(clickedRadioAnswer.questionID, request().username(), 0);
+						if(!clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
+							Quiz.updateAnswer(clickedRadioAnswer.questionID, currentUser.email, 4);
 						}
 					}
-					if(!(quizItem.userID).equals(request().username())){
-						System.out.println("if create angesprungen");
-						if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
-							Quiz.createAnswer(clickedRadioAnswer, request().username(), 5000);
-						} 
-						else{
-							Quiz.createAnswer(clickedRadioAnswer, request().username(), 0);
-						}
-					}
+//					if(!(quizItem.userID).equals(currentUser.email)){
+//						System.out.println("if create called");
+//						if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
+//							Quiz.createAnswer(clickedRadioAnswer, currentUser.email, 3000);
+//						} 
+//						if(!clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
+//							Quiz.createAnswer(clickedRadioAnswer, currentUser.email, 3);
+//						}
+//					}
 					
 				}
-				
 			}
-			if(Quiz.find.all().isEmpty()){
+			
+			// Quiz is empty or user has no quizquestion open
+			if(tempQuizList.size() == 0){
 				if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
-					Quiz.createAnswer(clickedRadioAnswer, request().username(), 5000);
+					Quiz.createAnswer(clickedRadioAnswer, currentUser.email, 5000);
 				} 
 				else{
-					Quiz.createAnswer(clickedRadioAnswer, request().username(), 0);
+					Quiz.createAnswer(clickedRadioAnswer, currentUser.email, 5);
 				}
 			}
+			tempQuizList.clear();
 		}
+		
 		return redirect(routes.Application.startQuiz());
 	}
 	

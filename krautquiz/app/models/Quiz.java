@@ -65,10 +65,18 @@ public class Quiz extends Model {
 		entry.save();
 	}
 	
-	public static void updateAnswer(String questionID, long inputInterval){
-		Quiz entry = Quiz.find.where().like("question_id", questionID).findUnique();
-		entry.setInterval(inputInterval);
-		entry.update();
+	public static void updateAnswer(String questionID, String currentUser, long inputInterval){
+		List<Quiz> quizList = Quiz.find.where().like("question_id", questionID).findList();
+		for (Quiz quizItem : quizList) {
+			if(quizItem.userID.equals(currentUser)){
+				quizItem.setInterval(inputInterval);
+				quizItem.update();
+			}
+		}
+		
+//		Quiz entry = Quiz.find.where().like("question_id", questionID).findUnique();
+//		entry.setInterval(inputInterval);
+//		entry.update();
 	}
 
 	public void delete(String id) {

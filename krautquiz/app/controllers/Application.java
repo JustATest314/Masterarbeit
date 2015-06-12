@@ -42,6 +42,8 @@ public class Application extends Controller {
 	
 	static Form<Answer> answerForm = Form.form(Answer.class);
 	
+	public static boolean usersCreatedForLogin = false;
+	
 	public static String generateFakeID(){
 		String fakeID = UUID.randomUUID().toString();
 		return fakeID;
@@ -197,6 +199,8 @@ public class Application extends Controller {
 
 		// If Quiz-Table empty, get the first question and make an entry for the random question list
 		if(Quiz.find.all().isEmpty()){
+			
+			System.out.println("Fall 1 - Quiztabelle ist leer");
 			// Go through all questions and put them into a list
 			List<Question> allQuestionsList = new ArrayList<Question>();
 			for (Question question : Question.find.all()) {
@@ -210,13 +214,21 @@ public class Application extends Controller {
 		
 		// Quiz table NOT empty
 		else {
+			System.out.println("Fall 2 - Quiztabelle NICHT leer");
 			// Gibt es noch quizFragen für den aktuellen Nutzer?
-			for (Quiz quizItem : Quiz.find.all()) {
-				// Wenn der Nutzer in der Quiz tabelle der gleiche wie der aktuelle ist UND wenn das Intervall der Quizfrage == 0 ist, dann:...
-				if( (currentUser.email.equals(quizItem.userID) ) && (quizItem.interval == 0)){
-					Question findUniqueQuestion = Question.find.where().like("question_ID", quizItem.questionID).findUnique();
-					// Suche die Question, deren ID zur Quizfrage passt (gibt nur 1)
-					randomQuestionList.add(findUniqueQuestion);
+			
+			List<Quiz> quizList1 = Quiz.find.where().like("user_id", currentUser.email).findList(); 
+			
+			if(quizList1.size() > 0){
+				for (Quiz quizItem : quizList1) {
+					// Wenn der Nutzer in der Quiz tabelle der gleiche wie der aktuelle ist UND wenn das Intervall der Quizfrage == 0 ist, dann:...
+					if( (currentUser.email.equals(quizItem.userID) ) ){
+						if(quizItem.interval == 0){
+							Question findUniqueQuestion = Question.find.where().like("question_ID", quizItem.questionID).findUnique();
+							// Suche die Question, deren ID zur Quizfrage passt (gibt nur 1)
+							randomQuestionList.add(findUniqueQuestion);
+						}
+					}
 				}
 			}
 			
@@ -290,30 +302,39 @@ public class Application extends Controller {
 			// TODOH Is this correct? Do I have to check for the user here somewhere?
 			
 			List<Quiz> tempQuizList = Quiz.find.where().like("question_ID", clickedRadioAnswer.questionID).findList();
-			System.out.println("tempQuizList.size(): " + tempQuizList.size());
 			
 			if( tempQuizList.size() > 0 ){
-				for (Quiz quiz : tempQuizList) {
-					if(Quiz.find.where().like("user_id", currentUser.email ).equals(currentUser.email)){
+				for (Quiz quizItem : Quiz.find.all()) {
+					if((quizItem.userID).equals(request().username())){
+						System.out.println("if update angesprungen");
 						if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
-							Quiz.updateAnswer(clickedRadioAnswer.questionID, 5000);
+							Quiz.updateAnswer(clickedRadioAnswer.questionID, request().username(), 5000);
 						} 
 						else{
-							Quiz.updateAnswer(clickedRadioAnswer.questionID, 0);
+							Quiz.updateAnswer(clickedRadioAnswer.questionID, request().username(), 0);
+						}
+					}
+					if(!(quizItem.userID).equals(request().username())){
+						System.out.println("if create angesprungen");
+						if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
+							Quiz.createAnswer(clickedRadioAnswer, request().username(), 5000);
+						} 
+						else{
+							Quiz.createAnswer(clickedRadioAnswer, request().username(), 0);
 						}
 					}
 					
 				}
-				if(!Quiz.find.where().like("user_id", currentUser.email ).equals(currentUser.email)){
-					if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
-						Quiz.createAnswer(clickedRadioAnswer, request().username(), 5000);
-					} 
-					else{
-						Quiz.createAnswer(clickedRadioAnswer, request().username(), 0);
-					}
+				
+			}
+			if(Quiz.find.all().isEmpty()){
+				if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
+					Quiz.createAnswer(clickedRadioAnswer, request().username(), 5000);
+				} 
+				else{
+					Quiz.createAnswer(clickedRadioAnswer, request().username(), 0);
 				}
 			}
-			tempQuizList.clear();
 		}
 		return redirect(routes.Application.startQuiz());
 	}
@@ -441,6 +462,7 @@ public class Application extends Controller {
 		
 		// TODOL Remove, just for development
 		public static void createAndRetrieveUser() {
+			usersCreatedForLogin = true;
 	        new Nutzer("bob@mail.com", "Bob", "secret").save();
 	        new Nutzer("marcus@mail.com", "Marcus", "12345").save();
 	        new Nutzer("tim@mail.com", "Tim", "12345").save();
@@ -448,7 +470,10 @@ public class Application extends Controller {
 		
 		public static Result login() {
 			// TODOL Remove, just for development
-//			createAndRetrieveUser();
+			if(!usersCreatedForLogin){
+				createAndRetrieveUser();
+			}
+
 			return ok(views.html.login.render(Form.form(Login.class)));
 		}
 		

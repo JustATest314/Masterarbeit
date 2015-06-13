@@ -41,20 +41,17 @@ with radio buttons and the user has to choose. *@
 
 			@if(answerList.isEmpty){
 				Keine Antworten vorhanden! <br>
-				Möchtest du diese Frage nicht beantworten?
+				Möchtest du nicht selbst eine Antwort zu einer Frage schreiben?
 			} 
 
 			@if(answerList.size > 0){
 				@helper.form(action = routes.Application.nextQuizPage(), 'id -> "answerRadioForm"){
-						<fieldset>
 							@helper.inputRadioGroup(
 				          	answerRadioForm("Antwort"),
 				          	options = answerList.map(answer => answer.answerID.toString -> answer.answerText),
 				          	'_label -> "Antwort",
 				         	'_error -> answerRadioForm("answerID").error.map(_.withMessage("select answer"))
 				          	)
-				        </fieldset>
-
 			        <button type="submit" class="btn btn-default" value="Send">
 						Nächste Frage
 					</button>

@@ -200,7 +200,6 @@ public class Application extends Controller {
 		// If Quiz-Table empty, get the first question and make an entry for the random question list
 		if(Quiz.find.all().isEmpty()){
 			
-			System.out.println("Fall 1 - Quiztabelle ist leer");
 			// Go through all questions and put them into a list
 			List<Question> allQuestionsList = new ArrayList<Question>();
 			for (Question question : Question.find.all()) {
@@ -210,44 +209,34 @@ public class Application extends Controller {
 			// This is the first Question
 			Question randomFirstQuestion = allQuestionsList.get(new Random().nextInt(allQuestionsList.size())); 
 			randomQuestionList.add(randomFirstQuestion);
+//			allQuestionsList.clear();
 		}
 		
 		// Quiz table NOT empty
 		else {
-			System.out.println("Fall 2 - Quiztabelle NICHT leer");
+			// If there are still open questions in the quiz table -> ask them
 			// Are there still quizQuestions for current user?
-			List<Quiz> quizList1 = Quiz.find.where().like("user_id", currentUser.email).findList(); 
+			List<Quiz> quizList1 = Quiz.find.where().like("user_id", currentUser.email).like("interval", "0").findList(); 
 			
 			if(quizList1.size() > 0){
 				for (Quiz quizItem : quizList1) {
-					if( (currentUser.email.equals(quizItem.userID) ) ){
-						if(quizItem.interval == 0){
-							Question findUniqueQuestion = Question.find.where().like("question_ID", quizItem.questionID).findUnique();
-							// There can only be one question that matches the questionID
-							randomQuestionList.add(findUniqueQuestion);
-						}
-					}
+					Question findUniqueQuestion = Question.find.where().like("question_ID", quizItem.questionID).findUnique();
+					// There can only be one question that matches the questionID
+					randomQuestionList.add(findUniqueQuestion);
 				}
 			}
 			
-			// Are there still questionQuestions?
-			for (Question questionItem : Question.find.all()) {
-				for (Quiz quizItem : Quiz.find.all()) {
-					// If question appears in the questionTable and quizTable
-					if(questionItem.questionID.equals(quizItem.questionID)){
-						// and the user is the same as the current one
-						if(quizItem.userID.equals(currentUser.email)){
-							// and the interval is zero
-							if(quizItem.interval == 0){
-								randomQuestionList.add(questionItem);
-							}
-						}
-					}
-					else{
-						randomQuestionList.add(questionItem);
+			// TODO If question answered wrongly, it gets asked immediately again -> clear any of the lists?
+			// If there are no open questions in the quiz table, 
+			// but unasked question from the question table
+			if(quizList1.size() == 0){
+				for (Question questionItem : Question.find.all()) {
+					if(Quiz.find.where().like("question_id", questionItem.questionID).like("user_id", currentUser.email).findUnique() == null){
+						randomQuestionList.add(questionItem);	
 					}
 				}
 			}
+//			quizList1.clear();
 		}
 			
 		if(randomQuestionList.size() > 0){
@@ -302,13 +291,14 @@ public class Application extends Controller {
 			if( tempQuizList.size() > 0 ){
 				
 				for (Quiz quizItem : tempQuizList) {
+					// TODOL Is this if necessary? tempQuizList already checks user
 					if((quizItem.userID).equals(currentUser.email)){
 						System.out.println("if update called");
 						if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
-							Quiz.updateAnswer(clickedRadioAnswer.questionID, currentUser.email, 4000);
+							Quiz.updateAnswer(clickedRadioAnswer.questionID, currentUser.email, 5000);
 						} 
 						if(!clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
-							Quiz.updateAnswer(clickedRadioAnswer.questionID, currentUser.email, 4);
+							Quiz.updateAnswer(clickedRadioAnswer.questionID, currentUser.email, 0);
 						}
 					}
 //					if(!(quizItem.userID).equals(currentUser.email)){
@@ -330,7 +320,7 @@ public class Application extends Controller {
 					Quiz.createAnswer(clickedRadioAnswer, currentUser.email, 5000);
 				} 
 				else{
-					Quiz.createAnswer(clickedRadioAnswer, currentUser.email, 5);
+					Quiz.createAnswer(clickedRadioAnswer, currentUser.email, 0);
 				}
 			}
 			tempQuizList.clear();
@@ -464,8 +454,8 @@ public class Application extends Controller {
 		public static void createAndRetrieveUser() {
 			usersCreatedForLogin = true;
 	        new Nutzer("bob@mail.com", "Bob", "secret").save();
-	        new Nutzer("marcus@mail.com", "Marcus", "12345").save();
-	        new Nutzer("tim@mail.com", "Tim", "12345").save();
+	        new Nutzer("marcus@mail.com", "Marcus", "secret").save();
+	        new Nutzer("tim@mail.com", "Tim", "secret").save();
 	    }
 		
 		public static Result login() {

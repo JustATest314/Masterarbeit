@@ -46,7 +46,12 @@ public class Quiz extends Model {
 
 	
 	public void setInterval(long interval){
-		this.interval = this.interval + interval;
+		if(interval == 0){
+			this.interval = 0;
+		}
+		else{
+			this.interval = this.interval + interval;	
+		}
 	}
 	
 	public static String generateFakeID(){
@@ -67,6 +72,7 @@ public class Quiz extends Model {
 	
 	public static void updateAnswer(String questionID, String currentUser, long inputInterval){
 		List<Quiz> quizList = Quiz.find.where().like("question_id", questionID).findList();
+		// TODOL Is this for loop necessary?
 		for (Quiz quizItem : quizList) {
 			if(quizItem.userID.equals(currentUser)){
 				quizItem.setInterval(inputInterval);

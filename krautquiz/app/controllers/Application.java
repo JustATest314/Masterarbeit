@@ -44,6 +44,8 @@ public class Application extends Controller {
 	
 	public static boolean usersCreatedForLogin = false;
 	
+	public static Integer currentPage = 1;
+	
 	public static String generateFakeID(){
 		String fakeID = UUID.randomUUID().toString();
 		return fakeID;
@@ -122,10 +124,11 @@ public class Application extends Controller {
 		Collections.sort(questionListAll, Collections.reverseOrder());
 		Collections.sort(answerListAll, Collections.reverseOrder());
 		
-		return ok(views.html.index.render(questionListAll, answerListAll));
+		return ok(views.html.index.render(questionListAll, answerListAll, currentPage));
 	}
 
 	// Settings
+	@Security.Authenticated(Secured.class)
 	public static Result showSettings() {
 		return ok(views.html.einstellungen.render(questionListAll, answerListAll));
 	}
@@ -142,6 +145,7 @@ public class Application extends Controller {
 	// Send the question to the indexpage
 	// TODOL Use Bootstraps "Modal" to smoothly glide into the view
 	// http://getbootstrap.com/javascript/#modals
+	@Security.Authenticated(Secured.class)
 	public static Result sendQuestion(){
 		// Create new question-form and fill it with the values from the other page
 		Form<Question> boundQuestion = newQuestionForm.bindFromRequest();
@@ -165,6 +169,7 @@ public class Application extends Controller {
 	}
 	
 	// Send answer to indexpage
+	@Security.Authenticated(Secured.class)
 	public static Result sendAnswer(){
 		Form<Answer> boundAnswer = newAnswerForm.bindFromRequest();
 		Answer newAnswer = boundAnswer.get();
@@ -184,6 +189,7 @@ public class Application extends Controller {
 	}
 	
 	// TODO Remove in production, only for development. Populates the DB with fake entries
+	@Security.Authenticated(Secured.class)
 	public static Result initDB(){
 		initialize();
 		return redirect(routes.Application.index());
@@ -320,6 +326,7 @@ public class Application extends Controller {
 	// Method for voting on questions / answers, gets a map from an AJAX POST in the view class
 	// The parameters are Q/A ID and voteScore, new score gets saved in DB
 	// TODOL Duplicate code in voteUp() and voteDown() -> extract!
+	@Security.Authenticated(Secured.class)
 	public static Result voteUp(){
 		Map<String, String[]> parameters = request().body().asFormUrlEncoded();
 		String questionIDInput = parameters.get("questionID")[0];
@@ -339,12 +346,13 @@ public class Application extends Controller {
 			changeAnswer.voteScore = Integer.parseInt(voteScoreInput) + 1;
 			changeAnswer.save();
 		}
-		return ok(views.html.index.render(questionListAll, answerListAll));
+		return ok(views.html.index.render(questionListAll, answerListAll, currentPage));
 	}
 	
 	// Method for voting on questions / answers, gets a map from an AJAX POST in the view class
 		// The parameters are Q/A ID and voteScore, new score gets saved in DB
 	// TODOL Duplicate code in voteUp() and voteDown() -> extract!
+	@Security.Authenticated(Secured.class)
 		public static Result voteDown(){
 			Map<String, String[]> parameters = request().body().asFormUrlEncoded();
 			String questionIDInput = parameters.get("questionID")[0];
@@ -364,122 +372,126 @@ public class Application extends Controller {
 				changeAnswer.voteScore = Integer.parseInt(voteScoreInput) - 1;
 				changeAnswer.save();
 			}
-			return ok(views.html.index.render(questionListAll, answerListAll));
+			return ok(views.html.index.render(questionListAll, answerListAll, currentPage));
 		}
 		
-		// Gets an ID from the form in the view class, finds the matching question and updates it
-		public static Result editQuestion(String questionIDInput){
-			List<Question> questionHelper = new ArrayList<Question>();
-			for (Question questionItem : Question.find.all()) {
-				questionHelper.add(questionItem);
-			}
-			Question helper = Question.find.byId(questionIDInput);
-			// Fill a form with the last entered values
-			Form<Question> preFilledQuestion = newQuestionForm.fill(helper);
-			return ok(views.html.editQuestion.render(preFilledQuestion, questionHelper));
+	// Gets an ID from the form in the view class, finds the matching question and updates it
+	@Security.Authenticated(Secured.class)
+	public static Result editQuestion(String questionIDInput){
+		List<Question> questionHelper = new ArrayList<Question>();
+		for (Question questionItem : Question.find.all()) {
+			questionHelper.add(questionItem);
 		}
-		
-		// Sends an edited Question
-		public static Result sendEditedQuestion(){
-			// Get the input text by a request
-			Form<Question> boundQuestion = newQuestionForm.bindFromRequest();
-			Question newQuestion = boundQuestion.get();
-			// Delete the old question, create a new with the entered input
-			// TODOL Should the question really be deleted and created? No method for update()?
-			// Ebean.update(QUESTION); might work?
-			Question.find.byId(newQuestion.questionID).delete();
-			Question.create(newQuestion);
-			
-			questionListAll.add(newQuestion);
-			// Sort the list, so best rated goes to the top
-			Collections.sort(questionListAll, Collections.reverseOrder());
-			return redirect(routes.Application.index());
-		}
-		
-		// Similar to editQuestion()
-		public static Result editAnswer(String answerIDInput){
-			List<Answer> answerHelper = new ArrayList<Answer>();
-			for (Answer answerItem : Answer.find.all()) {
-				answerHelper.add(answerItem);
-			}
-			Answer helper = Answer.find.byId(answerIDInput);
-			Form<Answer> preFilledAnswer = newAnswerForm.fill(helper);
-			return ok(views.html.editAnswer.render(preFilledAnswer, answerHelper));
-		}
-		
-		// Similar to sendEditedQuestion()
-		public static Result sendEditedAnswer(){
-			Form<Answer> boundAnswer = newAnswerForm.bindFromRequest();
-			Answer newAnswer = boundAnswer.get();
-			Answer.find.byId(newAnswer.answerID).delete();
-			Answer.create(newAnswer);
-			answerListAll.add(newAnswer);
-			Collections.sort(questionListAll, Collections.reverseOrder());
-			return redirect(routes.Application.index());
-		}
-		
-		// Inner class to handle login
-		public static class Login {
-		    public String email;
-		    public String password;
-    
-		    public String validate() {
-			    if (Nutzer.authenticate(email, password) == null) {
-			    	System.out.println("validate() has been called");
-			      return "Invalid user or password";
-			    }
-			    return null;
-			}
-		}
-		
-		public static class Register{
-			public String name;
-			public String email;
-			public String password;
-		}
-		
-		// TODOL Remove, just for development
-		public static void createAndRetrieveUser() {
-			usersCreatedForLogin = true;
-	        new Nutzer("bob@mail.com", "Bob", "secret").save();
-	        new Nutzer("marcus@mail.com", "Marcus", "secret").save();
-	        new Nutzer("tim@mail.com", "Tim", "secret").save();
-	    }
-		
-		public static Result login() {
-			// TODOL Remove, just for development
-			if(!usersCreatedForLogin){
-				createAndRetrieveUser();
-			}
+		Question helper = Question.find.byId(questionIDInput);
+		// Fill a form with the last entered values
+		Form<Question> preFilledQuestion = newQuestionForm.fill(helper);
+		return ok(views.html.editQuestion.render(preFilledQuestion, questionHelper));
+	}
 
-			return ok(views.html.login.render(Form.form(Login.class)));
+	// Sends an edited Question
+	@Security.Authenticated(Secured.class)
+	public static Result sendEditedQuestion(){
+		// Get the input text by a request
+		Form<Question> boundQuestion = newQuestionForm.bindFromRequest();
+		Question newQuestion = boundQuestion.get();
+		// Delete the old question, create a new with the entered input
+		// TODOL Should the question really be deleted and created? No method for update()?
+		// Ebean.update(QUESTION); might work?
+		Question.find.byId(newQuestion.questionID).delete();
+		Question.create(newQuestion);
+
+		questionListAll.add(newQuestion);
+		// Sort the list, so best rated goes to the top
+		Collections.sort(questionListAll, Collections.reverseOrder());
+		return redirect(routes.Application.index());
+	}
+
+	// Similar to editQuestion()
+	@Security.Authenticated(Secured.class)
+	public static Result editAnswer(String answerIDInput){
+		List<Answer> answerHelper = new ArrayList<Answer>();
+		for (Answer answerItem : Answer.find.all()) {
+			answerHelper.add(answerItem);
 		}
-		
-		public static Result logout() {
-		    session().clear();
-		    flash("success", "You've been logged out");
-		    return redirect(routes.Application.login());
+		Answer helper = Answer.find.byId(answerIDInput);
+		Form<Answer> preFilledAnswer = newAnswerForm.fill(helper);
+		return ok(views.html.editAnswer.render(preFilledAnswer, answerHelper));
+	}
+
+	// Similar to sendEditedQuestion()
+	@Security.Authenticated(Secured.class)
+	public static Result sendEditedAnswer(){
+		Form<Answer> boundAnswer = newAnswerForm.bindFromRequest();
+		Answer newAnswer = boundAnswer.get();
+		Answer.find.byId(newAnswer.answerID).delete();
+		Answer.create(newAnswer);
+		answerListAll.add(newAnswer);
+		Collections.sort(questionListAll, Collections.reverseOrder());
+		return redirect(routes.Application.index());
+	}
+
+	// Inner class to handle login
+	public static class Login {
+		public String email;
+		public String password;
+
+		public String validate() {
+			if (Nutzer.authenticate(email, password) == null) {
+				System.out.println("validate() has been called");
+				return "Invalid user or password";
+			}
+			return null;
 		}
-		
-		public static Result authenticate() {
-		    Form<Login> loginForm = Form.form(Login.class).bindFromRequest();
-		    if (loginForm.hasErrors()) {
-		        return badRequest(views.html.login.render(loginForm));
-		    } else {
-		        session().clear();
-		        session("email", loginForm.get().email);
-		        return redirect(routes.Application.index());
-		    }
+	}
+
+	public static class Register{
+		public String name;
+		public String email;
+		public String password;
+	}
+
+	// TODOL Remove, just for development
+	public static void createAndRetrieveUser() {
+		usersCreatedForLogin = true;
+		new Nutzer("bob@mail.com", "Bob", "secret").save();
+		new Nutzer("marcus@mail.com", "Marcus", "secret").save();
+		new Nutzer("tim@mail.com", "Tim", "secret").save();
+	}
+
+	public static Result login() {
+		// TODOL Remove, just for development
+		if(!usersCreatedForLogin){
+			createAndRetrieveUser();
 		}
-		
-		public static Result register(){
-			return ok(views.html.register.render(Form.form(Register.class)));
-		}
-		
-		public static Result registerUser(){
-			Form<Register> registerForm = Form.form(Register.class).bindFromRequest();
-			Nutzer formNutzer = new Nutzer(registerForm.get().email, registerForm.get().name, registerForm.get().password);
-			formNutzer.save();
+
+		return ok(views.html.login.render(Form.form(Login.class)));
+	}
+
+	public static Result logout() {
+		session().clear();
+		flash("success", "You've been logged out");
+		return redirect(routes.Application.login());
+	}
+
+	public static Result authenticate() {
+		Form<Login> loginForm = Form.form(Login.class).bindFromRequest();
+		if (loginForm.hasErrors()) {
+			return badRequest(views.html.login.render(loginForm));
+		} else {
+			session().clear();
+			session("email", loginForm.get().email);
 			return redirect(routes.Application.index());
 		}
+	}
+
+	public static Result register(){
+		return ok(views.html.register.render(Form.form(Register.class)));
+	}
+
+	public static Result registerUser(){
+		Form<Register> registerForm = Form.form(Register.class).bindFromRequest();
+		Nutzer formNutzer = new Nutzer(registerForm.get().email, registerForm.get().name, registerForm.get().password);
+		formNutzer.save();
+		return redirect(routes.Application.index());
+	}
 }

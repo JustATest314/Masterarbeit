@@ -1,7 +1,7 @@
 @import models.Question
 @import models.Answer
 
-@(questionList: List[Question], answerList: List[Answer])
+@(questionList: List[Question], answerList: List[Answer], currentPage: Integer)
 
 @main("Kraut Quiz") {
 
@@ -188,10 +188,12 @@ $(document).ready(function(){
 <!-- TODO Not working at the moment! -->    
 <nav>
 	<ul class="pagination">
-		<li ><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-		<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-		<li ><a href="#">2 <span class="sr-only">(current)</span></a></li>
-		<li ><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+		<!-- TODO Change the 10 to dynamically generated value -->
+		@for(index <- 1 to 10){
+			<li class="@("active".when(index == currentPage))"><a href="@routes.Application.index()">@index <span class="sr-only">(current)</span></a></li>
+		}
+		<!-- <li ><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li> -->
+		<!-- <li ><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li> -->
 	</ul>
 </nav>
 

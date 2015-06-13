@@ -22,12 +22,9 @@ with radio buttons and the user has to choose. *@
 			} 
 
 			@if(questionList.size > 0){
-				<!-- As only the highest ranked question gets put into the List, there is only one entry on first place -->
-			<b>@questionList.get(0).questionText</b>
-
-			@for(question <- questionList)	{
-				@question.questionText - @question.ownerID <br>
-			}
+				@for(question <- questionList)	{
+					@question.questionText<br>
+				}
 			} 
 
 			
@@ -42,20 +39,28 @@ with radio buttons and the user has to choose. *@
 	<div class="panel-body">
 		<div style="text-align: center;">
 
-		@helper.form(action = routes.Application.nextQuizPage(), 'id -> "answerRadioForm"){
-			<fieldset>
-				@helper.inputRadioGroup(
-	          	answerRadioForm("Antwort"),
-	          	options = answerList.map(answer => answer.answerID.toString -> answer.answerText),
-	          	'_label -> "Antwort",
-	         	'_error -> answerRadioForm("answerID").error.map(_.withMessage("select answer"))
-	          	)
-	        </fieldset>
+			@if(answerList.isEmpty){
+				Keine Antworten vorhanden! <br>
+				Möchtest du diese Frage nicht beantworten?
+			} 
 
-        <button type="submit" class="btn btn-default" value="Send">
-			Nächste Frage
-		</button>
-		}
+			@if(answerList.size > 0){
+				@helper.form(action = routes.Application.nextQuizPage(), 'id -> "answerRadioForm"){
+						<fieldset>
+							@helper.inputRadioGroup(
+				          	answerRadioForm("Antwort"),
+				          	options = answerList.map(answer => answer.answerID.toString -> answer.answerText),
+				          	'_label -> "Antwort",
+				         	'_error -> answerRadioForm("answerID").error.map(_.withMessage("select answer"))
+				          	)
+				        </fieldset>
+
+			        <button type="submit" class="btn btn-default" value="Send">
+						Nächste Frage
+					</button>
+					}
+			}
+		
 
 		</div>
 	</div>

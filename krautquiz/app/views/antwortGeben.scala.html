@@ -14,12 +14,12 @@
 	<!-- TODO Inputfields dont look like Bootstrap -->
 	@helper.form(action = routes.Application.sendAnswer()){
 		<fieldset>
-			@helper.inputText(answerForm("answerID"))
-			@helper.inputText(answerForm("questionID"))
-			@helper.inputText(answerForm("answerText"))
-			@helper.inputText(answerForm("voteScore"))
-			@helper.inputText(answerForm("ownerID"))
-			@helper.inputText(answerForm("page"))
+			@helper.inputText(answerForm("answerID"),'style -> "display: none")
+			@helper.inputText(answerForm("questionID"),'style -> "display: none")
+			@helper.inputText(answerForm("answerText"),'size -> 160)
+			@helper.inputText(answerForm("voteScore"),'style -> "display: none")
+			@helper.inputText(answerForm("ownerID"),'style -> "display: none")
+			@helper.inputText(answerForm("page"),'style -> "display: none")
 		</fieldset>
 		<input type="submit" class="btn btn-default">
 	}

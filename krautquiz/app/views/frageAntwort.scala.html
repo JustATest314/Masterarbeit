@@ -16,12 +16,10 @@ The page gets a hashMap from the controller with all the q/as and renders them.
 	@helper.form(action = routes.Application.sendQuestion()){
 		<fieldset>
 			@helper.inputText(questionForm("questionID"),'style -> "display: none")
-			@helper.inputText(questionForm("questionText"),'size -> 30)
-			@helper.inputText(questionForm("voteScore"))
-			@helper.inputText(questionForm("ownerID"))
-			@helper.inputText(questionForm("page"))
-			
-			
+			@helper.inputText(questionForm("questionText"),'size -> 160)
+			@helper.inputText(questionForm("voteScore"),'style -> "display: none")
+			@helper.inputText(questionForm("ownerID"),'style -> "display: none")
+			@helper.inputText(questionForm("page"),'style -> "display: none")
 			
 		</fieldset>
 		<input type="submit" class="btn btn-default">

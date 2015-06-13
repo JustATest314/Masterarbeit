@@ -134,7 +134,7 @@ public class Application extends Controller {
 	@Security.Authenticated(Secured.class)
 	public static Result askQuestion(){
 		Nutzer formUser = Nutzer.find.byId(request().username());
-		Question answerWithQuestionID = new Question(generateFakeID(), null, null, formUser.email, 1);
+		Question answerWithQuestionID = new Question(generateFakeID(), null, 1, formUser.email, 1);
 		Form<Question> preFilledQuestion = newQuestionForm.fill(answerWithQuestionID);
 		return ok(views.html.frageAntwort.render(preFilledQuestion));
 	}
@@ -159,7 +159,7 @@ public class Application extends Controller {
 	@Security.Authenticated(Secured.class)
 	public static Result writeAnswer(String questionIDInput){
 		Nutzer formUser = Nutzer.find.byId(request().username());
-		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, null, formUser.email, 1);
+		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, 1, formUser.email, 1);
 		Form<Answer> preFilledAnswer = newAnswerForm.fill(answerWithQuestionID);
 		return ok(views.html.antwortGeben.render(preFilledAnswer));
 	}
@@ -209,7 +209,7 @@ public class Application extends Controller {
 			// This is the first Question
 			Question randomFirstQuestion = allQuestionsList.get(new Random().nextInt(allQuestionsList.size())); 
 			randomQuestionList.add(randomFirstQuestion);
-//			allQuestionsList.clear();
+			allQuestionsList.clear();
 		}
 		
 		// Quiz table NOT empty
@@ -224,6 +224,7 @@ public class Application extends Controller {
 					// There can only be one question that matches the questionID
 					randomQuestionList.add(findUniqueQuestion);
 				}
+				quizList1.clear();
 			}
 			
 			// TODO If question answered wrongly, it gets asked immediately again -> clear any of the lists?
@@ -235,8 +236,9 @@ public class Application extends Controller {
 						randomQuestionList.add(questionItem);	
 					}
 				}
+				quizList1.clear();
 			}
-//			quizList1.clear();
+			quizList1.clear();
 		}
 			
 		if(randomQuestionList.size() > 0){
@@ -279,10 +281,6 @@ public class Application extends Controller {
 			// Works, as compareTo() in Answer.java has been overridden and sorts for voteScore
 			Answer bestAnswer = Collections.max(highestAnswerList);
 			
-//			System.out.println("Question was: " + matchingQuestionRadio.questionText);
-//			System.out.println("clicked answer was: " + clickedRadioAnswer.answerText + " score: " + clickedRadioAnswer.voteScore);
-//			System.out.println("Best answer was: " + bestAnswer.answerText + " score: " + bestAnswer.voteScore);
-			
 			// Quizquestion already answered by current user
 			// TODOH Is this correct? Do I have to check for the user here somewhere?
 			List<Quiz> tempQuizList = Quiz.find.where().like("question_ID", clickedRadioAnswer.questionID).like("user_id", currentUser.email).findList();
@@ -293,7 +291,6 @@ public class Application extends Controller {
 				for (Quiz quizItem : tempQuizList) {
 					// TODOL Is this if necessary? tempQuizList already checks user
 					if((quizItem.userID).equals(currentUser.email)){
-						System.out.println("if update called");
 						if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
 							Quiz.updateAnswer(clickedRadioAnswer.questionID, currentUser.email, 5000);
 						} 
@@ -301,16 +298,6 @@ public class Application extends Controller {
 							Quiz.updateAnswer(clickedRadioAnswer.questionID, currentUser.email, 0);
 						}
 					}
-//					if(!(quizItem.userID).equals(currentUser.email)){
-//						System.out.println("if create called");
-//						if(clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
-//							Quiz.createAnswer(clickedRadioAnswer, currentUser.email, 3000);
-//						} 
-//						if(!clickedRadioAnswer.answerID.equals(bestAnswer.answerID)){
-//							Quiz.createAnswer(clickedRadioAnswer, currentUser.email, 3);
-//						}
-//					}
-					
 				}
 			}
 			
@@ -324,6 +311,7 @@ public class Application extends Controller {
 				}
 			}
 			tempQuizList.clear();
+			randomQuestionList.clear();
 		}
 		
 		return redirect(routes.Application.startQuiz());

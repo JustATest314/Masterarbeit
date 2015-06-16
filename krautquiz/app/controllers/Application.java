@@ -131,7 +131,7 @@ public class Application extends Controller {
 	@Security.Authenticated(Secured.class)
 	public static Result showSettings() {
 		questionListAll.clear();
-		for (Quiz quizItem : Quiz.find.where().like("user_id", request().username()).findList()) {
+		for (Quiz quizItem : Quiz.find.where().like("user_id", request().username()).like("interval", "5000").findList()) {
 			Question questionEntry = Question.find.where().like("question_id", quizItem.questionID).findUnique();
 			questionListAll.add(questionEntry);
 		}
@@ -458,16 +458,16 @@ public class Application extends Controller {
 
 	// TODOL Remove, just for development
 	public static void createAndRetrieveUser() {
-//		usersCreatedForLogin = true;
-//		new Nutzer("bob@mail.com", "Bob", "secret").save();
-//		new Nutzer("marcus@mail.com", "Marcus", "secret").save();
-//		new Nutzer("admin@mail.com", "Admin", "secret").save();
-//		
-//		new Nutzer("susanne@mail.com", "Susanne", "sodifu").save();
-//		new Nutzer("friedrich@mail.com", "Friedrich", "coiwucu").save();
-//		new Nutzer("hendrik@mail.com", "Hendrik", "cpsoiwp").save();
-//		new Nutzer("sebastian@mail.com", "Sebastian", "sdmnfbd").save();
-//		new Nutzer("steffen@mail.com", "Steffen", "sidfzz").save();
+		usersCreatedForLogin = true;
+		new Nutzer("bob@mail.com", "Bob", "secret").save();
+		new Nutzer("marcus@mail.com", "Marcus", "secret").save();
+		new Nutzer("admin@mail.com", "Admin", "secret").save();
+		
+		new Nutzer("susanne@mail.com", "Susanne", "sodifu").save();
+		new Nutzer("friedrich@mail.com", "Friedrich", "coiwucu").save();
+		new Nutzer("hendrik@mail.com", "Hendrik", "cpsoiwp").save();
+		new Nutzer("sebastian@mail.com", "Sebastian", "sdmnfbd").save();
+		new Nutzer("steffen@mail.com", "Steffen", "sidfzz").save();
 	}
 
 	public static Result login() {
@@ -475,12 +475,11 @@ public class Application extends Controller {
 		if(!usersCreatedForLogin){
 			createAndRetrieveUser();
 		}
-
 		return ok(views.html.login.render(Form.form(Login.class)));
 	}
 
 	public static Result logout() {
-		usersCreatedForLogin = false;
+		usersCreatedForLogin = true;
 		session().clear();
 		flash("success", "You've been logged out");
 		return redirect(routes.Application.login());

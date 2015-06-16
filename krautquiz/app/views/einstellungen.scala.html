@@ -8,37 +8,22 @@
 		<h3 class="panel-title">Einstellungen</h3>
 	</div>
 	<div class="panel-body">
-		TODO: Implementieren!
-		<hr>
-		Hier drüber sollte eine Linie angezeigt werden
-
-		<!-- TODO Remove, for understanding how a script function can toggle an icon -->
-		<p>
-			<img alt=""
-				src="http://www.userinterfaceicons.com/80x80/minimize.png"
-				style="height: 80px; width: 80px" id="imgClickAndChange"
-				onclick="changeImage()" />
-		</p>
 		
-		<b>Questions:</b> <br>
-		@for(question <- questionList){
-			@question.questionText <br>
-			
-			<b>Answers:</b> <br>
-			@for(answer <- answerList){
-				@if(question.questionID == answer.questionID){
-					<b>@answer.answerText</b> <br>	
+		<b>Du hast folgende Fragen bereits beantwortet:</b> <br>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Frage</th>
+				</tr>
+			</thead>
+			<tbody>
+				@for(question <- questionList){
+					<tr>
+				        <td>@question.questionText</td>
+			        </tr>
 				}
-			}
-			<br>
-		}
-		<br>
-		<b>Answers:</b> <br>
-		@for(answer <- answerList){
-			
-			@answer <br>
-		}
-		
+		    </tbody>
+		</table>
 	</div>
 </div>
 }

@@ -4,8 +4,7 @@ with radio buttons and the user has to choose. *@
 @import models.Question
 @import models.Answer
 
-@import helper._
-@import helper.twitterBootstrap._
+@import play.i18n._
 
 @(questionList: List[Question], answerList: List[Answer], answerRadioForm: Form[Answer])
 
@@ -46,13 +45,16 @@ with radio buttons and the user has to choose. *@
 			} 
 
 			@if(answerList.size > 0){
-				@helper.form(action = routes.Application.nextQuizPage(), 'id -> "answerRadioForm"){
-							@helper.inputRadioGroup(
-				          	answerRadioForm("Antwort"),
-				          	options = answerList.map(answer => answer.answerID.toString -> answer.answerText),
-				          	'_label -> "Antwort",
-				         	'_error -> answerRadioForm("answerID").error.map(_.withMessage("select answer"))
-				          	)
+				Antworten: <br>
+				@helper.form(action = routes.Application.nextQuizPage()){
+							@for(answer <- answerList) {
+						        <div class="radio">
+						          <label>
+						            <input type="radio" name="answer" value="@answer.answerID">
+						            @answer.answerText
+						          </label>
+						        </div>
+					        }
 			        <button type="submit" class="btn btn-default" value="Send">
 						Nächste Frage
 					</button>
@@ -62,3 +64,4 @@ with radio buttons and the user has to choose. *@
 	</div>
 </div>
 }
+

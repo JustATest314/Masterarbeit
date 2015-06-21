@@ -11,9 +11,8 @@
 	</div>
 	<div class="panel-body">
 
-		<i><b>Reminder: Denk' dran, das PDF zu re-aktivieren!</b></i>
 		<!-- TODO PDF deactivated for development, re-activate for production -->
-		<embed src="http://www.einfach-fuer-alle.de/artikel/checkliste-barrierefreie-pdf/Checkliste-Barrierefreies-PDF.pdf" width="100%" height="500"></embed>    
+		@* <embed src="http://fs1.directupload.net/images/150618/pcjgw6kw.pdf" width="100%" height="600"></embed> *@
 	</div>
 </div>
 
@@ -207,7 +206,7 @@ $(document).ready(function(){
 <!-- TODO Remove in production, only needed for development -->
 @* <a href="@routes.Application.writeAnswer()"><button class="btn btn-default" type="submit">Antwort geben</button></a> *@ 
 <!-- TODO Remove in production, only needed for development -->
-@* <a href="@routes.Application.initDB()"><button class="btn btn-primary" type="submit">Init DB</button></a> *@
+<a href="@routes.Application.initDB()"><button class="btn btn-primary" type="submit">Init DB</button></a>
 </div>
 </div>
 }

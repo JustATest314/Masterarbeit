@@ -276,10 +276,10 @@ public class Application extends Controller {
 		Nutzer currentUser = Nutzer.find.byId(request().username());
 		// Get the answerID from the form
 		Form<Answer> filledForm = answerForm.bindFromRequest();
-		String answerIDfromForm = filledForm.data().get("Antwort");
+		String answerIDfromForm = filledForm.data().get("answer");
 		
 		// If button for next page gets clicked without any question to ask, redirect to quiz page
-		if(filledForm.data().get("Antwort") == null){
+		if(filledForm.data().get("answer") == null){
 			return redirect(routes.Application.startQuiz());
 		}
 		// Another Quizquestion is available

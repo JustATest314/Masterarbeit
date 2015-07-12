@@ -107,7 +107,7 @@ public class Application extends Controller {
 
 	// Frontpage
 	@Security.Authenticated(Secured.class)
-	public static Result index() {
+	public static Result index(Integer page) {
 		questionListAll.clear();
 		answerListAll.clear();
 		
@@ -124,7 +124,7 @@ public class Application extends Controller {
 		Collections.sort(questionListAll, Collections.reverseOrder());
 		Collections.sort(answerListAll, Collections.reverseOrder());
 		
-		return ok(views.html.index.render(questionListAll, answerListAll, currentPage));
+		return ok(views.html.index.render(questionListAll, answerListAll, page));
 	}
 
 	// Settings
@@ -143,8 +143,8 @@ public class Application extends Controller {
 	@Security.Authenticated(Secured.class)
 	public static Result askQuestion(){
 		Nutzer formUser = Nutzer.find.byId(request().username());
-		Question answerWithQuestionID = new Question(generateFakeID(), null, 1, formUser.email, 1);
-		Form<Question> preFilledQuestion = newQuestionForm.fill(answerWithQuestionID);
+		Question questionToAsk = new Question(generateFakeID(), null, 1, formUser.email, 1);
+		Form<Question> preFilledQuestion = newQuestionForm.fill(questionToAsk);
 		return ok(views.html.frageAntwort.render(preFilledQuestion));
 	}
 	
@@ -158,11 +158,11 @@ public class Application extends Controller {
 		Question newQuestion = boundQuestion.get();
 		Question.create(newQuestion);
 //		Quiz.createQuestion(newQuestion);
-		
+		System.out.println("BoundQuestion: " + boundQuestion.toString());
 		questionListAll.add(newQuestion);
 		Collections.sort(questionListAll, Collections.reverseOrder());
 //		return ok(views.html.index.render(questionListAll, answerListAll));
-		 return redirect(routes.Application.index());
+		 return redirect(routes.Application.index(1));
 	}
 	
 	// Write an answer, goto answerpage
@@ -186,7 +186,7 @@ public class Application extends Controller {
 		
 		// Redirect to the index-page because else you land on /Antwort and not /index
 		// Also its recommended to use PRG: http://en.wikipedia.org/wiki/Post/Redirect/Get
-		return redirect(routes.Application.index());
+		return redirect(routes.Application.index(1));
 	}
 	
 	// TODOL Show the users page, will need an ID for a routing paramter
@@ -198,7 +198,7 @@ public class Application extends Controller {
 	@Security.Authenticated(Secured.class)
 	public static Result initDB(){
 		initialize();
-		return redirect(routes.Application.index());
+		return redirect(routes.Application.index(1));
 	}
 	
 	// Quizpage
@@ -409,7 +409,7 @@ public class Application extends Controller {
 		questionListAll.add(newQuestion);
 		// Sort the list, so best rated goes to the top
 		Collections.sort(questionListAll, Collections.reverseOrder());
-		return redirect(routes.Application.index());
+		return redirect(routes.Application.index(1));
 	}
 
 	// Similar to editQuestion()
@@ -433,7 +433,7 @@ public class Application extends Controller {
 		Answer.create(newAnswer);
 		answerListAll.add(newAnswer);
 		Collections.sort(questionListAll, Collections.reverseOrder());
-		return redirect(routes.Application.index());
+		return redirect(routes.Application.index(1));
 	}
 
 	// Inner class to handle login
@@ -492,7 +492,7 @@ public class Application extends Controller {
 		} else {
 			session().clear();
 			session("email", loginForm.get().email);
-			return redirect(routes.Application.index());
+			return redirect(routes.Application.index(1));
 		}
 	}
 
@@ -504,6 +504,6 @@ public class Application extends Controller {
 		Form<Register> registerForm = Form.form(Register.class).bindFromRequest();
 		Nutzer formNutzer = new Nutzer(registerForm.get().email, registerForm.get().name, registerForm.get().password);
 		formNutzer.save();
-		return redirect(routes.Application.index());
+		return redirect(routes.Application.index(1));
 	}
 }

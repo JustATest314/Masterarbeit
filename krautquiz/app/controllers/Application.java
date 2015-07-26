@@ -37,9 +37,6 @@ public class Application extends Controller {
 	public static List<Answer> answerList = new ArrayList<Answer>();
 	public static List<Question> randomQuestionList = new ArrayList<Question>();
 	
-//	public static List<Question> highestRankedQuestionList = new ArrayList<Question>();
-//	public static List<Answer> highestRankedAnswerList = new ArrayList<Answer>();
-	
 	static Form<Answer> answerForm = Form.form(Answer.class);
 	
 	public static boolean usersCreatedForLogin = false;
@@ -113,14 +110,15 @@ public class Application extends Controller {
 		
 		// Get all questions from DB
 		for (Question questionItem : Question.find.all()) {
-			questionListAll.add(questionItem);
+			if(questionItem.page.equals(page)){
+				questionListAll.add(questionItem);
+			}
 		}
 		
 		// Get all answers from DB
 		for (Answer answerItem : Answer.find.all()) {
 			answerListAll.add(answerItem);
 		}
-		
 		Collections.sort(questionListAll, Collections.reverseOrder());
 		Collections.sort(answerListAll, Collections.reverseOrder());
 		
@@ -202,7 +200,6 @@ public class Application extends Controller {
 	}
 	
 	// Quizpage
-	// FIXME Weiterer Nutzer bekommt keine Fragen
 	@Security.Authenticated(Secured.class)
 	public static Result startQuiz() {
 		Nutzer currentUser = Nutzer.find.byId(request().username());
@@ -356,7 +353,7 @@ public class Application extends Controller {
 	}
 	
 	// Method for voting on questions / answers, gets a map from an AJAX POST in the view class
-		// The parameters are Q/A ID and voteScore, new score gets saved in DB
+	// The parameters are Q/A ID and voteScore, new score gets saved in DB
 	// TODOL Duplicate code in voteUp() and voteDown() -> extract!
 	@Security.Authenticated(Secured.class)
 		public static Result voteDown(){

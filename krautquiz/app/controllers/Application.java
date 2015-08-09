@@ -169,13 +169,17 @@ public class Application extends Controller {
 		Nutzer formUser = Nutzer.find.byId(request().username());
 		Answer answerWithQuestionID = new Answer(generateFakeID(), questionIDInput, null, 1, formUser.email, 1);
 		Form<Answer> preFilledAnswer = newAnswerForm.fill(answerWithQuestionID);
-		return ok(views.html.antwortGeben.render(preFilledAnswer));
+		Question questionToAnswer = Question.find.byId(questionIDInput);
+		return ok(views.html.antwortGeben.render(preFilledAnswer, questionToAnswer));
 	}
 	
 	// Send answer to indexpage
 	@Security.Authenticated(Secured.class)
 	public static Result sendAnswer(){
 		Form<Answer> boundAnswer = newAnswerForm.bindFromRequest();
+		System.out.println("boundAnswer: " + boundAnswer.toString());
+//		String testString = newAnswerForm.data().get("testValueAnswerID");
+//		System.out.println("testString: " + testString);
 		Answer newAnswer = boundAnswer.get();
 		Answer.create(newAnswer);
 		answerListAll.add(newAnswer);

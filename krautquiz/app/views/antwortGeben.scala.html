@@ -6,13 +6,16 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@(answerForm: Form[Answer])
+@(answerForm: Form[Answer], question: Question)
 
 
 @main("Antwort geben"){
+
+<b><center>Antwort auf die Frage "@question.questionText" erstellen:</center></b></br>
 	
 	<!-- TODO Inputfields dont look like Bootstrap -->
 	@helper.form(action = routes.Application.sendAnswer()){
+		
 		<fieldset>
 			@helper.inputText(answerForm("answerID"),'style -> "display: none")
 			@helper.inputText(answerForm("questionID"),'style -> "display: none")
@@ -21,6 +24,18 @@
 			@helper.inputText(answerForm("ownerID"),'style -> "display: none")
 			@helper.inputText(answerForm("page"))
 		</fieldset>
+		
+		<!-- TODO Needs to replace the method by which the fields are generated atm, inputting the values from the answerForm does not work yet -->
+		@*
+		    <label>
+		    answerID: <input type="text" name="answerID" value=""> </br>
+		   	questionID: <input type="text" name="questionID" value=""> </br>
+			answerText: <input type="text" name="answerText" value=""> </br>
+			voteScore: <input type="text" name="voteScore" value=""> </br>
+			ownerID: <input type="text" name="ownerID" value=""> </br>
+			page: <input type="text" name="page" value=""> </br>
+		    </label>
+		*@	
 		<input type="submit" class="btn btn-default">
 	}
 }

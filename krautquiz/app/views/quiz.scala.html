@@ -55,6 +55,52 @@ with radio buttons and the user has to choose. *@
 						          </label>
 						        </div>
 					        }
+
+							<div class="rating">
+							    <input type="radio" name="rating" value="0" checked /><span id="hide"></span>
+							    <input type="radio" name="rating" value="1" /><span></span>
+							    <input type="radio" name="rating" value="2" /><span></span>
+							    <input type="radio" name="rating" value="3" /><span></span>
+							    <input type="radio" name="rating" value="4" /><span></span>
+							    <input type="radio" name="rating" value="5" /><span></span>
+							</div>
+
+							#hide {
+						    display:none;
+							}
+							 
+							.rating input {
+							    position:absolute;
+							    filter:alpha(opacity=0);
+							    -moz-opacity:0;
+							    -khtml-opacity:0;
+							    opacity:0;
+							    cursor:pointer;
+							    width:17px;
+							}
+							 
+							.rating span {
+							    width:24px;
+							    height:16px;
+							    line-height:16px;
+							    padding:1px 22px 1px 0; /* 1px FireFox fix */
+							    background:url(stars.png) no-repeat -22px 0;
+							}
+							 
+							/* Change span immediately following the checked radio */
+							 
+							.rating input:checked + span {
+							    background-position:-22px 0;
+							}
+							 
+							/* Reset all remaining stars back to default background.
+							   This supersedes the above due to its ordering. */
+							 
+							.rating input:checked + span ~ span {
+							    background-position:0 0;
+							}	
+
+
 			        <button type="submit" class="btn btn-default" value="Send">
 						Nächste Frage
 					</button>

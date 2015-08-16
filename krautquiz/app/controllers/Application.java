@@ -18,8 +18,8 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 /*
- * This is the application controller. It contains the most of the logic at the moment. Splitting it into several other classes did not
- * help to make it simpler, therefore this will be the main page for everything that needs to be processed
+ * This is the application controller. It contains the most of the logic at the moment. 
+ * TODO The class should be split into several smaller controllers as it has become quite long now.
  */
 
 // TODOL Votescores are Integer, make sure they are not bigger than MAX_INT!
@@ -102,13 +102,14 @@ public class Application extends Controller {
 		Answer.create(answer33);
 	}
 
-	// Frontpage
+	// Frontpage 
 	@Security.Authenticated(Secured.class)
 	public static Result index(Integer page) {
 		questionListAll.clear();
 		answerListAll.clear();
 		
 		// Get all questions from DB
+		// TODO Collect only the questions / answers by the page they are on. Should be easy by using "currentPage"
 		for (Question questionItem : Question.find.all()) {
 			if(questionItem.page.equals(page)){
 				questionListAll.add(questionItem);
@@ -126,6 +127,7 @@ public class Application extends Controller {
 	}
 
 	// Settings
+	// TODO Give the user some choices for things like colors etc. At the moment this only shows some answered questions for the evaluation
 	@Security.Authenticated(Secured.class)
 	public static Result showSettings() {
 		questionListAll.clear();
@@ -133,7 +135,6 @@ public class Application extends Controller {
 			Question questionEntry = Question.find.where().like("question_id", quizItem.questionID).findUnique();
 			questionListAll.add(questionEntry);
 		}
-		
 		return ok(views.html.einstellungen.render(questionListAll, answerListAll));
 	}
 	
@@ -272,6 +273,8 @@ public class Application extends Controller {
 		return ok(views.html.quiz.render(randomQuestionList, answerList, answerForm));
 	}
 	
+	// The user has answered a question on the quiz page and wants to get the next question
+	// The answered question gets updated whether it was correctly or wrongly answered
 	@Security.Authenticated(Secured.class)
 	public static Result nextQuizPage(){
 		Nutzer currentUser = Nutzer.find.byId(request().username());
@@ -295,7 +298,6 @@ public class Application extends Controller {
 			Answer bestAnswer = Collections.max(highestAnswerList);
 			
 			// Quizquestion already answered by current user
-			// TODOH Is this correct? Do I have to check for the user here somewhere?
 			List<Quiz> tempQuizList = Quiz.find.where().like("question_ID", clickedRadioAnswer.questionID).like("user_id", currentUser.email).findList();
 			
 			// If at least one entry in quiz-table matches the question that has been asked
@@ -451,6 +453,7 @@ public class Application extends Controller {
 		}
 	}
 
+	// Inner class for registering new users
 	public static class Register{
 		public String name;
 		public String email;
@@ -486,6 +489,7 @@ public class Application extends Controller {
 		return redirect(routes.Application.login());
 	}
 
+	// Checks, if the user may enter the webapplication
 	public static Result authenticate() {
 		Form<Login> loginForm = Form.form(Login.class).bindFromRequest();
 		if (loginForm.hasErrors()) {
